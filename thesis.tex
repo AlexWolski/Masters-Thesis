@@ -11,7 +11,6 @@
 \usepackage[T1]{fontenc}
 \usepackage{textcomp} % Required for upquote.
 \usepackage{microtype}
-\usepackage{pgfplots} % Used to create graphs
 \usepackage{makecell} % Used to create thick links in tables
 \usepackage[shortcuts]{extdash} % Allow the use of unbreakable "extdash" spacers.
 
@@ -31,9 +30,9 @@
 \hypersetup{hidelinks} % Do not include boxes around links
 
 \usepackage[tableposition=top]{caption}
-\usepackage[vmargin={1.25in, 1.25in}, hmargin={1.5in, 1in},
-            textwidth=6in,
-            textheight=5.25in]{geometry}
+
+\usepackage[hmargin={1.5in, 1in},
+			vmargin={1.25in, 1.25in}]{geometry}
 \usepackage{microtype}
 \DisableLigatures{encoding = *, family = * }
 
@@ -105,8 +104,8 @@
 \bibliographystyle{ieeetr}
 \reffile{references} % To build the references, double click the file "genbib.bat" in the "build" subdirectory
 
-% Appendex tex files
-\newappendix{appA}
+% Appendix tex files
+% \newappendix{Appendix}
 
 
 \end{document}
