@@ -79,6 +79,9 @@
 %   aparefs: this will use the author last name and year for citations,
 %     like the APA style (Toolan, 2006), instead of a number like [1].
 %
+%   nochapterhead: this specifies that you prefer just the chapter
+%     title at the start of each chapter without the chapter head.
+%
 %
 % Writing Options:
 %  The options in this section are intended to ease writing the thesis.
@@ -234,6 +237,9 @@ San Jose State University thesis format]
 \newif\if@libraryrightspage \@libraryrightspagefalse
 \DeclareOption{nolibraryrightspage}{\@libraryrightspagefalse}
 \DeclareOption{libraryrightspage}{\@libraryrightspagetrue}
+
+\newif\if@nochapterhead \@nochapterheadfalse
+\DeclareOption{nochapterhead}{\@nochapterheadtrue}
 
 % Declare options from report class that we want to pass.
 \def\@optptsize{12pt}
@@ -752,9 +758,16 @@ San Jose State University thesis format]
    \begin{center}
    %\rule{0in}{0.5in}%
    \doublespace
-   \MakeUppercase{\@chapapp}
-   \@ifundefined{@usesingappend}{\space\thechapter}{}\vspace{0ex}\\%
-   #1
+
+   \if@nochapterhead
+     \@ifundefined{@usesingappend}{\space\thechapter}{}\vspace{0ex}
+     \MakeUppercase{#1}
+   \else
+     \MakeUppercase{\@chapapp}
+     \@ifundefined{@usesingappend}{\space\thechapter}{}\vspace{0ex}\\%
+     \MakeUppercase{#1}
+   \fi
+
    %\vskip 2.0ex
    \end{center}
 }}
@@ -862,7 +875,8 @@ San Jose State University thesis format]
     \@elt{section}\@elt{footnote}%
   \else%
     \@elt{equation}\@elt{figure}\@elt{footnote}\@elt{section}\@elt{table}%
-  \fi}
+  \fi
+  }
 
 % These commands define the format of the headers for section,
 % subsection, and subsubsection commands.
