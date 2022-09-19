@@ -52,6 +52,15 @@
 % eref puts parenthesis around reference, like "equation (1)"
 \def\eref#1{(\ref{#1})}
 
+% Keywords command
+% Copied from OverLeaf template
+\providecommand{\keywords}[1]
+{
+	\noindent
+	\small	
+	\textbf{\textit{Keywords - }} #1
+}
+
 % Project type: For CS 298 use "\projectType{Project}" and for CS 299 use "\projectType{Thesis}"
 \def\projectType{Project}
 % Graduation month
