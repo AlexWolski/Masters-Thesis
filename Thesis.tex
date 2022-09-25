@@ -22,6 +22,12 @@
 \usepackage{enumitem}
 \setlist[itemize]{noitemsep, topsep=0pt}
 
+\usepackage[]{titlesec}
+% Format subsections like a paragraph. Subsection title is terminated in a period.
+\titleformat{\subsection}[runin]{\bfseries}{}{0em}{}[.]
+% Set spacing around subsection title.
+\titlespacing{\subsection}{0em}{0.5em}{1.5em}
+
 \usepackage{algorithm} % Used for writing algorithms in a paper
 \usepackage[noend]{algpseudocode} % Allows psuedocode keywords (e.g., "if", "while", "for", etc.) in algorithms.
 
