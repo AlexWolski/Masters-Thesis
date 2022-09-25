@@ -1,4 +1,5 @@
 \documentclass[nochapterhead,oneref]{urithesis}
+
 \usepackage{amsmath,amsthm, amsfonts, amssymb, amsxtra,amsopn}
 \usepackage{graphicx}
 \usepackage{multirow}
@@ -8,7 +9,7 @@
 \PassOptionsToPackage{hyphens}{url}
 \usepackage{xcolor, colortbl} % Used for coloring the cells of tables
 \usepackage{amsmath}
-%\usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp} % Required for upquote.
 \usepackage{microtype}
@@ -24,12 +25,10 @@
 
 \usepackage{mdframed}
 \usepackage{array} % Needed for centering in the table
-\usepackage[export]{adjustbox} % loads also graphicx
+\usepackage[export]{adjustbox} % Also loads graphicx
 \usepackage{graphicx}
 
 \usepackage{hyperref} % Creates links in the PDF document.
-
-\usepackage[tableposition=top]{caption}
 
 \usepackage[hmargin={1.5in, 1in},
 			vmargin={1.25in, 1.25in}]{geometry}
@@ -39,7 +38,7 @@
 \newcommand{\numbwithdegreesymbol}[1]{#1$^\circ$}
 \newcommand{\MiniAssembly}{M\hspace{-.08em}A}
 
-% no limit on percentage of floats per page
+% No limit on percentage of floats per page
 \renewcommand{\floatpagefraction}{1.0}
 \renewcommand{\topfraction}{1.0}
 \renewcommand{\textfraction}{0.0}
@@ -82,7 +81,7 @@
 
 % Author's name
 \author{Alexander Wolski}
-%Graduation year
+% Graduation year
 \copyrightyear{2022}
 
 \ifthenelse{\equal{\projectType}{Thesis}}
@@ -95,7 +94,6 @@
 \acknowledgements{Acknowledgements}
 
 \setlength{\parskip}{.1 in}
-%\singlespace
 \doublespace
 \pagenumbering{arabic}
 
@@ -111,7 +109,7 @@
 
 % References
 \bibliographystyle{ieeetr}
-\reffile{References} % To build the references, double click the file "genbib.bat" in the "build" subdirectory
+\reffile{References}
 
 % Appendix tex files
 \newappendix{Appendix}

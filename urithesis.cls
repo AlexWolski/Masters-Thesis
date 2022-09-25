@@ -430,6 +430,7 @@ San Jose State University thesis format]
 
 % fixes hyperref warning
 \providecommand*{\toclevel@chapterx}{0}
+\providecommand*{\toclevel@chapterapp}{0}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Basic definitions.
