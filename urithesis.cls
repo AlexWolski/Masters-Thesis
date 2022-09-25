@@ -837,26 +837,6 @@ San Jose State University thesis format]
 \renewcommand*\l@figure{\@dottedtocline{1}{1.5em}{4.0em}}
 \let\l@table\l@figure
 
-% This has been modified so that the first line has -1.7em of negative
-% space to allow multiple line captions to be indented on the runover
-% lines.
-% This is from latex.ltx.
-\long\def\@caption#1[#2]#3{%
-  \par
-  \if@gotfirstappendix\else % dont want appendix figures and tables in list
-    \addcontentsline{\csname ext@#1\endcsname}{#1}%
-      {\protect\numberline{\csname the#1\endcsname}{\hspace{-1.7em}%
-          \ignorespaces #2}}%
-  \fi
-  \begingroup
-    \@parboxrestore
-    \if@minipage
-      \@setminipage
-    \fi
-    \normalsize
-    \@makecaption{\csname fnum@#1\endcsname}{\ignorespaces #3}\par
-  \endgroup}
-
 
 % This creates the headers for the unnumbered chapters (abstract,
 % bibliography, etc.).
@@ -940,18 +920,6 @@ San Jose State University thesis format]
 \def\verbatim{\singlespace%
       \@verbatim \frenchspacing\@vobeyspaces \@xverbatim}
 
-% Change caption to have period instead of colon.
-% This is from report.cls.
-\long\def\@makecaption#1#2{%
-  \vskip\abovecaptionskip
-  \sbox\@tempboxa{#1. #2}%
-  \ifdim \wd\@tempboxa >\hsize
-    #1. #2\par
-  \else
-    \global \@minipagefalse
-    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
-  \fi
-  \vskip\belowcaptionskip}
 
 % Make first paragraph indented.
 % this is from report.cls.
