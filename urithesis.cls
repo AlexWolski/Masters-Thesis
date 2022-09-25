@@ -760,12 +760,14 @@ San Jose State University thesis format]
    %\rule{0in}{0.5in}%
    \doublespace
 
+   % Display "Chapter #" on first line and chapter title on second line
    \if@nochapterhead
      \@ifundefined{@usesingappend}{\space\thechapter}{}\vspace{0ex}
      \MakeUppercase{#1}
+   % Display chapter number and title on one line
    \else
      \MakeUppercase{\@chapapp}
-     \@ifundefined{@usesingappend}{\space\thechapter}{}\vspace{0ex}\\%
+     \@ifundefined{@usesingappend}{\space\thechapter}{}\vspace{0ex}\\
      \MakeUppercase{#1}
    \fi
 
