@@ -43,6 +43,26 @@ However, there are also several challenges in using this representation. The fir
 
 Previous works~\cite{Sharma2018, Kania2020, Ren2021} have successfully implemented CSG based reconstruction algorithms using unsupervised learning. While succeeding in representing simple geometry, these works fail to incorporate primitive blending to address the poor reconstruction quality of smooth surfaces. Furthermore, these works only generate a small number of primitives. The CSG-Stump architecture~\cite{Ren2021} supports a maximum output of 256 total primitives in the paper, of which a subset is selected for use in reconstruction. This number is sufficient to represent simple 3D shapes but fails to capture the details in more complex geometry. Although the architecture can be scaled up, the network complexity and training time increases non-linearly with the output size~\cite{Ren2021}.
 
+\newpage
+
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{Images/Face without blending}
+		\caption{With Blending}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[t]{0.45\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{Images/Face with blending}
+		\caption{Without Blending}
+	\end{subfigure}
+	\caption{Demonstration of the importance of primitive blending for modeling organic shapes such as faces using CSG~\cite{Quilez2013}.}
+	\label{fig:primitive_blending}
+\end{figure}
+
 To address these shortcomings in prior works, we propose CSG-CRN: a novel architecture for iteratively generating CSG reconstructions of unlimited size. This is achieved using cascaded refinement, wherein a refinement network recursively improves upon its own output. By building the reconstruction through cascaded refinement, the architecture can be kept small while achieving high reconstruction quality. CSG-CRN is an autoencoder network that takes point clouds as input and outputs SDF primitives. The Siamese encoder generates a feature vector for both the target geometry and the current reconstruction. Then the GRU decoder analyzes the differences in the feature vectors and generates multiple SDF primitives to refine the reconstruction. The output parameters include a blending factor for each primitive to better represent organic and smooth surfaces. To further refine the reconstruction, the output can be fed back into the CSG-CRN network to generate additional primitives. Unlike previous works, the computation time scales linearly with the level of detail. To our knowledge, this is the first approach that applies cascaded refinement to the reconstruction of 3D surfaces.
 
 We make two main contributions in this work. First, we propose CSG-CRN, a novel architecture for generating CSG reconstructions through cascaded refinement. Second, we conduct experiments to demonstrate the following:
