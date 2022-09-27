@@ -37,14 +37,18 @@ CSG and other primitive fitting techniques are a topics of interest as they rese
 
 Instead of using geons, prior works~\cite{Sharma2018, Kania2020, Ren2021} represent CSG primitives as Signed Distance Fields (SDFs). An SDF is a mathematical function that implicitly defines the surface of a volume. Given a query point, the SDF returns the shortest distance between the query point and the represented surface. This distance is positive ($+$) when the query point is outside of the volume and negative ($-$) when the query point is inside. We define the surface as the set of all input points for which the SDF returns 0 (i.e. the zero-level set). The implicit nature of SDFs results in smooth, detailed, and continuous surfaces~\cite{Park2019}. Additionally, SDFs make for good CSG primitives since applying boolean operations to distance fields is trivial.
 
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.2]{Images/SDF Box}
+	\caption{Visualization of the SDF of a 2D box. The surface of the box is depicted in black, the exterior in green, and the interior in red. Points farther from the surface are drawn darker. Each ring around the box consists of points that are equidistant from the surface.}
+	\label{fig:sdf_box}
+\end{figure}
+
 There are several benefits to using CSG models for deep 3D reconstruction. The low-dimensionality of a CSG model allows for more efficient training of the network. The continuous and watertight surfaces produced by CSG are visually pleasing. And a key benefit that most other representations lack is an easily modifiable format.
 
 However, there are also several challenges in using this representation. The first issue is the lack of uniqueness in a CSG model~\cite{Hughes2013}. Since there are multiple valid ways to reconstruct a volume using CSG, a network cannot be supervised using expected output samples. Secondly, directly combining geometric primitives without applying any blending results in sharp corners and edges. This is a not an issue when modeling angular mechanical components. Smooth and organic surfaces, on the other hard, cannot be elegantly represented without blending primitives together.
 
 Previous works~\cite{Sharma2018, Kania2020, Ren2021} have successfully implemented CSG based reconstruction algorithms using unsupervised learning. While succeeding in representing simple geometry, these works fail to incorporate primitive blending to address the poor reconstruction quality of smooth surfaces. Furthermore, these works only generate a small number of primitives. The CSG-Stump architecture~\cite{Ren2021} supports a maximum output of 256 total primitives in the paper, of which a subset is selected for use in reconstruction. This number is sufficient to represent simple 3D shapes but fails to capture the details in more complex geometry. Although the architecture can be scaled up, the network complexity and training time increases non-linearly with the output size~\cite{Ren2021}.
-
-\newpage
-
 
 \begin{figure}
 	\centering
