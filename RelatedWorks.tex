@@ -2,37 +2,60 @@
 
 \chapter{Related Works}
 
-\vspace{1em}
+In this chapter, we review prior works on two topics related to our research: 3D representations (\ref{3D Representations}) and representation learning architectures (\ref{Representation Learning}).
 
 \section{3D Representations}
+\label{3D Representations}
 
-Test
+There are a multitude of different methods for digitally representing a 3D volume. Any representation can be used in machine learning but each has their own benefits and challenges. In this section, we discuss the five most common 3D representations in the literature and their applications in machine learning.
 
 \subsection{Point Cloud}
+\label{Point Cloud}
 
-Test
+A point cloud represents an object as a set of 3D coordinates sampled from its surface. Point clouds don't contain any topological data and can be difficult to processes since the points are unordered and unstructured~\cite{Xiao2020}. However, this simplicity makes it easy to acquire point clouds using 3D scanning technologies such as Lidar and photography~\cite{Leberl2010}. Photogrammetry algorithms make it possible to capture point clouds using just a smartphone~\cite{Micheletti2015}.
+
+Despite its accessibility, point clouds didn't see use in 3D learning techniques until 2017~\cite{Xiao2020}. The seminal work PointNet~\cite{Qi2017} used a Multi-Level Perceptron (MLP) encoder to prove that point clouds can be processed directly to solve problems such as classification and part segmentation. The follow up work PointConv~\cite{Wu2019} saw similar success using a Convolutional Neural Network (CNN) encoder. Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct point cloud outputs. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning features.
+
+
 
 \subsection{Polygon Mesh}
+\label{Polygon Mesh}
 
 Test
 
 \subsection{Occupancy Grid}
+\label{Occupancy Grid}
+
+Test
+
+\subsection{Multi-View Image}
+
+\subsection{Implicit Surface}
+\label{Implicit Surfaces}
+
+Test
+
+\subsection{Structured Representation}
+\label{Structured Representation}
 
 Test
 
 
-\section{Representation Learning Architectures}
+\section{Representation Learning Architectures} \label{Representation Learning}
 
 Test
 
 \subsection{Generative Adversarial Networks}
+\label{Generative Adversarial Networks}
 
 Test
 
 \subsection{Autoencoders}
+\label{Autoencoders}
 
 Test
 
 \subsection{Cascaded Refinement}
+\label{Cascaded Refinement}
 
 Test
