@@ -9,6 +9,7 @@ In this chapter, we review prior works on two topics related to our research: 3D
 
 There are a multitude of different methods for digitally representing a 3D volume. Any representation can be used in machine learning but each has their own benefits and challenges. In this section, we discuss the five most common 3D representations in the literature and their applications in machine learning.
 
+
 \subsection{Point Cloud}
 \label{Point Cloud}
 
@@ -17,18 +18,22 @@ A point cloud represents an object as a set of 3D coordinates sampled from its s
 Despite its accessibility, point clouds didn't see use in 3D learning techniques until 2017~\cite{Xiao2020}. The seminal work PointNet~\cite{Qi2017} used a Multi-Level Perceptron (MLP) encoder to prove that point clouds can be processed directly to solve problems such as classification and part segmentation. The follow up work PointConv~\cite{Wu2019} saw similar success using a Convolutional Neural Network (CNN) encoder. Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct point cloud outputs. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
 
 
-
 \subsection{Polygon Mesh}
 \label{Polygon Mesh}
 
-Test
+Mesh-based models consist of vertices connected by flat polygonal faces. Unlike point clouds, meshes can represent topology and surface details~\cite{Xiao2020}. Polygon meshes are the most popular 3D representation for use in computer graphics because they can be efficiently rendered as images~\cite{Watt1996}. Another unique benefit is that meshes are easy to deform and animate~\cite{Wang2018}. These qualities make mesh-based models ideal for use in video games, virtual reality, and film~\cite{Nash2020}.
+
+The prevalence of polygon meshes has motivated many mesh-based deep learning models. Since the structure of a polygon mesh is complex, these models adopt unique architectures to simplify the problem. To directly process polygon meshes, models such as FeaStNet~\cite{Verma2018} and MeshCNN~\cite{Hanocka2019} employ Graph Convolutional Networks (GCN). A mesh can be viewed as a directed graph of interconnected nodes. This enables graph-based methods such as GCN to be applied to meshes. While a traditional CNN applies filters to a group of pixels in an image, a GCN applies filters to a group of nodes or edges in a graph. A GCN can incorporate pooling operations to efficiently extract and analyze features from a mesh~\cite{Verma2018}. MeshCNN also introduces unpooling operations to increase the resolution of a mesh.
+
+Techniques for the generation of a mesh are more varied. AtlasNet~\cite{Groueix2018} uses Multi-Layer Perceptrons (MLPs) to generates a series of 2D meshes and stitch together into a 3D shape. This papier-m\^{a}ch\'{e} approach is efficient but does not generate continuous surfaces~\cite{Groueix2018}. Pixel2Mesh~\cite{Wang2018} and Point2Mesh~\cite{Hanocka2020} both deform a template mesh through cascaded refinement to represent the input. Deformations are performed in a coarse-to-fine manner with the resolution of the template mesh increasing each iteration. This approach is efficient because the low-resolution template is used for large deformations while the high-resolution template is only used for precise deformations. Unlike AtlasNet, Pixel2Mesh and Point2Mesh are guaranteed to generate a continuous and manifold surfaces because the initial template shape is continuous and manifold~\cite{Wang2018, Hanocka2020}. PolyGen~\cite{Nash2020} takes the most direct approach in generating a 3D mesh. A vertex generation network predicts a variable number of vertices to represent the input. Then a face generation network predicts how to best connect the vertices with faces. Both networks are implemented with a sequential transformer. While the model can generate variable size meshes, it has a fixed maximum size~\cite{Nash2020}.
+
 
 \subsection{Occupancy Grid}
 \label{Occupancy Grid}
 
 Test
 
-\subsection{Multi-View Image}
+\subsection{Images}
 
 \subsection{Implicit Surface}
 \label{Implicit Surfaces}
