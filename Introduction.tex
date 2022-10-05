@@ -8,9 +8,9 @@ Traditional methods for 3D shape analysis involve manual feature engineering. Th
 
 Research efforts have since shifted to machine learning techniques. Unsupervised representation learning methods are particularly well suited for analysis and reconstruction. By attempting to synthesize a given input, representation learning models automatically learn and extract the most important features for describing said input~\cite{Bengio2013}. This improved feature extraction allows representation learning models to efficiently reconstruct more complex and varied 3D geometry than is possible using traditional methods. In addition, the learned feature vectors can be used in analysis problems such as object classification and inference of missing geometry~\cite{Park2019}.
 
-The primary difficulty in applying deep learning to 3D reconstruction is selecting a suitable 3D representation to describe the inputs and outputs of the network. A 3D representation must be concise enough for the network to efficiently train on yet be descriptive enough to accurately portray the original shape. Related works have employed a wide variety of 3D representations, each with unique benefits and challenges~\cite{Xiao2020}.
+A primary difficulty in applying deep learning to 3D reconstruction is selecting a suitable 3D representation to describe the inputs and outputs of the network. A 3D representation must be concise enough for the network to efficiently train on yet be descriptive enough to accurately portray the original shape. Related works have employed a wide variety of 3D representations, each with unique benefits and challenges~\cite{Xiao2020}.
 
-Several recent works such as~\cite{Sharma2018, Kania2020, Ren2021} have explored the use of Constructive Solid Geometry (CSG) as a 3D representation. A 3D CSG model defines a volume as a composition of simple shapes called primitives. These primitives are combined using boolean operations such as union, subtract, difference, and intersection. Each primitive is transformed into place using translation, rotation, and scaling operations. The number of different primitive shapes is restricted to a collection of predefined manifold surfaces. Using a fixed set of high-level primitives to build geometry drastically reduces file sizes compared to other 3D representations. By virtue of their construction, CSG models are guaranteed to be continuous and manifold surfaces bounding an interior volume. Additionally, editing a CSG model is easy since each constituent primitive can be individually accessed and modified.~\cite{Hughes2013}.
+Several recent works such as~\cite{Sharma2018, Kania2020, Ren2021} have explored the use of Constructive Solid Geometry (CSG) as a 3D representation. A 3D CSG model defines a volume as a composition of simple shapes called primitives. These primitives are combined using boolean operations such as union, subtract, difference, and intersection. Each primitive is transformed into place using translation, rotation, and scaling operations. The available primitive shapes are restricted to a collection of predefined manifold surfaces. Using a fixed set of high-level primitives to build geometry results in much smaller file sizes when compared to other 3D representations. By virtue of their construction, CSG models are guaranteed to be continuous and manifold surfaces bounding an interior volume. Additionally, editing a CSG model is convenient since each constituent primitive can be individually accessed and modified.~\cite{Hughes2013}.
 
 \begin{figure}
 	\centering
@@ -35,9 +35,9 @@ Several recent works such as~\cite{Sharma2018, Kania2020, Ren2021} have explored
 	\label{fig:boolean operations}
 \end{figure}
 
-CSG and other primitive fitting techniques are a topics of interest as they resemble the Recognition-By-Components theory for how humans comprehend 3D shapes. This theory suggests that humans decompose scenes into simple volumes called geons. The human brain is said to use 36 geon primitives to approximate complex shapes~\cite{Biederman1987}. The theory is supported by the techniques artists use to construct human anatomy. The first step in drawing a figure is to block out the volume using a combination of geometric and organic volumes. These shapes can range from cuboids and cylinders to ellipsoids and pear shapes~\cite{Winslow2015}. Due to their similarity, researchers believe that the Recognition-By-Components theory sets a positive precedent for the use of CSG learning in neural networks~\cite{Sharma2018}.
+CSG and other primitive fitting techniques are topics of interest as they resemble Biederman's Recognition-By-Components theory for how humans comprehend 3D shapes. This theory suggests that the human brain decomposes scenes into simple volumes called geons. Biederman theorizes that 36 geon primitives are used to approximate complex shapes~\cite{Biederman1987}. The theory is supported by the techniques artists use to construct human anatomy. The first step in drawing a figure is to block out the volume using a combination of geometric and organic volumes. These shapes can range from cuboids and cylinders to ellipsoids and pear shapes~\cite{Winslow2015}. Due to their similarity, researchers believe that the Recognition-By-Components theory sets a positive precedent for the use of CSG learning in neural networks~\cite{Sharma2018}.
 
-Instead of using geons, prior works~\cite{Sharma2018, Kania2020, Ren2021} represent CSG primitives as Signed Distance Fields (SDFs). An SDF is a mathematical function that implicitly defines the surface of a volume. Given a query point, the SDF returns the shortest distance between the query point and the represented surface. This distance is positive ($+$) when the query point is outside of the volume and negative ($-$) when the query point is inside. We define the surface as the set of all input points for which the SDF returns 0 (i.e. the zero-level set). The implicit nature of SDFs results in smooth, detailed, and continuous surfaces~\cite{Park2019}. Additionally, SDFs make for good CSG primitives since applying boolean operations to distance fields is trivial.
+Instead of using geons, prior works~\cite{Sharma2018, Kania2020, Ren2021} represent CSG primitives as Signed Distance Fields (SDFs). An SDF is a mathematical function that implicitly defines the surface of a volume. Given a query point, the SDF returns the shortest distance from the query point and the represented surface. This distance is positive ($+$) when the query point is outside of the volume and negative ($-$) when the query point is inside. We define the surface as the set of all input points for which the SDF returns 0 (i.e. the zero-level set). The implicit nature of SDFs results in smooth, detailed, and continuous surfaces~\cite{Park2019}. Additionally, SDFs make for good CSG primitives since applying boolean operations to distance fields is trivial.
 
 \begin{figure}
 	\centering
@@ -57,13 +57,13 @@ Previous works~\cite{Sharma2018, Kania2020, Ren2021} have successfully implement
 	\begin{subfigure}[t]{0.45\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{Images/Face without blending}
-		\caption{With Blending}
+		\caption{Without Blending}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{0.45\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{Images/Face with blending}
-		\caption{Without Blending}
+		\caption{With Blending}
 	\end{subfigure}
 	\caption{Demonstration of the importance of primitive blending for modeling organic shapes such as faces using CSG~\cite{Quilez2013}.}
 	\label{fig:primitive_blending}
@@ -75,7 +75,7 @@ We make two main contributions in this work. First, we propose CSG-CRN, a novel 
 
 \begin{itemize}
 	\item CSG-CRN can efficiently reconstruct a variety of known and unknown shape classes.
-	\item CSG-CRN can generate qualitatively and quantitatively superior reconstructions than all prior CSG-based reconstruction networks.
+	\item CSG-CRN can generate qualitatively and quantitatively superior reconstructions than prior CSG-based reconstruction networks.
 	\item The CSG-CRN encoder network is capable of inferring missing geometry based on known shape priors.
 	\item The CSG-CRN encoder produces a continuous latent space that can be interpolated.
 \end{itemize}
