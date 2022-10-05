@@ -1,6 +1,7 @@
 % !TeX root = Thesis.tex
 
 \chapter{Introduction}
+\label{chap:introduction}
 
 Recent advances in science, technology, and engineering has created a demand for efficient 3D shape reconstruction and analysis. Examples of applications include autonomous navigation, robotics, medicine, augmented reality, architecture, and entertainment~\cite{Xiao2020, Xie2022}. These fields require methods to quickly comprehend 3D scenes and accurately reconstruct surfaces from sparse sensor data.
 
@@ -79,3 +80,7 @@ We make two main contributions in this work. First, we propose CSG-CRN, a novel 
 	\item The CSG-CRN encoder network is capable of inferring missing geometry based on known shape priors.
 	\item The CSG-CRN encoder produces a continuous latent space that can be interpolated.
 \end{itemize}
+
+\vspace{1em}
+
+The outline of this paper is as follows. The next chapter, \nameref{chap:related_works}, discusses the different 3D representations and neural architectures used by prior works in 3D reconstruction. The \nameref{chap:background} chapter details the mathematics of SDFs and the neural architectures used in the implementation of CSG-CRN. In the \nameref{chap:implementation} chapter, we outline the architecture of CSG-CRN and the methodologies used to train it. The \nameref{chap:experiemnts_and_results} chapter contains the procedures and results for each experiment we conducted . Lastly, the \nameref{chap:conclusion} chapter summarizes our findings in this paper and discusses potential future work.
