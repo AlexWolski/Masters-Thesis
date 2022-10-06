@@ -3,16 +3,16 @@
 \chapter{Related Works}
 \label{chap:related_works}
 
-In this chapter, we review prior works on two topics related to our research: 3D representations (\ref{3D Representations}) and representation learning architectures (\ref{Representation Learning}).
+In this chapter, we review prior works on two topics related to our research: \nameref{sec:3d_representations}) and \nameref{sec:representation_learning_architectures}.
 
 \section{3D Representations}
-\label{3D Representations}
+\label{sec:3d_representations}
 
 There are a multitude of different methods for digitally representing a 3D volume. Any representation can be used in machine learning but each has their own benefits and challenges. In this section, we discuss the five most common 3D representations in the literature and their applications in machine learning.
 
 
 \subsection{Point Cloud}
-\label{Point Cloud}
+\label{subsec:point_cloud}
 
 A point cloud represents an object as a set of 3D coordinates sampled from its surface. Point clouds don't contain any topological data and can be difficult to processes since the points are unordered and unstructured~\cite{Xiao2020}. However, this simplicity makes it easy to acquire point clouds using 3D scanning technologies such as lidar and photogrammetry~\cite{Leberl2010}. Photogrammetry is an algorithm that uses multiple images taken from different angles to triangulate points on a surface. A photogrammetry scan can be performed with even a smartphone, which greatly increases the accessibility of point cloud scans~\cite{Micheletti2015}.
 
@@ -20,7 +20,7 @@ Despite its accessibility, point clouds didn't see use in 3D learning techniques
 
 
 \subsection{Polygon Mesh}
-\label{Polygon Mesh}
+\label{subsec:polygon_mesh}
 
 Mesh-based models consist of vertices connected by flat polygonal faces. Unlike point clouds, meshes can represent topology and surface details~\cite{Xiao2020}. Polygon meshes are the most popular 3D representation for use in computer graphics because they can be efficiently rendered as images~\cite{Watt1996}. Another unique benefit is that meshes are easy to deform and animate~\cite{Wang2018}. These qualities make mesh-based models ideal for use in video games, virtual reality, and film~\cite{Nash2020}.
 
@@ -30,38 +30,39 @@ Techniques for the generation of a mesh are more varied. AtlasNet~\cite{Groueix2
 
 
 \subsection{Occupancy Grid}
-\label{Occupancy Grid}
+\label{subsec:occupancy_grid}
 
 Test
 
 \subsection{Images}
 
 \subsection{Implicit Surface}
-\label{Implicit Surfaces}
+\label{subsec:implicit_surface}
 
 Test
 
 \subsection{Structured Representation}
-\label{Structured Representation}
+\label{subsec:structured_representation}
 
 Test
 
 
-\section{Representation Learning Architectures} \label{Representation Learning}
+\section{Representation Learning Architectures}
+\label{sec:representation_learning_architectures}
 
 Test
 
-\subsection{Generative Adversarial Networks}
-\label{Generative Adversarial Networks}
+\subsection{Generative Adversarial Network}
+\label{subsec:generative_adversarial_networks}
 
 Test
 
-\subsection{Autoencoders}
-\label{Autoencoders}
+\subsection{Autoencoder}
+\label{subsec:autoencoders}
 
 Test
 
 \subsection{Cascaded Refinement}
-\label{Cascaded Refinement}
+\label{subsec:cascaded_refinement}
 
 Test
