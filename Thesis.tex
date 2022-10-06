@@ -22,12 +22,8 @@
 \usepackage{enumitem}
 \setlist[itemize]{noitemsep, topsep=0pt}
 
-\usepackage[]{titlesec}
-% Format subsections like a paragraph. Subsection title is terminated in a period.
-\titleformat{\subsection}{\bfseries}{}{0em}{}[]
-% Set spacing around section titles.
-\titlespacing{\section}{0em}{2em}{0em}
-\titlespacing{\subsection}{0em}{1em}{0.5em}
+\usepackage[]{titlesec} % Control section spacing
+\usepackage[]{tocloft} % Control spacing in table of contents
 
 \usepackage{algorithm} % Used for writing algorithms in a paper
 \usepackage[noend]{algpseudocode} % Allows psuedocode keywords (e.g., "if", "while", "for", etc.) in algorithms.
@@ -60,6 +56,15 @@
 \makeatletter
 \renewcommand{\@tocrmarg}{2.3em plus1fil}
 \makeatother
+
+% Format subsections like a paragraph. Subsection title is terminated in a period.
+\titleformat{\subsection}{\bfseries}{}{0em}{}[]
+% Set spacing around section titles.
+\titlespacing{\section}{0em}{2em}{0em}
+\titlespacing{\subsection}{0em}{1em}{0.5em}
+
+% Set spacing in table of contents
+\cftsetindents{section}{1em}{3em}
 
 % eref puts parenthesis around reference, like "equation (1)"
 \def\eref#1{(\ref{#1})}
