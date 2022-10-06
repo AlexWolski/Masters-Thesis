@@ -14,6 +14,13 @@ There are a multitude of different methods for digitally representing a 3D volum
 \subsection{Point Cloud}
 \label{subsec:point_cloud}
 
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.2]{Images/Point Cloud Cup}
+	\caption{Point cloud representation of a coffee cup. Typical point clouds contain many more points and only store color information.}
+	\label{fig:point_cloud_cup}
+\end{figure}
+
 A point cloud represents an object as a set of 3D coordinates sampled from its surface. Point clouds don't contain any topological data and can be difficult to processes since the points are unordered and unstructured~\cite{Xiao2020}. However, this simplicity makes it easy to acquire point clouds using 3D scanning technologies such as lidar and photogrammetry~\cite{Leberl2010}. Photogrammetry is an algorithm that uses multiple images taken from different angles to triangulate points on a surface. A photogrammetry scan can be performed with even a smartphone, which greatly increases the accessibility of point cloud scans~\cite{Micheletti2015}.
 
 Despite its accessibility, point clouds didn't see use in 3D learning techniques until 2017~\cite{Xiao2020}. The seminal work PointNet~\cite{Qi2017} used a Multi-Level Perceptron (MLP) encoder to prove that point clouds can be processed directly to solve problems such as classification and part segmentation. The follow up work PointConv~\cite{Wu2019} saw similar success using a Convolutional Neural Network (CNN) encoder. Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct point cloud outputs. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
@@ -21,6 +28,13 @@ Despite its accessibility, point clouds didn't see use in 3D learning techniques
 
 \subsection{Polygon Mesh}
 \label{subsec:polygon_mesh}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.2]{Images/Mesh Cup}
+	\caption{Polygon mesh representation of a coffee cup. The black lines depict connecting edges between vertices. The only polygon used in this mesh is the triangle.}
+	\label{fig:mesh_cup}
+\end{figure}
 
 Mesh-based models consist of vertices connected by flat polygonal faces. Unlike point clouds, meshes can represent topology and surface details~\cite{Xiao2020}. Polygon meshes are the most popular 3D representation for use in computer graphics because they can be efficiently rendered as images~\cite{Watt1996}. Another unique benefit is that meshes are easy to deform and animate~\cite{Wang2018}. These qualities make mesh-based models ideal for use in video games, virtual reality, and film~\cite{Nash2020}.
 
@@ -32,19 +46,41 @@ Techniques for the generation of a mesh are more varied. AtlasNet~\cite{Groueix2
 \subsection{Occupancy Grid}
 \label{subsec:occupancy_grid}
 
-Test
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.2]{Images/Voxel Cup}
+	\caption{Voxel grid representation of a coffee cup.}
+	\label{fig:voxel_cup}
+\end{figure}
 
 \subsection{Images}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.2]{Images/Depth Map Cup}
+	\caption{Depth map representation of a coffee cup.}
+	\label{fig:depth_map_cup}
+\end{figure}
 
 \subsection{Implicit Surface}
 \label{subsec:implicit_surface}
 
-Test
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.2]{Images/SDF Cup}
+	\caption{Visualization of an SDF representing a coffee cup. Points close to the surface are drawn green and points far from the surface are drawn blue. Each white contour line consists of points that are equidistant from the surface.}
+	\label{fig:sdf_cup}
+\end{figure}
 
 \subsection{Structured Representation}
 \label{subsec:structured_representation}
 
-Test
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.5]{Images/CSG Cup}
+	\caption{The CSG tree of a coffee cup. The leaves of the tree are SDF primitives which are combined through union (+) and difference (-) operations. The primitives being subtracted are colored red.}
+	\label{fig:csg_cup}
+\end{figure}
 
 
 \section{Representation Learning Architectures}
