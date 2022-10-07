@@ -8,7 +8,7 @@ In this chapter, we review prior works on two topics related to our research: \n
 \section{3D Representations}
 \label{sec:3d_representations}
 
-There are a multitude of different methods for digitally representing a 3D volume. Any representation can be used in machine learning but each has their own benefits and challenges. In this section, we discuss the five most common 3D representations in the literature and their applications in machine learning.
+There are a multitude of methods for digitally representing a 3D volume. Any representation can be used in machine learning, but each has different benefits and challenges. In this section, we discuss the five most common 3D representations in the literature and their applications in machine learning.
 
 
 \subsection{Point Cloud}
@@ -17,13 +17,13 @@ There are a multitude of different methods for digitally representing a 3D volum
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.2]{Images/Point Cloud Cup}
-	\caption{Point cloud representation of a coffee cup. Typical point clouds contain many more points and only store color information.}
+	\caption{Point cloud representation of a coffee cup.}
 	\label{fig:point_cloud_cup}
 \end{figure}
 
-A point cloud represents an object as a set of 3D coordinates sampled from its surface. Point clouds don't contain any topological data and can be difficult to processes since the points are unordered and unstructured~\cite{Xiao2020}. However, this simplicity makes it easy to acquire point clouds using 3D scanning technologies such as lidar and photogrammetry~\cite{Leberl2010}. Photogrammetry is an algorithm that uses multiple images taken from different angles to triangulate points on a surface. A photogrammetry scan can be performed with even a smartphone, which greatly increases the accessibility of point cloud scans~\cite{Micheletti2015}.
+A point cloud represents an object as a set of 3D coordinates sampled from its surface. Point clouds don't contain any topological data and the unstructured points can be hard to process~\cite{Xiao2020}. However, this simplicity makes it possible to acquire point clouds using 3D scanning technologies such as lidar and photogrammetry~\cite{Leberl2010}. Photogrammetry is an algorithm that uses multiple photos taken from different angles to triangulate points on a surface. A photogrammetry scan can be performed with even a smartphone, which greatly increases the accessibility of point cloud scans~\cite{Micheletti2015}.
 
-Despite its accessibility, point clouds didn't see use in 3D learning techniques until 2017~\cite{Xiao2020}. The seminal work PointNet~\cite{Qi2017} used a Multi-Level Perceptron (MLP) encoder to prove that point clouds can be processed directly to solve problems such as classification and part segmentation. The follow up work PointConv~\cite{Wu2019} saw similar success using a Convolutional Neural Network (CNN) encoder. Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct point cloud outputs. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
+Despite its accessibility, point clouds didn't see use in 3D learning techniques until 2017~\cite{Xiao2020}. The seminal work PointNet~\cite{Qi2017} used a Multi-Level Perceptron (MLP) encoder to demonstrate that point clouds can be processed directly to solve problems such as classification and part segmentation. The follow up work PointConv~\cite{Wu2019} saw similar success using a Convolutional Neural Network (CNN) encoder. Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct an input as a point cloud. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
 
 
 \subsection{Polygon Mesh}
@@ -32,7 +32,7 @@ Despite its accessibility, point clouds didn't see use in 3D learning techniques
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale=0.2]{Images/Mesh Cup}
-	\caption{Polygon mesh representation of a coffee cup. The black lines depict connecting edges between vertices. The only polygon used in this mesh is the triangle.}
+	\caption{Triangle mesh representation of a coffee cup. The black lines depict the connecting edges between vertices.}
 	\label{fig:mesh_cup}
 \end{figure}
 
@@ -40,7 +40,7 @@ Mesh-based models consist of vertices connected by flat polygonal faces. Unlike 
 
 The prevalence of polygon meshes has motivated many mesh-based deep learning models. Since the structure of a polygon mesh is complex, these models adopt unique architectures to simplify the problem. To directly process polygon meshes, models such as FeaStNet~\cite{Verma2018} and MeshCNN~\cite{Hanocka2019} employ Graph Convolutional Networks (GCN). A mesh can be viewed as a directed graph of interconnected nodes. This enables graph-based methods such as GCN to be applied to meshes. While a traditional CNN applies filters to a group of pixels in an image, a GCN applies filters to a group of nodes or edges in a graph. A GCN can incorporate pooling operations to efficiently extract and analyze features from a mesh~\cite{Verma2018}. MeshCNN also introduces unpooling operations to increase the resolution of a mesh.
 
-Techniques for the generation of a mesh are more varied. AtlasNet~\cite{Groueix2018} uses Multi-Layer Perceptrons (MLPs) to generates a series of 2D meshes and stitch together into a 3D shape. This papier-m\^{a}ch\'{e} approach is efficient but does not generate continuous surfaces~\cite{Groueix2018}. Pixel2Mesh~\cite{Wang2018} and Point2Mesh~\cite{Hanocka2020} both deform a template mesh through cascaded refinement to represent the input. Deformations are performed in a coarse-to-fine manner with the resolution of the template mesh increasing each iteration. This approach is efficient because the low-resolution template is used for large deformations while the high-resolution template is only used for precise deformations. Unlike AtlasNet, Pixel2Mesh and Point2Mesh are guaranteed to generate a continuous and manifold surfaces because the initial template shape is continuous and manifold~\cite{Wang2018, Hanocka2020}. PolyGen~\cite{Nash2020} takes the most direct approach in generating a 3D mesh. A vertex generation network predicts a variable number of vertices to represent the input. Then a face generation network predicts how to best connect the vertices with faces. Both networks are implemented with a sequential transformer. While the model can generate variable size meshes, it has a fixed maximum size~\cite{Nash2020}.
+Techniques to generate meshes are more varied. AtlasNet~\cite{Groueix2018} uses MLPs to generate a series of 2D meshes and stitch them together into a 3D shape. This papier-m\^{a}ch\'{e} approach is efficient but does not generate a continuous surface~\cite{Groueix2018}. Pixel2Mesh~\cite{Wang2018} and Point2Mesh~\cite{Hanocka2020} both deform a template mesh through cascaded refinement to represent the input. Deformations are performed in a coarse-to-fine manner with the resolution of the template mesh increasing each iteration. This approach is efficient because the low-resolution template is used for large deformations while the high-resolution template is only used for precise deformations. Unlike AtlasNet, Pixel2Mesh and Point2Mesh are guaranteed to generate a continuous and manifold surfaces since the initial template shape is manifold~\cite{Wang2018, Hanocka2020}. PolyGen~\cite{Nash2020} takes the most direct approach in generating 3D meshs. A vertex generation network predicts a variable number of vertices to represent the input. Then the vertices are fed to a face generation network that predicts how to best them with faces. Both networks are implemented as sequential transformers. Polygen can generate variable size meshes but has a fixed maximum output resolution~\cite{Nash2020}.
 
 
 \subsection{Occupancy Grid}
