@@ -3,7 +3,7 @@
 \chapter{Related Works}
 \label{chap:related_works}
 
-In this chapter, we review prior works on two topics related to our research: \nameref{sec:3d_representations}) and \nameref{sec:representation_learning_architectures}.
+In this chapter, we review prior works on two topics related to our research: \nameref{sec:3d_representations}s and \nameref{sec:representation_learning_architectures}.
 
 \section{3D Representations}
 \label{sec:3d_representations}
@@ -21,7 +21,7 @@ There are a multitude of methods for digitally representing a 3D volume. Any rep
 	\label{fig:point_cloud_cup}
 \end{figure}
 
-A point cloud represents an object as a set of 3D coordinates sampled from its surface. Point clouds don't contain any topological data and the unstructured points can be hard to process~\cite{Xiao2020}. However, this simplicity makes it possible to acquire point clouds using 3D scanning technologies such as lidar and photogrammetry~\cite{Leberl2010}. Photogrammetry is an algorithm that uses multiple photos taken from different angles to triangulate points on a surface. A photogrammetry scan can be performed with even a smartphone, which greatly increases the accessibility of point cloud scans~\cite{Micheletti2015}.
+A point cloud is set of unordered 3D coordinates sampled from an object's surface. Point clouds are unstructured and lack topological data~\cite{Xiao2020}. However, this simplicity makes it easy to acquire point clouds using 3D scanning technologies such as lidar and photogrammetry~\cite{Leberl2010}. Photogrammetry is an algorithm that uses multiple photos taken from different angles to triangulate points on a surface. A photogrammetry scan can be performed with even a smartphone, greatly increasing the accessibility of point cloud scans~\cite{Micheletti2015}.
 
 Despite its accessibility, point clouds didn't see use in 3D learning techniques until 2017~\cite{Xiao2020}. The seminal work PointNet~\cite{Qi2017} used a Multi-Level Perceptron (MLP) encoder to demonstrate that point clouds can be processed directly to solve problems such as classification and part segmentation. The follow up work PointConv~\cite{Wu2019} saw similar success using a Convolutional Neural Network (CNN) encoder. Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct an input as a point cloud. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
 
