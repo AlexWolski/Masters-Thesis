@@ -1,17 +1,17 @@
 % !TeX root = Thesis.tex
 
-\chapter{Related Works}
+\chapter{Related~Works}
 \label{chap:related_works}
 
 In this chapter, we review prior works on two topics related to our research: \nameref{sec:3d_representations}s and \nameref{sec:representation_learning_architectures}.
 
-\section{3D Representations}
+\section{3D~Representations}
 \label{sec:3d_representations}
 
 There are a multitude of methods for digitally representing a 3D volume. Any representation can be used in machine learning, but each has different benefits and challenges. In this section, we discuss the five most common 3D representations in the literature and their applications in machine learning.
 
 
-\subsection{Point Cloud}
+\subsection{Point~Cloud}
 \label{subsec:point_cloud}
 
 \begin{figure}[h]
@@ -26,7 +26,7 @@ A point cloud is set of unordered 3D coordinates sampled from an object's surfac
 Despite its accessibility, point clouds didn't see use in 3D learning techniques until 2017~\cite{Xiao2020}. The seminal work PointNet~\cite{Qi2017} used a Multi-Level Perceptron (MLP) encoder to demonstrate that point clouds can be processed directly to solve problems such as classification and part segmentation. The follow up work PointConv~\cite{Wu2019} saw similar success using a Convolutional Neural Network (CNN) encoder. Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct an input as a point cloud. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
 
 
-\subsection{Polygon Mesh}
+\subsection{Polygon~Mesh}
 \label{subsec:polygon_mesh}
 
 \begin{figure}[h]
@@ -43,7 +43,7 @@ The prevalence of polygon meshes has motivated many mesh-based deep learning mod
 Techniques to generate meshes are more varied. AtlasNet~\cite{Groueix2018} uses MLPs to generate a series of 2D meshes and stitch them together into a 3D shape. This papier-m\^{a}ch\'{e} approach is efficient but does not generate a continuous surface~\cite{Groueix2018}. Pixel2Mesh~\cite{Wang2018} and Point2Mesh~\cite{Hanocka2020} both deform a template mesh through cascaded refinement to represent the input. Deformations are performed in a coarse-to-fine manner with the resolution of the template mesh increasing each iteration. This approach is efficient because the low-resolution template is used for large deformations while the high-resolution template is only used for precise deformations. Unlike AtlasNet, Pixel2Mesh and Point2Mesh are guaranteed to generate a continuous and manifold surfaces since the initial template shape is manifold~\cite{Wang2018, Hanocka2020}. PolyGen~\cite{Nash2020} takes the most direct approach in generating 3D meshs. A vertex generation network predicts a variable number of vertices to represent the input. Then the vertices are fed to a face generation network that predicts how to best them with faces. Both networks are implemented as sequential transformers. Polygen can generate variable size meshes but has a fixed maximum output resolution~\cite{Nash2020}.
 
 
-\subsection{Occupancy Grid}
+\subsection{Occupancy~Grid}
 \label{subsec:occupancy_grid}
 
 \begin{figure}[h]
@@ -62,7 +62,7 @@ Techniques to generate meshes are more varied. AtlasNet~\cite{Groueix2018} uses 
 	\label{fig:depth_map_cup}
 \end{figure}
 
-\subsection{Implicit Surface}
+\subsection{Implicit~Surface}
 \label{subsec:implicit_surface}
 
 \begin{figure}[h]
@@ -72,7 +72,7 @@ Techniques to generate meshes are more varied. AtlasNet~\cite{Groueix2018} uses 
 	\label{fig:sdf_cup}
 \end{figure}
 
-\subsection{Structured Representation}
+\subsection{Structured~Representation}
 \label{subsec:structured_representation}
 
 \begin{figure}[h]
@@ -83,12 +83,12 @@ Techniques to generate meshes are more varied. AtlasNet~\cite{Groueix2018} uses 
 \end{figure}
 
 
-\section{Representation Learning Architectures}
+\section{Representation~Learning~Architectures}
 \label{sec:representation_learning_architectures}
 
 Test
 
-\subsection{Generative Adversarial Network}
+\subsection{Generative~Adversarial~Network}
 \label{subsec:generative_adversarial_networks}
 
 Test
@@ -98,7 +98,7 @@ Test
 
 Test
 
-\subsection{Cascaded Refinement}
+\subsection{Cascaded~Refinement}
 \label{subsec:cascaded_refinement}
 
 Test
