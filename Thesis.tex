@@ -11,13 +11,17 @@
 \PassOptionsToPackage{hyphens}{url}
 \usepackage{xcolor, colortbl} % Used for coloring the cells of tables
 \usepackage{amsmath}
+
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
 \usepackage[utf8]{inputenc}
+\usepackage{lmodern}
 \usepackage{textcomp} % Required for upquote.
 \usepackage{microtype}
-\usepackage{makecell} % Used to create thick links in tables
 \usepackage[shortcuts]{extdash} % Allow the use of unbreakable "extdash" spacers.
+% Only disable f ligatures
+\DisableLigatures[f]{encoding = *, family = * }
+
+\usepackage{makecell} % Used to create thick links in tables
 
 % Do not add extra space around itemizes
 \usepackage{enumitem}
@@ -42,8 +46,6 @@
 
 \usepackage[hmargin={1.5in, 1in},
 			vmargin={1.25in, 1.25in}]{geometry}
-\usepackage{microtype}
-\DisableLigatures{encoding = *, family = * }
 
 \newcommand{\numbwithdegreesymbol}[1]{#1$^\circ$}
 \newcommand{\MiniAssembly}{M\hspace{-.08em}A}

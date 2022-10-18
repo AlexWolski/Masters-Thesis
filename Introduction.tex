@@ -42,7 +42,7 @@ CSG and other primitive fitting techniques are topics of interest as they resemb
 
 Instead of using geons, prior works~\cite{Sharma2018, Kania2020, Ren2021} represent CSG primitives as Signed Distance Fields (SDFs). An SDF is a mathematical function that implicitly defines the surface of a volume. Given a query point, an SDF returns the shortest distance from the query point to represented surface. This distance is positive ($+$) when the query point is outside of the volume and negative ($-$) when the query point is inside. We define the surface as the set of all input points for which the SDF returns 0 (i.e. the zero-level set). The implicit nature of SDFs results in smooth, detailed, and continuous surfaces~\cite{Park2019}. Additionally, SDFs make for good CSG primitives since applying boolean operations to distance fields is trivial.
 
-\begin{figure}[!b]
+\begin{figure}[!h]
 	\centering
 	\includegraphics[scale=0.2]{Images/SDF Box}
 	\caption{Visualization of the SDF of a 2D box. The surface of the box is depicted in black, the exterior in green, and the interior in red. Points farther from the surface are drawn darker. Each white contour line consists of points that are equidistant from the surface.}
