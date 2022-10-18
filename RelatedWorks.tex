@@ -55,6 +55,9 @@ PolyGen~\cite{Nash2020} takes the most direct approach in generating 3D meshs. A
 	\label{fig:voxel_cup}
 \end{figure}
 
+An occupancy grid discretizes 3D space into a regular grid of cells. Each cell stores a probability that it is occupied by a volume or is vacant. A volume can be represented as the set of all cells it occupies. There are several variations of occupancy grids that store different values in the cells. A binary occupancy grid, also known as a voxel grid, stores a binary value instead of a probability~\cite{Konolige1997}. Some variations also add an occlusion parameter to determine if a cell is visible from a given viewpoint~\cite{Xiao2020}.
+
+
 \subsection{Images}
 
 \begin{figure}[h]
