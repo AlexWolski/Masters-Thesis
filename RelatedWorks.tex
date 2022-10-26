@@ -3,7 +3,7 @@
 \chapter{Related~Works}
 \label{chap:related_works}
 
-In this chapter, we review prior works on two topics related to our research: \nameref{sec:3d_representations}s and \nameref{sec:representation_learning_architectures}.
+In this chapter, we review prior works on two topics related to our research: \nameref{sec:3d_representations} and \nameref{sec:representation_learning_architectures}.
 
 \section{3D~Representations}
 \label{sec:3d_representations}
@@ -27,7 +27,9 @@ Despite its accessibility, point clouds didn't see use in 3D learning techniques
 
 The follow up works SpiderCNN~\cite{Xu2018}, PointCNN~\cite{Li2018}, and PointConv~\cite{Wu2019} implement Convolutional Neural Networks (CNNs) instead of MLPs to encode points. While the PointNet architecture has one local feature layer and one global feature layer, CNNs specialize in extracting many features layers of varying resolution. The increased number of feature layers enables CNN based models to better analyze hierarchical data than MLP based models. As a result, SpiderCNN, PointCNN, and PointConv have all surpassed PointNet in both shape classification and part segmentation accuracy~\cite{Wu2019}.
 
-Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct an input as a point cloud. Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
+Further works~\cite{Fan2017, Achlioptas2018} have demonstrated that deep learning models can be trained to reconstruct an input as a point cloud. The model presented in~\cite{Fan2017} takes an RGB or RGB-D image of an object as input and generates a cloud of 1024 points to represent its surface. CNN networks are used for both the image encoder and point cloud decoder. Not only can the model reconstruct 3D shapes from images, but it can also complete the missing parts of an input.
+
+Although point clouds only offer a sparse approximation of a surface, their low-dimensionality proves useful in efficiently learning 3D features.
 
 
 \subsection{Polygon~Mesh}
