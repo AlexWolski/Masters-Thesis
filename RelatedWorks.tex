@@ -14,7 +14,7 @@ There are a multitude of methods for digitally representing a 3D volume. Any rep
 \subsection{Point~Cloud}
 \label{subsec:point_cloud}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[scale=0.2]{Images/Point Cloud Cup}
 	\caption{Point cloud representation of a coffee cup.}
@@ -35,7 +35,7 @@ Although point clouds only offer a sparse approximation of a surface, their low-
 \subsection{Polygon~Mesh}
 \label{subsec:polygon_mesh}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[scale=0.2]{Images/Mesh Cup}
 	\caption{Triangle mesh representation of a coffee cup. The black lines depict the connecting edges between vertices.}
@@ -50,6 +50,8 @@ Techniques to generate meshes are more varied. AtlasNet~\cite{Groueix2018} uses 
 
 PolyGen~\cite{Nash2020} takes the most direct approach in generating 3D meshs. A vertex generation network predicts a variable number of vertices to represent the input. The vertices are then fed to a face generation network that best connects the vertices with edges and faces. Both networks are implemented as transformers~\cite{Nash2020}. Similar to a Long short-term memory (LSTM) network or a Recurrent Neural Network (RNN), a transformer consumes and produces sequential data. However unlike  an RNN or LSTM, the innovative architecture of a transformer network allows the outputs to be computed parallel. This not only makes training and using the network faster, but also enables longer input and output sequences~\cite{Vaswani2017}. Transformers have a fixed output size, so the authors added a stopping token to the output parameters of the vertex network to allow for variable size meshes. The maximum resolution of the output mesh was set to 1200 vertices and 800 faces. Because Polygen directly generates meshes, it can represent geometric shapes with far fewer polygons than similar works. The biggest limitation of PolyGen is its small output resolution. The computational cost of a transformer network increases quadratically with the size of the network. Despite some optimizations, the transformer networks are too inefficient at scale to generate more detailed meshes. Due to this limitation, PolyGen is focused on representing simple geometric shapes with the minimum number of polygons~\cite{Nash2020}.
 
+\newpage
+
 
 \subsection{Occupancy~Grid}
 \label{subsec:occupancy_grid}
@@ -61,9 +63,7 @@ PolyGen~\cite{Nash2020} takes the most direct approach in generating 3D meshs. A
 	\label{fig:voxel_cup}
 \end{figure}
 
-An occupancy grid, also known as a voxel grid, discretizes 3D space into a regular grid of voxels. Each voxel stores a probability that it is occupied by a volume or is vacant. A volume can be represented as the set of all cells it occupies. There are several variations of occupancy grids that store different values in the voxels. A binary occupancy grid stores occupancy information as a binary value instead of a probability~\cite{Konolige1997}. Some variations also add an unknown parameter for voxels that are not visible from the viewpoint of the scanner~\cite{Xiao2020}.
-
-\newpage
+An occupancy grid, also known as a voxel grid, discretizes 3D space into a regular grid of voxels. Each voxel stores a probability that it is occupied or vacant. A volume can be represented as the set of all cells it occupies. There are several variations of occupancy grids that store different values in the voxels. A binary occupancy grid stores occupancy information as a binary value instead of a probability~\cite{Konolige1997}. Some variations also add an unknown parameter for voxels that are not visible from the viewpoint of the scanner~\cite{Xiao2020}.
 
 The first work to use occupancy grids as a 3D representation in the context of deep learning was 3D ShapeNets~\cite{Wu2015}. The ShapeNets model takes a four-channel RGB-D depth image as input. In addition to red, greed, and blue color values, RGB-D images store the distance from the camera to the scene in each pixel. The RGB-D images are converted to an occupancy grid as a pre-processing step. The input occupancy grid dimensions are $30^3$ voxels with 3 voxels of padding on all sides of the object. In a single-view RGB-D image, parts of the scene will be occluded. To accommodate for this, the authors add a third ``occluded'' state to each voxel in addition to the ``vacant'' and ``occupied'' states~\cite{Wu2015}.
 
@@ -71,16 +71,14 @@ The voxel representation is then fed into a modified Deep Belief Network (DBN) t
 
 VoxNet~\cite{Maturana2015} improves upon ShapeNet with a 3D CNN architecture. It simple in theory to extend a 2D image processing CNN to handle 3D occupancy grids. In practice, however, the increased memory and computational requirements added by the extra spacial dimension pose a challenge. Due to these restrictions, the VoxNet architecture limits the input size to a grid of 32x32x32 voxels. The voxel input is fed through a network consisting of two convolution layers, one pooling layer, and two fully-connected layers to produce class label predictions. To better capture fine details, VoxNet implements a multiresolution architecture by combining two of these convolutional networks. Both networks are identical but are fed different inputs. The voxels in the coarse input represent a volume of $0.2m^3$ while the voxels of the fine input represent $0.1m^3$. The outputs of both networks are then combined to produce a final class prediction. Even with two parallel networks, the VoxNet architecture has an order of magnitude fewer parameters than ShapeNet. And VoxNet still outperforms ShapeNet in efficiency and classification accuracy~\cite{Maturana2015}.
 
-Seeing as the main drawback to occupancy grids for processing volumetric data, several works have focused on optimization. The authors of LightNet~\cite{Ye2016} optimize using a multi-task learning approach. This is a technique where a single model is trained to solve multiple tasks at once. In doing so, the model avoids overfitting learns to extract general features. In the case of LightNet, the model is trained to predict the class and orientation of an input volume. LightNet enjoys performance improvements over previous works but is still contained to an input resolution of $32^3$ voxels~\cite{Ye2016}.
-
-\newpage
+Seeing as the main drawback to occupancy grids for processing volumetric data, several works have focused on optimization. The authors of LightNet~\cite{Ye2016} optimize using a multi-task learning approach. This is a technique where a single model is trained to solve multiple tasks at once. In doing so, the model avoids overfitting and learns to extract general features. In the case of LightNet, the model is trained to predict the class and orientation of an input volume. LightNet enjoys performance improvements over VoxNet but is still contained to an input resolution of $32^3$ voxels~\cite{Ye2016}. 
 
 Instead of optimizing the model directly, Octree Generating Networks (OGN)~\cite{Tatarchenko2017} optimize the data format. The works we've discussed thus far store each voxel of the occupancy grid in a dense array. This format is simple to work with but unnecessarily stores redundant data. OGN compresses the occupancy grid data using an octree data structure. The root node contains 8 octants encompassing the entire volume. Each of the 8 octants is a child node that may subdivide the volume further or terminate in a leaf node. This spacial partitioning scheme efficiently summarizes groups of similar voxels and reduces the format size. OGN uses octrees as both the input and output of its convolutional autoencoder architecture. The data compression enables a massive jump in resolution: $512^3$ voxels on consumer hardware. The downside to this approach is the complexity needed to handle octrees. The model takes days to train on higher resolutions. And despite its superior resolution, the classification accuracy of OGN is similar to prior works~\cite{Tatarchenko2017}.
 
 
 \subsection{Images}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[scale=0.2]{Images/Depth Map Cup}
 	\caption{Depth map representation of a coffee cup.}
@@ -90,7 +88,7 @@ Instead of optimizing the model directly, Octree Generating Networks (OGN)~\cite
 \subsection{Implicit~Surface}
 \label{subsec:implicit_surface}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[scale=0.2]{Images/SDF Cup}
 	\caption{Visualization of an SDF representing a coffee cup. Points close to the surface are drawn green and points far from the surface are drawn blue. Each white contour line consists of points that are equidistant from the surface.}
@@ -100,7 +98,7 @@ Instead of optimizing the model directly, Octree Generating Networks (OGN)~\cite
 \subsection{Structured~Representation}
 \label{subsec:structured_representation}
 
-\begin{figure}[h]
+\begin{figure}[ht]
 	\centering
 	\includegraphics[scale=0.5]{Images/CSG Cup}
 	\caption{The CSG tree of a coffee cup. The leaves of the tree are SDF primitives which are combined through union (+) and difference (-) operations. The primitives being subtracted are colored red.}
