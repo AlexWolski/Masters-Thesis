@@ -82,7 +82,7 @@ Occupancy grids provide rich volumetric data for object classificaiton and recon
 \newpage
 
 
-\subsection{Images}
+\subsection{2D Projection}
 
 \begin{figure}[ht]
 	\centering
@@ -91,9 +91,15 @@ Occupancy grids provide rich volumetric data for object classificaiton and recon
 	\label{fig:depth_map_cup}
 \end{figure}
 
-A 3D object can be projected onto a 2D image while maintaining key features for computer vision tasks. Removing a spacial dimension reduces the computational requirements and improves efficiency. The clear downside is that useful features are lost in the projection. Different types of projections have varying levels of accessibility and feature quality~\cite{Ahmed2018}.
+A 3D object can be projected onto a 2D image while maintaining key features for computer vision tasks. Removing a spacial dimension reduces the computational requirements and improves efficiency. The downside is that useful features are lost in the projection. Different types of projections have varying levels of accessibility and feature quality~\cite{Ahmed2018}.
 
-The most common type of projection is an RGB image, which can be captured using any digital camera or by rendering a 3D model. Many prior works~\cite{Zhu2014, Su2015, Choy2016, Smith2018} use CNNs to extract features from a sequence of multi-view RGB images. Processing multiple viewpoints of an object provides additional context that is missing from a single view. The extracted features are descriptive enough for use in object classification and reconstruction tasks. The caveat is that the an additional encoder network for each input image. Using more images provides more information but increases the model complexity. Further works~\cite{Wang2018, Niu2018, Genova2020, Pan2019} manage to complete the same tasks using only a single-view image. Working with just one image makes the model more accessible since multiple viewpoints are not always available. However, the model needs to be robust enough to compensate for the missing features. The model must be invariant to the orientation of the image and needs to extract the same information from fewer features. Instead of multiple images, \cite{Shi2015, Sfikas2017, Cao2017} use panoramic images to capture an object from all sides. \cite{Shi2015, Sfikas2017} project the object onto a cylinder while \cite{Cao2017} projects onto a sphere. Panoramic images encode the same features as a sequence of multi-view images but in a more compact format. \cite{Zhu2014, Shi2015, Sfikas2017, Cao2017, Genova2020} operate on depth maps, which capture depth information instead of color. Each pixel of a depth map encodes the distance from the camera to the surface of the subject. Depth maps provide more spacial information than an RGB image but omits any lighting, color, or texture information.
+The most common type of projection is an RGB image, which can be captured using any digital camera or by rendering a 3D model. Many prior works~\cite{Zhu2014, Su2015, Choy2016, Smith2018} use CNNs to extract features from a sequence of multi-view RGB images. Processing multiple viewpoints of an object provides additional context that is missing from a single view. The extracted features are descriptive enough for use in object classification and reconstruction tasks. The caveat is that the an additional encoder network is needed for each input image. Using more images provides more information but increases the model complexity. Further works~\cite{Wang2018, Niu2018, Genova2020, Pan2019} manage to complete the same tasks using only a single-view image. Working with just one image makes the model more accessible since multiple viewpoints are not always available. The model complexity increases, however, to compensate for the missing features. The model must be invariant to the orientation of the image and perform the same tasks using fewer features. Instead of multiple images, \cite{Shi2015, Sfikas2017, Cao2017} use panoramic images to capture an object from all sides. \cite{Shi2015, Sfikas2017} project the object onto a cylinder while~\cite{Cao2017} projects onto a sphere. Panoramic images encode the same features as a sequence of multi-view images but in a more compact format. \cite{Zhu2014, Shi2015, Sfikas2017, Cao2017, Genova2020} operate on depth maps, which capture depth information instead of color. Each pixel of a depth map encodes the distance from the camera to the surface of the subject. Depth maps provide more spacial information than an RGB image but omit any lighting, color, and texture information.
+
+The application of an image representation is not limited to feature extraction. SurfNet~\cite{Sinha2017} demonstrates that a generative model can be trained to synthesize 2D projections of 3D objects. It is then trivial to convert the 2D projection back into a 3D object. SurfNet represents shapes using what the authors call a geometry image. Geometry images use an area-preserving spherical projection to capture shapes. Instead of color or depth information, geometry images store the 3D coordinate of each point represented in the image. This format provides rich geometric information while keeping compatibility with traditional CNNs~\cite{Sinha2017}.
+
+2D projections provide a simple but powerful representation for real-time applications. The main limitation is that the details of a complex shape are lost. Current works can only capture genus 0 shapes that contain no holes~\cite{Sinha2017}.
+
+\newpage
 
 
 \subsection{Implicit~Surface}
@@ -106,6 +112,9 @@ The most common type of projection is an RGB image, which can be captured using 
 	\label{fig:sdf_cup}
 \end{figure}
 
+\newpage
+
+
 \subsection{Structured~Representation}
 \label{subsec:structured_representation}
 
@@ -115,6 +124,8 @@ The most common type of projection is an RGB image, which can be captured using 
 	\caption{The CSG tree of a coffee cup. The leaves of the tree are SDF primitives which are combined through union (+) and difference (-) operations. The primitives being subtracted are colored red.}
 	\label{fig:csg_cup}
 \end{figure}
+
+\newpage
 
 
 \section{Representation~Learning~Architectures}
