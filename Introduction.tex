@@ -11,7 +11,7 @@ Research efforts have since shifted to machine learning techniques. Unsupervised
 
 A primary difficulty in applying deep learning to 3D reconstruction is selecting a suitable 3D representation to describe the inputs and outputs of a network. A 3D representation must be concise enough for the network to efficiently train on yet be descriptive enough to accurately portray the original shape. Related work employ a wide variety of 3D representations, each with unique benefits and challenges~\cite{Xiao2020}. We further discuss the different representations in the \nameref{sec:3d_representations} section of the \nameref{chap:related_work} chapter.
 
-Recent work such as~\cite{Sharma2018, Kania2020, Ren2021} have explored the use of Constructive Solid Geometry (CSG) as a 3D representation. A CSG model defines a volume as a composition of simple shapes called primitives. These primitives are combined using boolean operations such as union, subtract, difference, and intersection. Each primitive is transformed into place using translation, rotation, and scaling operations. The available primitive shapes are restricted to a collection of predefined manifold surfaces. Using a fixed set of high-level primitives to build geometry results in a much smaller format compared to other 3D representations. By virtue of their construction, CSG models are guaranteed to be continuous and manifold surfaces bounding an interior volume. Additionally, editing a CSG model is convenient since each constituent primitive can be individually modified.~\cite{Hughes2013}.
+Recent work such as~\cite{Sharma2018, Kania2020, Ren2021} have explored the use of Constructive Solid Geometry (CSG) as a 3D representation. A CSG model defines a volume as a composition of simple shapes called primitives. These primitives are combined using boolean operations such as union, difference, and intersection. Each primitive is transformed into place using translation, rotation, and scaling operations. The available primitive shapes are restricted to a collection of predefined manifold surfaces. Using a fixed set of high-level primitives to build geometry results in a much smaller format compared to other 3D representations. By virtue of their construction, CSG models are guaranteed to be continuous and manifold surfaces bounding an interior volume. Additionally, editing a CSG model is convenient since each constituent primitive can be individually modified.~\cite{Hughes2013}.
 
 \begin{figure}
 	\centering
@@ -23,8 +23,8 @@ Recent work such as~\cite{Sharma2018, Kania2020, Ren2021} have explored the use 
 	\hfill
 	\begin{subfigure}[t]{0.3\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{Images/Subtract}
-		\caption{Subtract}
+		\includegraphics[width=\textwidth]{Images/Difference}
+		\caption{Difference}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[t]{0.3\textwidth}
@@ -32,7 +32,7 @@ Recent work such as~\cite{Sharma2018, Kania2020, Ren2021} have explored the use 
 		\includegraphics[width=\textwidth]{Images/Intersect}
 		\caption{Intersect}
 	\end{subfigure}
-	\caption{Three boolean operations applied to two spheres: (a) Union operation includes points encompassed by either sphere, (b) Subtract operation includes points encompassed by only the first sphere, (c) Intersect operation includes points encompassed by both spheres.}
+	\caption{Three boolean operations applied to two spheres: (a) Union operation includes points encompassed by either sphere, (b) Difference operation includes points encompassed by only the first sphere, (c) Intersect operation includes points encompassed by both spheres.}
 	\label{fig:boolean operations}
 \end{figure}
 
