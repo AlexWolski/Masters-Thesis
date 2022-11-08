@@ -49,7 +49,7 @@ Instead of using geons, prior work~\cite{Sharma2018, Kania2020, Ren2021} represe
 
 There are several benefits to using CSG models for deep 3D reconstruction. The low-dimensionality of a CSG model allows for more efficient training of the network. The continuous and watertight surfaces produced by CSG are visually pleasing. And a key benefit that most other representations lack is an easily modifiable format.
 
-However, there are also several challenges in using a CSG representation. The first issue is the lack of uniqueness~\cite{Hughes2013}. Since there are countless valid ways to represent complex objects using CSG, it is difficult to train a model using expected output samples. Supervising a model on only one valid construction for each input may result in poor convergence or overfitting. The training scheme should reinforce all valid constructions to improve the generalizability of the model. The second challenge is that combining geometric primitives directly without applying any blending results in sharp intersections. This is a not an issue for modeling angular surfaces. Smooth and organic surfaces, on the other hard, cannot be elegantly represented without blending primitives together.
+However, there are also several challenges in using a CSG representation. The first issue is the lack of uniqueness~\cite{Hughes2013}. There are multiple valid ways to construct an object using CSG. For simple objects, there is often one construction that most accurately represents the object using the fewest primitives. This optimal construction can be used as a ground truth sample for supervised training. For complex objects, there are countless equally optimal constructions. Performing supervised training using just one of the possible constructions may result in poor convergence or overfitting. The second challenge is that combining geometric primitives directly without applying any blending results in sharp intersections. This is a not an issue for modeling angular surfaces. Smooth and organic surfaces, on the other hard, cannot be elegantly represented without blending primitives together.
 
 Previous work~\cite{Sharma2018, Kania2020, Ren2021} successfully implements CSG based reconstruction algorithms using unsupervised learning. While succeeding in representing simple geometry, prior work fails to incorporate primitive blending to address the poor reconstruction quality of smooth surfaces. Furthermore, these models only generate a small number of primitives. The CSG-Stump architecture~\cite{Ren2021} supports a maximum output of 256 total primitives in the paper, of which only a subset is selected for use in reconstruction. This number is sufficient to represent simple 3D shapes but fails to capture the details in more complex geometry. Although the architecture can be scaled up, the network complexity, memory requirements, and training time increase non-linearly with the output size~\cite{Ren2021}.
 
@@ -76,8 +76,8 @@ We make two main contributions in this work. First, we propose CSG-CRN, a novel 
 
 \begin{itemize}
 	\item CSG-CRN can efficiently reconstruct a variety of known and unknown shape classes.
-	\item CSG-CRN generates qualitatively and quantitatively superior reconstructions than prior CSG-based reconstruction networks.
-	\item The CSG-CRN encoder network is capable of inferring missing geometry based on known shape priors.
+	\item CSG-CRN generates qualitatively and quantitatively superior reconstructions than prior CSG-based work.
+	\item CSG-CRN is capable of inferring missing geometry based on known shape priors.
 	\item The CSG-CRN encoder produces a continuous latent space that can be interpolated.
 \end{itemize}
 
