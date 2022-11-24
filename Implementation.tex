@@ -5,8 +5,26 @@
 
 The novelty of CSG-CRN is in the iterative refinement objective function. To isolate this variable, we implement our architecture using existing modules with proven performance.
 
+
+\section{Dataset}
+\label{sec:dataset}
+
+Test
+
+
+\section{Encoder~Network}
+\label{sec:encoder_network}
+
 The encoder network is borrowed from OccNet. This is a modified implementation of PointNet that accepts occupancy values for each point sample~\cite{Mescheder2019}. We use two OccNet encoders with shared weights to form the Siamese encoder. Although two different encoders can be used for the target and current reconstruction point clouds, it is easier for the decoder to learn correspondences between the same type of features.
 
+
+\section{Decoder~Network}
+\label{sec:decoder_network}
+
 The decoder network is inspired by prior primitive fitting models. Although the model only produces one primitive at a time, the training scheme encourages the model to predict future primitives. We follow the training method outlined in~\cite{Kleineberg2020}, where a batch of primitives are generated before back propagating the model. By running multiple iterations of refinement before computing the loss, we prevent the model from fitting primitives greedily. The model should be encouraged to add oversized primitives that can be refined later. Limiting the output to one primitive would eliminate this behavior as it produces a worse loss value. By generating multiple primitives at once, the model is encouraged to think ahead a few iterations.
+
+
+\section{Loss~Function}
+\label{sec:loss_function}
 
 We use the loss functions developed in~\cite{Genova2019, Genova2020}. They use a combination of three loss functions to promote quantitatively and qualitatively accurate reconstructions. The uniform point sample loss measures the general loss of the reconstruction as a whole. The near-surface loss samples points within a threshold distance of the surface to measure numerical accuracy. And the shape element center loss ensures that volume is preserved~\cite{Genova2019}. To measure the improvement in our model, we compute the change in loss between the initial reconstruction input and the improved reconstruction output. We use the negation of the change if loss to maximize the improvement.
