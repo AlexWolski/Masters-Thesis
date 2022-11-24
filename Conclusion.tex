@@ -2,3 +2,5 @@
 
 \chapter{Conclusion}
 \label{chap:conclusion}
+
+I this work, we presented the CSG-CRN architecture and demonstrated its ability to iteratively reconstruct 3D shapes. We show that CSG-CRN is capable of achieving higher reconstruction accuracy than similar works. There is plenty of room left for optimizing the architecture and implementation. Current limitations include slow training, slow inference, and limited input resolution. All of these limitations can be improved in future work. One branch of the Siamese encoder network can be replaced by a latent vector augmentation network that embeds the predicted primitive into the latent vector of the initial reconstruction. The decoder network can be optimized by predicting multiple primitives per pass. And the input resolution issue can be addressed by zooming into the model for for generating finer details.
