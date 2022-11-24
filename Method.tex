@@ -9,33 +9,53 @@ This chapter presents CSG-CRN: our approach to iteratively reconstructing 3D sha
 \section{Data~Preparation}
 \label{sec:data_preparation}
 
-Test
+We choose to represent input shapes are point clouds. In addition to their accessibility, it is convenient for use with SDFs. Input meshes are scaled to fit in a unit sphere. We randomly generate a uniform point cloud of query points. Then for each point, we compute the minimum distance to the input mesh. 
 
 
 \section{CSG-Primitive~Prediction}
 \label{sec:csg_primitive_prediction}
 
-Test
+To predict a CSG primitive, we train a function
+
+\[f_\theta (X, Y) = (p, s, t, q, \alpha, \gamma).\]
+
+We optimize the network parameters $\theta$, given an input point cloud$X$ initial reconstruction point cloud $Y$. The model predicts the parameters of a primitive: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
 
 
 \section{CSG-To-SDF~Conversion}
 \label{sec:csg_to_sdf_conversion}
 
-Test
+Each primitive is represented by an SDF function. We can apply boolean operations to the primitive SDF functions to build a complete SDF function. The union of SDF functions $A$ and $B$ is computed as $min(A, B)$. A subtracted from B is computed as $min(-A, B)$. And the intersect of A and B is computed as $max(A, B)$.
+
+To complete the refined CSG reconstruction, we combine the predicted primitive with the initial reconstruction SDF function using the predicted boolean operation. The refined reconstruction SDF can then sampled to compute the loss.
 
 
 \section{Reconstruction~Loss}
 \label{sec:reconstruction_loss}
 
-Test
+We use the DeepSDF loss function to compute the reconstruction error between a target and a reconstruction point cloud. The DeepSDF loss function uses an L1 loss function with clamped SDF values:
+
+\[L_{surface}=L_1(clamp(SDF(X)), clamp(SDF(Y))),\]
+
+where $clamp(x)$ is defined as $max(-\delta, min(\delta, x))$ for a clamping size $\delta$. We choose this loss function because it focuses the network on surface reconstruction quality. With clamping, the network would tend to minimize the average distance to the predicted primitive over all points. Unlike in DeepSDF, we uniformly sample points in a volume around the input shape. This makes it unlikely for points to be on the clamping boundary, which is not differentiable.
+
+Because the loss function is clamped, the gradient is zero for primitives far from the object surface. We use an auxiliary loss from CSGStump to draw primitives to the reconstruction surface.
+
+\[L_{primitive} = \frac{1}{K} \sum_{k}^{K} min SDF_k^2(x_n).\]
+
+The combined loss function is
+
+
+\[L_{total} = L_{surface} + L_{primitive}.\]
 
 
 \section{Cascaded~Refinement}
 \label{sec:cascaded_refinement}
 
-Test
+Once we have refined the reconstruction, we can sample another point cloud from the reconstruction and feed it back into the network. We again uniformly sample the SDF function.
+
 
 \section{Training}
 \label{sec:training}
 
-Test
+We use a progressive training method inspired by Curriculum DeepSDF. In the first phase, all the initial reconstructions are empty. We represent this by representing the initial reconstruction as a single point at the origin. After training for a set number of epochs, we synthesize refined reconstructions and add them to the dataset. The second phase will randomly select samples from the initial and synthesized datasets. This process continues until the reconstructions reach a threshold accuracy. With this scheme, we train the model to refine partial reconstruction. And model can learn more efficiently by starting with easier samples and progressing to harder ones.
