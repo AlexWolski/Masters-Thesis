@@ -16,9 +16,7 @@ We choose to represent input shapes are point clouds. In addition to their acces
 \label{sec:csg_primitive_prediction}
 
 To predict a CSG primitive, we train a function
-
 \[f_\theta (X, Y) = (p, s, t, q, \alpha, \gamma).\]
-
 We optimize the network parameters $\theta$, given an input point cloud$X$ initial reconstruction point cloud $Y$. The model predicts the parameters of a primitive: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
 
 
@@ -33,19 +31,13 @@ To complete the refined CSG reconstruction, we combine the predicted primitive w
 \section{Reconstruction~Loss}
 \label{sec:reconstruction_loss}
 
-We use the DeepSDF loss function to compute the reconstruction error between a target and a reconstruction point cloud. The DeepSDF loss function uses an L1 loss function with clamped SDF values:
-
+We use the DeepSDF loss function to compute the reconstruction error between a target and a reconstruction point cloud. The DeepSDF loss function uses an L1 loss function with clamped SDF values
 \[L_{surface}=L_1(clamp(SDF(X)), clamp(SDF(Y))),\]
-
 where $clamp(x)$ is defined as $max(-\delta, min(\delta, x))$ for a clamping size $\delta$. We choose this loss function because it focuses the network on surface reconstruction quality. With clamping, the network would tend to minimize the average distance to the predicted primitive over all points. Unlike in DeepSDF, we uniformly sample points in a volume around the input shape. This makes it unlikely for points to be on the clamping boundary, which is not differentiable.
 
-Because the loss function is clamped, the gradient is zero for primitives far from the object surface. We use an auxiliary loss from CSGStump to draw primitives to the reconstruction surface.
-
+Because the loss function is clamped, the gradient is zero for primitives far from the object surface. We use an auxiliary loss from CSGStump to draw primitives to the reconstruction surface
 \[L_{primitive} = \frac{1}{K} \sum_{k}^{K} min SDF_k^2(x_n).\]
-
 The combined loss function is
-
-
 \[L_{total} = L_{surface} + L_{primitive}.\]
 
 
