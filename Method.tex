@@ -32,13 +32,13 @@ To complete the refined CSG reconstruction, we combine the predicted primitive w
 \label{sec:reconstruction_loss}
 
 We use the DeepSDF loss function to compute the reconstruction error between a target and a reconstruction point cloud. The DeepSDF loss function uses an L1 loss function with clamped SDF values
-\[L_{surface}=L_1(clamp(SDF(X)), clamp(SDF(Y))),\]
-where $clamp(x)$ is defined as $max(-\delta, min(\delta, x))$ for a clamping size $\delta$. We choose this loss function because it focuses the network on surface reconstruction quality. With clamping, the network would tend to minimize the average distance to the predicted primitive over all points. Unlike in DeepSDF, we uniformly sample points in a volume around the input shape. This makes it unlikely for points to be on the clamping boundary, which is not differentiable.
+\[\Loss_{\surface}=\Loss_1(\clamp(\SDF(X)), \clamp(\SDF(Y))),\]
+where $\clamp(x)$ is defined as $\max(-\delta, \min(\delta, x))$ for a clamping size $\delta$. We choose this loss function because it focuses the network on surface reconstruction quality. With clamping, the network would tend to minimize the average distance to the predicted primitive over all points. Unlike in DeepSDF, we uniformly sample points in a volume around the input shape. This makes it unlikely for points to be on the clamping boundary, which is not differentiable.
 
 Because the loss function is clamped, the gradient is zero for primitives far from the object surface. We use an auxiliary loss from CSGStump to draw primitives to the reconstruction surface
-\[L_{primitive} = \frac{1}{K} \sum_{k}^{K} min SDF_k^2(x_n).\]
+\[\Loss_{\primitive} = \frac{1}{K} \sum_{k}^{K} \min ( \SDF_k^2(x_n) ).\]
 The combined loss function is
-\[L_{total} = L_{surface} + L_{primitive}.\]
+\[\Loss_{\total} = \Loss_{\surface} + \Loss_{\primitive}.\]
 
 
 \section{Cascaded~Refinement}
