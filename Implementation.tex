@@ -3,13 +3,13 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
-The novelty of CSG-CRN is in the iterative refinement objective function. To isolate this variable, we implement our architecture using existing modules with proven performance.
+The encoder network, decoder network, and loss function are derived from prior work. Input meshes are scaled to fit in a unit sphere. We randomly generate a uniform point cloud of query points. Then for each point, we compute the minimum distance to the input mesh.
 
 
 \section{Dataset}
 \label{sec:dataset}
 
-We source our raw 3D models from the ShapeNet dataset. We use the ShapeGAN data processing pipeline to uniformly sample points from the surface. In our implementation, we used the pre-processed dataset provided by the ShapeGAN authors.
+We source our raw 3D models from the ShapeNet dataset. 
 
 
 \section{Encoder~Network}

@@ -3,21 +3,26 @@
 \chapter{Method}
 \label{chap:method}
 
-This chapter presents CSG-CRN: our approach to iteratively reconstructing 3D shapes. We provide a mathematical definition of the complete pipeline and explain our design decisions.
+This chapter presents the architecture of CSG-CRN.
 
 
-\section{Data~Preparation}
-\label{sec:data_preparation}
+\section{Input~Shape~Representation}
+\label{sec:input_shape_representation}
 
-We choose to represent input shapes are point clouds. In addition to their accessibility, it is convenient for use with SDFs. Input meshes are scaled to fit in a unit sphere. We randomly generate a uniform point cloud of query points. Then for each point, we compute the minimum distance to the input mesh. 
+CSG-CRN takes SDF point clouds as input. The format consists a set of query points in $\mathbb{R}^3$ and the corresponding signed distance value to the represented surface. This format was chosen to facilitate an efficient and differentiable method of discretizing implicit SDFs. Since CSG-CRN is a cascaded refinement network, the implicit SDF output is discretized and reused as an input to the network.
 
+
+\section{Encoder~Network}
+\label{sec:encoder_network}
+
+A Siamese encoder network is used to extract features from an initial reconstruction input and a target shape input. The Siamese encoder is comprised of two separate encoder networks that share weights. The two feature vectors produced by the Siamese encoder are processed by a contrastive encoder network to find the difference between the reconstruction and target shapes.
 
 \section{CSG-Primitive~Prediction}
 \label{sec:csg_primitive_prediction}
 
-To predict a CSG primitive, we train a function
+To predict a CSG primitive, we optimize for the function
 \[f_\theta (X, Y) = (p, s, t, q, \alpha, \gamma).\]
-We optimize the network parameters $\theta$, given an input point cloud$X$ initial reconstruction point cloud $Y$. The model predicts the parameters of a primitive: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
+We optimize the network parameters $\theta$, given an input point cloud$X$ and initial reconstruction point cloud $Y$. The model predicts the parameters of a primitive: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
 
 
 \section{CSG-To-SDF~Conversion}
