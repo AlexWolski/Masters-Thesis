@@ -15,7 +15,7 @@ CSG-CRN takes SDF point clouds as input. The format consists a set of query poin
 \section{Encoder~Network}
 \label{sec:encoder_network}
 
-A Siamese encoder network is used to extract features from an initial reconstruction input and a target shape input. The Siamese encoder is comprised of two separate encoder networks that share weights. The two feature vectors produced by the Siamese encoder are processed by a contrastive encoder network to find the difference between the reconstruction and target shapes.
+A contrastive encoder network is used to extract features from an initial reconstruction input and a target shape input. The contrastive encoder is comprised of two separate encoder networks that share weights. The two feature vectors produced by the contrastive encoder are processed by a contrastive encoder network to find the difference between the reconstruction and target shapes.
 
 \section{CSG-Primitive~Prediction}
 \label{sec:csg_primitive_prediction}

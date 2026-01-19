@@ -15,7 +15,7 @@ We source our raw 3D models from the ShapeNet dataset.
 \section{Encoder~Network}
 \label{sec:encoder_network}
 
-The encoder network is borrowed from OccNet. This is a modified implementation of PointNet that accepts occupancy values for each point sample~\cite{Mescheder2019}. We use two OccNet encoders with shared weights to form the Siamese encoder. Although two different encoders can be used for the target and current reconstruction point clouds, it is easier for the decoder to learn correspondences between the same type of features.
+The encoder network is borrowed from OccNet. This is a modified implementation of PointNet that accepts occupancy values for each point sample~\cite{Mescheder2019}. We use two OccNet encoders with shared weights to form the contrastive encoder. Although two different encoders can be used for the target and current reconstruction point clouds, it is easier for the decoder to learn correspondences between the same type of features.
 
 
 \section{Decoder~Network}
