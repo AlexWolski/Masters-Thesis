@@ -18,7 +18,7 @@ The ShapeNet models are preprocessed and normalized to ensure consistency. Simil
 \section{Encoder~Network}
 \label{sec:encoder_network_implementation}
 
-The encoder network is borrowed from OccNet. This is a modified implementation of PointNet that accepts occupancy values for each point sample~\cite{Mescheder2019}. We use two OccNet encoders with shared weights to form the contrastive encoder. Although two different encoders can be used for the target and current reconstruction point clouds, it is easier for the decoder to learn correspondences between the same type of features.
+As PointNet was originally implemented in TensorFlow, we based our implementation on a PyTorch port PointNet.pytorch <insert reference>. The code was refactored to allow more configurability such as toggling batch normalization, changing the number of layers and layer sizes, and adding more input features. The encoder configuration used for our experiments are 4096 input samples, layer sizes of 64, 128, 1024, and global features enabled <double check numbers and update>.
 
 
 \section{Decoder~Network}
