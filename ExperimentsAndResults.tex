@@ -2,3 +2,34 @@
 
 \chapter{Experiments~and~Results}
 \label{chap:experiments_and_results}
+
+\section{Cascade Output Size}
+\label{sec:prims_per_cascade_experiment}
+
+Cascaded refinement number of primitives per cascade
+
+
+\section{ShapeNet~Benchmark}
+\label{sec:shapenet_experiment}
+
+Accuracy metrics for both one-pass and highest performing cascaded models in the previous section.
+
+
+\section{Partial~Reconstruction~Refinement}
+\label{sec:partial_recon_experiment}
+
+Take a mesh, occlude part of the geometry, and convert it to an SDF input sample. Perhaps 10 samples from a few categories. Determine the cascade to use by generating the first refinement on all cascade models and choosing the highest. Run refinement for all remaining trained cascade models.
+
+
+\section{Synthetic~Dataset}
+\label{sec:synthetic_dataset_experiment}
+
+Accuracy metrics on synthetic data set with subtraction enabled
+
+
+\section{Unseen~Shape~Class~Reconstruction}
+\label{sec:unseen_class_experiment}
+
+Production of unseen samples and shape categories for both End-To-End and cascaded refinement models. Get examples of objects outside the training data and show that the model can still reconstruct them.
+
+
