@@ -3,13 +3,31 @@
 \chapter{Method}
 \label{chap:method}
 
-This chapter presents the architecture of CSG-CRN.
+This chapter presents the data-processing, architecture and training of the CSG-CRN model at a theoretical level.
 
 
 \section{Input~Shape~Representation}
 \label{sec:input_shape_representation}
 
-CSG-CRN takes SDF point clouds as input. The format consists a set of query points in $\mathbb{R}^3$ and the corresponding signed distance value to the represented surface. This format was chosen to facilitate an efficient and differentiable method of discretizing implicit SDFs. Since CSG-CRN is a cascaded refinement network, the implicit SDF output is discretized and reused as an input to the network.
+CSG-CRN takes SDF point clouds as input. The format consists a set of query points $p \in \mathbb{R}^3$ and the corresponding signed distance value to the represented surface. This format was chosen to facilitate an efficient and differentiable method of discretizing implicit SDFs. Since CSG-CRN is a cascaded refinement network, the implicit SDF output needs to be discretized and reused as the next input to the network. 
+
+Early versions of the architecture that only provided the target shape and current reconstruction volumes resulted in poor results. We found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction shapes to compute the missing, filled, and excess volumes. The same query points are used for all volume and the boolean operations are applied to the distance values.
+
+The missing volume is found by subtracting the reconstruction from the target
+\[d_{missing}=\max(d_target, -d_recon).\]
+
+The filled volume is found by intersecting both the target and reconstruction
+\[d_{filled}=\max(d_target, d_recon).\]
+
+The excess volume is found by subtracting the target from the reconstruction
+\[d_{excess}=\max(-d_target, d_recon).\]
+
+The query points and the three distance values are combined to form a six-dimensional input vector.
+
+\[input = [p, d_{missing}, d_{filled}, d_{excess}]\]
+
+\section{Point~Sampling}
+\label{sec:point_sampling}
 
 
 \section{Encoder~Network}
@@ -24,7 +42,7 @@ The final design uses a unified input to represent both the initial reconstructi
 
 To predict a CSG primitive, we optimize for the function
 \[f_\theta (X, Y) = (p, s, t, q, \alpha, \gamma).\]
-We optimize the network parameters $\theta$, given an input point cloud$X$ and initial reconstruction point cloud $Y$. The model predicts the parameters of a primitive: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
+We optimize the network parameters $\theta$, given an input point cloud $X$ and initial reconstruction point cloud $Y$. The model predicts the parameters of a primitive: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
 
 
 \section{CSG-To-SDF~Conversion}
