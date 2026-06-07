@@ -26,8 +26,13 @@ The query points and the three distance values are combined to form a six-dimens
 
 \[input = [p, d_{missing}, d_{filled}, d_{excess}]\]
 
+
 \section{Point~Sampling}
 \label{sec:point_sampling}
+
+Previous work~\cite{Genova2019} demonstrates that the method used to collect point samples for a loss function impacts the reconstruction accuracy of the model. A uniformly sampled point cloud evenly encompassing the operational bounds leads the model to omit thin structures and fine details. A point cloud containing only samples near to the target surface will result in better surface detail but worse volumetric accuracy further away from the surface. \cite{Genova2019} takes a hybrid approach by computing the loss function twice; once using uniformly sampled points and once using points sampled near the surface or the target shape. The two loss values are weighted and summed to create a loss function that achieves both good volumetric and surface accuracy.
+
+We apply a similar approach when sampling query points for both our model input and loss function. The dataset contains a large number uniformly sampled query points and distance values for each input shape sample. Using a heuristic algorithm, a subset of the uniform samples are filtered based on their distance to either the target or reconstruction surfaces to produce a near-surface point cloud. The near-surface point cloud and a separate subset of the uniform point cloud are combined at a configured ratio to produce a mixed point cloud.
 
 
 \section{Encoder~Network}
