@@ -1,6 +1,7 @@
 import os
 import sys
 
+# Import PlotNeuralNet dependency
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 PLOTNN_REL = os.path.join(".", "PlotNeuralNet")
 sys.path.append(os.path.join(_THIS_DIR, PLOTNN_REL))
@@ -8,19 +9,14 @@ sys.path.append(os.path.join(_THIS_DIR, PLOTNN_REL))
 from pycore.tikzeng import to_head, to_cor, to_begin, to_end, to_generate
 
 
-# ---------------------------------------------------------------------------
-# Network hyper-parameters depicted in the figure
-# ---------------------------------------------------------------------------
+# Network layer sizes
 NUM_INPUT_POINTS = 2048
 NUM_FEATURES = 6
 ENCODER_CONV = [64, 128, 1024]
 GLOBAL_FEAT = 1024
 DECODER_LAYERS = [1024, 512, 128, 64]
 
-
-# ---------------------------------------------------------------------------
-# Extra colours + black edges (added after the stock to_cor() palette)
-# ---------------------------------------------------------------------------
+# Extra colors
 def to_colors():
     return r"""
 \def\TNetColor{rgb:orange,6;yellow,4}
@@ -30,28 +26,37 @@ def to_colors():
 \def\edgecolor{black}
 """
 
+# Half the on-page width of a box. PlotNeuralNet's Box pic origin is its -west
+# corner and it extends +x by width*scale (Box.sty default scale = 0.2). Placing
+# a box at (prev-anchor) shifted left by its own half-width therefore centres it
+# on the previous box's vertical axis, keeping the whole column centre-aligned.
+BOX_SCALE = 0.2
+# centre-to-centre vertical gap between encoder boxes
+ENC_GAP = 1.5
 
-# ---------------------------------------------------------------------------
-# Box / label / connection helpers (in the spirit of pycore.tikzeng)
-# ---------------------------------------------------------------------------
+
+# ---------------
+# Element helpers
+# ---------------
 def to_box(name, fill, to, offset, width=2, height=3, depth=3,
            caption=" ", xlabel="", ylabel="", zlabel=""):
     cap = caption if caption == " " else "{" + caption + "}"
     lines = [
-        "        name=" + name + ",",
-        "        caption=" + cap + ",",
+        "name=" + name + ",",
+        "caption=" + cap + ",",
     ]
     if xlabel != "":
-        lines.append("        xlabel={{" + str(xlabel) + ", }},")
+        lines.append("xlabel={{" + str(xlabel) + ", }},")
     if ylabel != "":
-        lines.append("        ylabel=" + str(ylabel) + ",")
+        lines.append("ylabel=" + str(ylabel) + ",")
     if zlabel != "":
-        lines.append("        zlabel=" + str(zlabel) + ",")
+        lines.append("zlabel=" + str(zlabel) + ",")
+
     lines += [
-        "        fill=" + fill + ",",
-        "        height=" + str(height) + ",",
-        "        width=" + str(width) + ",",
-        "        depth=" + str(depth),
+        "fill=" + fill + ",",
+        "height=" + str(height) + ",",
+        "width=" + str(width) + ",",
+        "depth=" + str(depth),
     ]
     return ("\n\\pic[shift={" + offset + "}] at " + to + "\n"
             "    {Box={\n" + "\n".join(lines) + "\n        }\n    };\n")
@@ -61,31 +66,18 @@ def text_node(at, text, options="anchor=west, font=\\small\\bfseries"):
     return "\n\\node[" + options + "] at " + at + " {" + text + "};\n"
 
 
-# Straight black arrow flowing downward (south of one box -> north of the next).
 def to_arrow(of, to):
-    return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] ("
-            + of + "-south) -- (" + to + "-north);\n")
+    return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (" + of + "-south) -- (" + to + "-north);\n")
 
 
-# Right-angle black arrow: drop, run along a shared horizontal bus, then drop in.
 def to_arrow_angle(of, to, drop=1.0):
-    return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] ("
-            + of + "-south) -- ++(0,-" + str(drop) + ") -| (" + to + "-north);\n")
-
-
-# Half the on-page width of a box. PlotNeuralNet's Box pic origin is its -west
-# corner and it extends +x by width*scale (Box.sty default scale = 0.2). Placing
-# a box at (prev-anchor) shifted left by its own half-width therefore centres it
-# on the previous box's vertical axis, keeping the whole column centre-aligned.
-BOX_SCALE = 0.2
+    return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (" + of + "-south) -- ++(0,-" + str(drop) + ") -| (" + to + "-north);\n")
 
 
 def half_w(width):
     return round(width * BOX_SCALE / 2.0, 3)
 
 
-# Place a box centred under `prev` (or on the page axis if prev is None), `gap`
-# units below it.
 def centered_box(name, fill, prev, width, height, depth, gap,
                  caption=" ", xlabel="", ylabel="", zlabel=""):
     if prev is None:
@@ -93,26 +85,17 @@ def centered_box(name, fill, prev, width, height, depth, gap,
     else:
         to = "({}-anchor)".format(prev)
         offset = "(-{},-{},0)".format(half_w(width), gap)
-    return to_box(name, fill, to, offset, width=width, height=height,
-                  depth=depth, caption=caption, xlabel=xlabel, ylabel=ylabel,
-                  zlabel=zlabel)
+    return to_box(name, fill, to, offset, width=width, height=height, depth=depth, caption=caption, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
 
-
-# ---------------------------------------------------------------------------
-# Encoder column (top -> down), centre-aligned on the page's vertical axis.
-# The input / feature T-Nets sit inline in the column (orange boxes) with equal
-# input/output sizes: each learns a k x k transform applied to its features.
-# ---------------------------------------------------------------------------
-ENC_GAP = 1.5   # centre-to-centre vertical gap between encoder boxes
-
-# Each encoder layer is drawn explicitly, top -> down. Box heights are sized by
-# their OUTPUT channel count and labelled with the full output tensor shape.
 
 
 def out_shape(channels):
     return "{} x {}".format(NUM_INPUT_POINTS, channels)
 
 
+# ---------------
+# Encoder network
+# ---------------
 encoder = [
     centered_box("input", r"\ConvColor", None, 10, 1, 1, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] input-west)", str(NUM_FEATURES), options="anchor=east, font=\\small"),
@@ -159,9 +142,9 @@ encoder = [
 ]
 
 
-# ---------------------------------------------------------------------------
-# Multi-pronged decoder: seven heads fanning out below the global feature.
-# ---------------------------------------------------------------------------
+# ---------------
+# Decoder network
+# ---------------
 HEADS = [
     ("shape",        3, "Shape",       "Softmax"),
     ("operation",    2, "Operation",   "Softmax"),
@@ -184,9 +167,7 @@ def decoder_prong(index, prefix, out_size, head_label, activation):
     # Top hidden layer (1024), branched off the global feature and centred on
     # x = dx (relative to the encoder axis at feat's centre).
     h0 = prefix + "_h0"
-    elems.append(to_box(h0, r"\DecoderColor", "(feat-anchor)",
-                        "({},-{},0)".format(round(dx - half_w(12), 3), TOP_DROP),
-                        width=12, height=3, depth=3, ylabel=1024))
+    elems.append(to_box(h0, r"\DecoderColor", "(feat-anchor)", "({},-{},0)".format(round(dx - half_w(12), 3), TOP_DROP), width=12, height=3, depth=3, ylabel=1024))
     elems.append(to_arrow_angle("feat", h0))
     # elems.append(text_node("([yshift=14pt] {}-north)".format(h0), head_label, options="anchor=south, font=\\small\\bfseries"))
 
@@ -211,16 +192,15 @@ def decoder_prong(index, prefix, out_size, head_label, activation):
     return elems
 
 
-# ---------------------------------------------------------------------------
-# Assemble the full architecture
-# ---------------------------------------------------------------------------
+# -----------
+# Main Output
+# -----------
 arch = [to_head(PLOTNN_REL), to_cor(), to_colors(), to_begin()]
 arch += encoder
 
 # Section titles.
 arch += [
-    text_node("([xshift=10pt, yshift=18pt] input-east)", "PointNet Encoder",
-              options="anchor=west, font=\\large\\bfseries"),
+    text_node("([xshift=10pt, yshift=18pt] input-east)", "PointNet Encoder", options="anchor=west, font=\\large\\bfseries"),
 ]
 
 for i, (prefix, out_size, label, activation) in enumerate(HEADS):
@@ -232,8 +212,17 @@ arch += to_end()
 def main():
     namefile = os.path.splitext(os.path.basename(__file__))[0]
     out_path = os.path.join(_THIS_DIR, namefile + ".tex")
-    to_generate(arch, out_path)
-    print("\nWrote: {}".format(out_path))
+
+    # Generate tex file
+    saved_stdout = sys.stdout
+    try:
+        sys.stdout = open(os.devnull, "w")
+        to_generate(arch, out_path)
+    finally:
+        sys.stdout.close()
+        sys.stdout = saved_stdout
+
+    print("Wrote: {}".format(out_path))
 
 
 if __name__ == "__main__":

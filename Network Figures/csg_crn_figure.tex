@@ -29,13 +29,13 @@
 
 \pic[shift={(-1.0,0,0)}] at (0,0,0)
     {Box={
-        name=input,
-        caption= ,
-        xlabel={{2048, }},
-        fill=\ConvColor,
-        height=1,
-        width=10,
-        depth=1
+name=input,
+caption= ,
+xlabel={{2048, }},
+fill=\ConvColor,
+height=1,
+width=10,
+depth=1
         }
     };
 
@@ -45,13 +45,13 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (input-anchor)
     {Box={
-        name=stnin,
-        caption= ,
-        xlabel={{2048, }},
-        fill=\TNetColor,
-        height=1,
-        width=10,
-        depth=3
+name=stnin,
+caption= ,
+xlabel={{2048, }},
+fill=\TNetColor,
+height=1,
+width=10,
+depth=3
         }
     };
 
@@ -63,13 +63,13 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (stnin-anchor)
     {Box={
-        name=conv1,
-        caption= ,
-        xlabel={{2048, }},
-        fill=\ConvColor,
-        height=1,
-        width=10,
-        depth=3
+name=conv1,
+caption= ,
+xlabel={{2048, }},
+fill=\ConvColor,
+height=1,
+width=10,
+depth=3
         }
     };
 
@@ -81,13 +81,13 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (conv1-anchor)
     {Box={
-        name=stnft,
-        caption= ,
-        xlabel={{2048, }},
-        fill=\TNetColor,
-        height=1,
-        width=10,
-        depth=3
+name=stnft,
+caption= ,
+xlabel={{2048, }},
+fill=\TNetColor,
+height=1,
+width=10,
+depth=3
         }
     };
 
@@ -99,13 +99,13 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (stnft-anchor)
     {Box={
-        name=conv2,
-        caption= ,
-        xlabel={{2048, }},
-        fill=\ConvColor,
-        height=1,
-        width=10,
-        depth=3
+name=conv2,
+caption= ,
+xlabel={{2048, }},
+fill=\ConvColor,
+height=1,
+width=10,
+depth=3
         }
     };
 
@@ -117,13 +117,13 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (conv2-anchor)
     {Box={
-        name=conv3,
-        caption= ,
-        xlabel={{2048, }},
-        fill=\ConvColor,
-        height=1,
-        width=10,
-        depth=6
+name=conv3,
+caption= ,
+xlabel={{2048, }},
+fill=\ConvColor,
+height=1,
+width=10,
+depth=6
         }
     };
 
@@ -135,13 +135,13 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (conv3-anchor)
     {Box={
-        name=conv4,
-        caption= ,
-        xlabel={{2048, }},
-        fill=\ConvColor,
-        height=1,
-        width=10,
-        depth=9
+name=conv4,
+caption= ,
+xlabel={{2048, }},
+fill=\ConvColor,
+height=1,
+width=10,
+depth=9
         }
     };
 
@@ -153,12 +153,12 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (conv4-anchor)
     {Box={
-        name=maxpool,
-        caption= ,
-        fill=\MaxPoolColor,
-        height=1,
-        width=10,
-        depth=10
+name=maxpool,
+caption= ,
+fill=\MaxPoolColor,
+height=1,
+width=10,
+depth=10
         }
     };
 
@@ -168,12 +168,12 @@
 
 \pic[shift={(-1.0,-1.5,0)}] at (maxpool-anchor)
     {Box={
-        name=feat,
-        caption= ,
-        fill=\ConvColor,
-        height=1,
-        width=10,
-        depth=10
+name=feat,
+caption= ,
+fill=\ConvColor,
+height=1,
+width=10,
+depth=10
         }
     };
 
@@ -187,13 +187,13 @@
 
 \pic[shift={(-14.7,-2.25,0)}] at (feat-anchor)
     {Box={
-        name=shape_h0,
-        caption= ,
-        ylabel=1024,
-        fill=\DecoderColor,
-        height=3,
-        width=12,
-        depth=3
+name=shape_h0,
+caption= ,
+ylabel=1024,
+fill=\DecoderColor,
+height=3,
+width=12,
+depth=3
         }
     };
 
@@ -201,13 +201,13 @@
 
 \pic[shift={(-0.9,-1.2,0)}] at (shape_h0-anchor)
     {Box={
-        name=shape_h1,
-        caption= ,
-        ylabel=512,
-        fill=\DecoderColor,
-        height=3,
-        width=9,
-        depth=3
+name=shape_h1,
+caption= ,
+ylabel=512,
+fill=\DecoderColor,
+height=3,
+width=9,
+depth=3
         }
     };
 
@@ -215,13 +215,13 @@
 
 \pic[shift={(-0.6,-1.2,0)}] at (shape_h1-anchor)
     {Box={
-        name=shape_h2,
-        caption= ,
-        ylabel=128,
-        fill=\DecoderColor,
-        height=3,
-        width=6,
-        depth=3
+name=shape_h2,
+caption= ,
+ylabel=128,
+fill=\DecoderColor,
+height=3,
+width=6,
+depth=3
         }
     };
 
@@ -229,13 +229,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (shape_h2-anchor)
     {Box={
-        name=shape_h3,
-        caption= ,
-        ylabel=64,
-        fill=\DecoderColor,
-        height=3,
-        width=3,
-        depth=3
+name=shape_h3,
+caption= ,
+ylabel=64,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -243,13 +243,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (shape_h3-anchor)
     {Box={
-        name=shape_out,
-        caption={Shape},
-        ylabel=3,
-        fill=\ActivationColor,
-        height=3,
-        width=3,
-        depth=3
+name=shape_out,
+caption={Shape},
+ylabel=3,
+fill=\ActivationColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -259,13 +259,13 @@
 
 \pic[shift={(-10.2,-2.25,0)}] at (feat-anchor)
     {Box={
-        name=operation_h0,
-        caption= ,
-        ylabel=1024,
-        fill=\DecoderColor,
-        height=3,
-        width=12,
-        depth=3
+name=operation_h0,
+caption= ,
+ylabel=1024,
+fill=\DecoderColor,
+height=3,
+width=12,
+depth=3
         }
     };
 
@@ -273,13 +273,13 @@
 
 \pic[shift={(-0.9,-1.2,0)}] at (operation_h0-anchor)
     {Box={
-        name=operation_h1,
-        caption= ,
-        ylabel=512,
-        fill=\DecoderColor,
-        height=3,
-        width=9,
-        depth=3
+name=operation_h1,
+caption= ,
+ylabel=512,
+fill=\DecoderColor,
+height=3,
+width=9,
+depth=3
         }
     };
 
@@ -287,13 +287,13 @@
 
 \pic[shift={(-0.6,-1.2,0)}] at (operation_h1-anchor)
     {Box={
-        name=operation_h2,
-        caption= ,
-        ylabel=128,
-        fill=\DecoderColor,
-        height=3,
-        width=6,
-        depth=3
+name=operation_h2,
+caption= ,
+ylabel=128,
+fill=\DecoderColor,
+height=3,
+width=6,
+depth=3
         }
     };
 
@@ -301,13 +301,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (operation_h2-anchor)
     {Box={
-        name=operation_h3,
-        caption= ,
-        ylabel=64,
-        fill=\DecoderColor,
-        height=3,
-        width=3,
-        depth=3
+name=operation_h3,
+caption= ,
+ylabel=64,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -315,13 +315,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (operation_h3-anchor)
     {Box={
-        name=operation_out,
-        caption={Operation},
-        ylabel=2,
-        fill=\ActivationColor,
-        height=3,
-        width=3,
-        depth=3
+name=operation_out,
+caption={Operation},
+ylabel=2,
+fill=\ActivationColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -331,13 +331,13 @@
 
 \pic[shift={(-5.7,-2.25,0)}] at (feat-anchor)
     {Box={
-        name=translation_h0,
-        caption= ,
-        ylabel=1024,
-        fill=\DecoderColor,
-        height=3,
-        width=12,
-        depth=3
+name=translation_h0,
+caption= ,
+ylabel=1024,
+fill=\DecoderColor,
+height=3,
+width=12,
+depth=3
         }
     };
 
@@ -345,13 +345,13 @@
 
 \pic[shift={(-0.9,-1.2,0)}] at (translation_h0-anchor)
     {Box={
-        name=translation_h1,
-        caption= ,
-        ylabel=512,
-        fill=\DecoderColor,
-        height=3,
-        width=9,
-        depth=3
+name=translation_h1,
+caption= ,
+ylabel=512,
+fill=\DecoderColor,
+height=3,
+width=9,
+depth=3
         }
     };
 
@@ -359,13 +359,13 @@
 
 \pic[shift={(-0.6,-1.2,0)}] at (translation_h1-anchor)
     {Box={
-        name=translation_h2,
-        caption= ,
-        ylabel=128,
-        fill=\DecoderColor,
-        height=3,
-        width=6,
-        depth=3
+name=translation_h2,
+caption= ,
+ylabel=128,
+fill=\DecoderColor,
+height=3,
+width=6,
+depth=3
         }
     };
 
@@ -373,13 +373,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (translation_h2-anchor)
     {Box={
-        name=translation_h3,
-        caption= ,
-        ylabel=64,
-        fill=\DecoderColor,
-        height=3,
-        width=3,
-        depth=3
+name=translation_h3,
+caption= ,
+ylabel=64,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -387,13 +387,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (translation_h3-anchor)
     {Box={
-        name=translation_out,
-        caption={Translation},
-        ylabel=3,
-        fill=\ActivationColor,
-        height=3,
-        width=3,
-        depth=3
+name=translation_out,
+caption={Translation},
+ylabel=3,
+fill=\ActivationColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -403,13 +403,13 @@
 
 \pic[shift={(-1.2,-2.25,0)}] at (feat-anchor)
     {Box={
-        name=rotation_h0,
-        caption= ,
-        ylabel=1024,
-        fill=\DecoderColor,
-        height=3,
-        width=12,
-        depth=3
+name=rotation_h0,
+caption= ,
+ylabel=1024,
+fill=\DecoderColor,
+height=3,
+width=12,
+depth=3
         }
     };
 
@@ -417,13 +417,13 @@
 
 \pic[shift={(-0.9,-1.2,0)}] at (rotation_h0-anchor)
     {Box={
-        name=rotation_h1,
-        caption= ,
-        ylabel=512,
-        fill=\DecoderColor,
-        height=3,
-        width=9,
-        depth=3
+name=rotation_h1,
+caption= ,
+ylabel=512,
+fill=\DecoderColor,
+height=3,
+width=9,
+depth=3
         }
     };
 
@@ -431,13 +431,13 @@
 
 \pic[shift={(-0.6,-1.2,0)}] at (rotation_h1-anchor)
     {Box={
-        name=rotation_h2,
-        caption= ,
-        ylabel=128,
-        fill=\DecoderColor,
-        height=3,
-        width=6,
-        depth=3
+name=rotation_h2,
+caption= ,
+ylabel=128,
+fill=\DecoderColor,
+height=3,
+width=6,
+depth=3
         }
     };
 
@@ -445,13 +445,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (rotation_h2-anchor)
     {Box={
-        name=rotation_h3,
-        caption= ,
-        ylabel=64,
-        fill=\DecoderColor,
-        height=3,
-        width=3,
-        depth=3
+name=rotation_h3,
+caption= ,
+ylabel=64,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -459,13 +459,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (rotation_h3-anchor)
     {Box={
-        name=rotation_out,
-        caption={Rotation},
-        ylabel=4,
-        fill=\ActivationColor,
-        height=3,
-        width=3,
-        depth=3
+name=rotation_out,
+caption={Rotation},
+ylabel=4,
+fill=\ActivationColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -475,13 +475,13 @@
 
 \pic[shift={(3.3,-2.25,0)}] at (feat-anchor)
     {Box={
-        name=scale_h0,
-        caption= ,
-        ylabel=1024,
-        fill=\DecoderColor,
-        height=3,
-        width=12,
-        depth=3
+name=scale_h0,
+caption= ,
+ylabel=1024,
+fill=\DecoderColor,
+height=3,
+width=12,
+depth=3
         }
     };
 
@@ -489,13 +489,13 @@
 
 \pic[shift={(-0.9,-1.2,0)}] at (scale_h0-anchor)
     {Box={
-        name=scale_h1,
-        caption= ,
-        ylabel=512,
-        fill=\DecoderColor,
-        height=3,
-        width=9,
-        depth=3
+name=scale_h1,
+caption= ,
+ylabel=512,
+fill=\DecoderColor,
+height=3,
+width=9,
+depth=3
         }
     };
 
@@ -503,13 +503,13 @@
 
 \pic[shift={(-0.6,-1.2,0)}] at (scale_h1-anchor)
     {Box={
-        name=scale_h2,
-        caption= ,
-        ylabel=128,
-        fill=\DecoderColor,
-        height=3,
-        width=6,
-        depth=3
+name=scale_h2,
+caption= ,
+ylabel=128,
+fill=\DecoderColor,
+height=3,
+width=6,
+depth=3
         }
     };
 
@@ -517,13 +517,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (scale_h2-anchor)
     {Box={
-        name=scale_h3,
-        caption= ,
-        ylabel=64,
-        fill=\DecoderColor,
-        height=3,
-        width=3,
-        depth=3
+name=scale_h3,
+caption= ,
+ylabel=64,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -531,13 +531,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (scale_h3-anchor)
     {Box={
-        name=scale_out,
-        caption={Scale},
-        ylabel=3,
-        fill=\ActivationColor,
-        height=3,
-        width=3,
-        depth=3
+name=scale_out,
+caption={Scale},
+ylabel=3,
+fill=\ActivationColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -547,13 +547,13 @@
 
 \pic[shift={(7.8,-2.25,0)}] at (feat-anchor)
     {Box={
-        name=blending_h0,
-        caption= ,
-        ylabel=1024,
-        fill=\DecoderColor,
-        height=3,
-        width=12,
-        depth=3
+name=blending_h0,
+caption= ,
+ylabel=1024,
+fill=\DecoderColor,
+height=3,
+width=12,
+depth=3
         }
     };
 
@@ -561,13 +561,13 @@
 
 \pic[shift={(-0.9,-1.2,0)}] at (blending_h0-anchor)
     {Box={
-        name=blending_h1,
-        caption= ,
-        ylabel=512,
-        fill=\DecoderColor,
-        height=3,
-        width=9,
-        depth=3
+name=blending_h1,
+caption= ,
+ylabel=512,
+fill=\DecoderColor,
+height=3,
+width=9,
+depth=3
         }
     };
 
@@ -575,13 +575,13 @@
 
 \pic[shift={(-0.6,-1.2,0)}] at (blending_h1-anchor)
     {Box={
-        name=blending_h2,
-        caption= ,
-        ylabel=128,
-        fill=\DecoderColor,
-        height=3,
-        width=6,
-        depth=3
+name=blending_h2,
+caption= ,
+ylabel=128,
+fill=\DecoderColor,
+height=3,
+width=6,
+depth=3
         }
     };
 
@@ -589,13 +589,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (blending_h2-anchor)
     {Box={
-        name=blending_h3,
-        caption= ,
-        ylabel=64,
-        fill=\DecoderColor,
-        height=3,
-        width=3,
-        depth=3
+name=blending_h3,
+caption= ,
+ylabel=64,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -603,13 +603,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (blending_h3-anchor)
     {Box={
-        name=blending_out,
-        caption={Blending},
-        ylabel=1,
-        fill=\ActivationColor,
-        height=3,
-        width=3,
-        depth=3
+name=blending_out,
+caption={Blending},
+ylabel=1,
+fill=\ActivationColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -619,13 +619,13 @@
 
 \pic[shift={(12.3,-2.25,0)}] at (feat-anchor)
     {Box={
-        name=roundness_h0,
-        caption= ,
-        ylabel=1024,
-        fill=\DecoderColor,
-        height=3,
-        width=12,
-        depth=3
+name=roundness_h0,
+caption= ,
+ylabel=1024,
+fill=\DecoderColor,
+height=3,
+width=12,
+depth=3
         }
     };
 
@@ -633,13 +633,13 @@
 
 \pic[shift={(-0.9,-1.2,0)}] at (roundness_h0-anchor)
     {Box={
-        name=roundness_h1,
-        caption= ,
-        ylabel=512,
-        fill=\DecoderColor,
-        height=3,
-        width=9,
-        depth=3
+name=roundness_h1,
+caption= ,
+ylabel=512,
+fill=\DecoderColor,
+height=3,
+width=9,
+depth=3
         }
     };
 
@@ -647,13 +647,13 @@
 
 \pic[shift={(-0.6,-1.2,0)}] at (roundness_h1-anchor)
     {Box={
-        name=roundness_h2,
-        caption= ,
-        ylabel=128,
-        fill=\DecoderColor,
-        height=3,
-        width=6,
-        depth=3
+name=roundness_h2,
+caption= ,
+ylabel=128,
+fill=\DecoderColor,
+height=3,
+width=6,
+depth=3
         }
     };
 
@@ -661,13 +661,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (roundness_h2-anchor)
     {Box={
-        name=roundness_h3,
-        caption= ,
-        ylabel=64,
-        fill=\DecoderColor,
-        height=3,
-        width=3,
-        depth=3
+name=roundness_h3,
+caption= ,
+ylabel=64,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
@@ -675,13 +675,13 @@
 
 \pic[shift={(-0.3,-1.2,0)}] at (roundness_h3-anchor)
     {Box={
-        name=roundness_out,
-        caption={Roundness},
-        ylabel=1,
-        fill=\ActivationColor,
-        height=3,
-        width=3,
-        depth=3
+name=roundness_out,
+caption={Roundness},
+ylabel=1,
+fill=\ActivationColor,
+height=3,
+width=3,
+depth=3
         }
     };
 
