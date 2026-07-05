@@ -1,0 +1,693 @@
+
+\documentclass[border=8pt, multi, tikz]{standalone} 
+\usepackage{import}
+\subimport{../../Code/PlotNeuralNet/layers/}{init}
+\usetikzlibrary{positioning}
+\usetikzlibrary{3d} %for including external image 
+
+\def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\ConvReluColor{rgb:yellow,5;red,5;white,5}
+\def\PoolColor{rgb:red,1;black,0.3}
+\def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
+\def\FcColor{rgb:blue,5;red,2.5;white,5}
+\def\FcReluColor{rgb:blue,5;red,5;white,4}
+\def\SoftmaxColor{rgb:magenta,5;black,7}   
+\def\SumColor{rgb:blue,5;green,15}
+
+\def\TNetColor{rgb:orange,6;yellow,4}
+\def\MaxPoolColor{rgb:orange,8;red,3}
+\def\DecoderColor{rgb:blue,5;white,5}
+\def\ActivationColor{rgb:red,5;blue,5}
+\def\edgecolor{black}
+
+\newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
+\tikzstyle{copyconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
+
+\pic[shift={(-1.0,0,0)}] at (0,0,0)
+    {Box={
+        name=input,
+        caption= ,
+        xlabel={{2048, }},
+        fill=\ConvColor,
+        height=1,
+        width=10,
+        depth=1
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] input-west) {6};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] input-east) {Input Point Samples  (2048 x 6: x,y,z + SDFs)};
+
+\pic[shift={(-1.0,-1.5,0)}] at (input-anchor)
+    {Box={
+        name=stnin,
+        caption= ,
+        xlabel={{2048, }},
+        fill=\TNetColor,
+        height=1,
+        width=10,
+        depth=3
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] stnin-west) {64};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] stnin-east) {Input Transform Network  (2048 x 64)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (input-south) -- (stnin-north);
+
+\pic[shift={(-1.0,-1.5,0)}] at (stnin-anchor)
+    {Box={
+        name=conv1,
+        caption= ,
+        xlabel={{2048, }},
+        fill=\ConvColor,
+        height=1,
+        width=10,
+        depth=3
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] conv1-west) {64};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv1-east) {1D Convolution  (2048 x 64)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (stnin-south) -- (conv1-north);
+
+\pic[shift={(-1.0,-1.5,0)}] at (conv1-anchor)
+    {Box={
+        name=stnft,
+        caption= ,
+        xlabel={{2048, }},
+        fill=\TNetColor,
+        height=1,
+        width=10,
+        depth=3
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] stnft-west) {64};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] stnft-east) {Feature Transform Network  (2048 x 64)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv1-south) -- (stnft-north);
+
+\pic[shift={(-1.0,-1.5,0)}] at (stnft-anchor)
+    {Box={
+        name=conv2,
+        caption= ,
+        xlabel={{2048, }},
+        fill=\ConvColor,
+        height=1,
+        width=10,
+        depth=3
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] conv2-west) {64};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv2-east) {1D Convolution  (2048 x 64)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (stnft-south) -- (conv2-north);
+
+\pic[shift={(-1.0,-1.5,0)}] at (conv2-anchor)
+    {Box={
+        name=conv3,
+        caption= ,
+        xlabel={{2048, }},
+        fill=\ConvColor,
+        height=1,
+        width=10,
+        depth=6
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] conv3-west) {128};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv3-east) {1D Convolution  (2048 x 128)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv2-south) -- (conv3-north);
+
+\pic[shift={(-1.0,-1.5,0)}] at (conv3-anchor)
+    {Box={
+        name=conv4,
+        caption= ,
+        xlabel={{2048, }},
+        fill=\ConvColor,
+        height=1,
+        width=10,
+        depth=9
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] conv4-west) {1024};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv4-east) {1D Convolution  (2048 x 1024)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv3-south) -- (conv4-north);
+
+\pic[shift={(-1.0,-1.5,0)}] at (conv4-anchor)
+    {Box={
+        name=maxpool,
+        caption= ,
+        fill=\MaxPoolColor,
+        height=1,
+        width=10,
+        depth=10
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] maxpool-east) {Max Pool (symmetric)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- (maxpool-north);
+
+\pic[shift={(-1.0,-1.5,0)}] at (maxpool-anchor)
+    {Box={
+        name=feat,
+        caption= ,
+        fill=\ConvColor,
+        height=1,
+        width=10,
+        depth=10
+        }
+    };
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] feat-west) {1024};
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] feat-east) {Global Feature  (1024)};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool-south) -- (feat-north);
+
+\node[anchor=west, font=\large\bfseries] at ([xshift=10pt, yshift=18pt] input-east) {PointNet Encoder};
+
+\pic[shift={(-14.7,-2.25,0)}] at (feat-anchor)
+    {Box={
+        name=shape_h0,
+        caption= ,
+        ylabel=1024,
+        fill=\DecoderColor,
+        height=3,
+        width=12,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-1.0) -| (shape_h0-north);
+
+\pic[shift={(-0.9,-1.2,0)}] at (shape_h0-anchor)
+    {Box={
+        name=shape_h1,
+        caption= ,
+        ylabel=512,
+        fill=\DecoderColor,
+        height=3,
+        width=9,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (shape_h0-south) -- (shape_h1-north);
+
+\pic[shift={(-0.6,-1.2,0)}] at (shape_h1-anchor)
+    {Box={
+        name=shape_h2,
+        caption= ,
+        ylabel=128,
+        fill=\DecoderColor,
+        height=3,
+        width=6,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (shape_h1-south) -- (shape_h2-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (shape_h2-anchor)
+    {Box={
+        name=shape_h3,
+        caption= ,
+        ylabel=64,
+        fill=\DecoderColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (shape_h2-south) -- (shape_h3-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (shape_h3-anchor)
+    {Box={
+        name=shape_out,
+        caption={Shape},
+        ylabel=3,
+        fill=\ActivationColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] shape_out-east) {Softmax};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (shape_h3-south) -- (shape_out-north);
+
+\pic[shift={(-10.2,-2.25,0)}] at (feat-anchor)
+    {Box={
+        name=operation_h0,
+        caption= ,
+        ylabel=1024,
+        fill=\DecoderColor,
+        height=3,
+        width=12,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-1.0) -| (operation_h0-north);
+
+\pic[shift={(-0.9,-1.2,0)}] at (operation_h0-anchor)
+    {Box={
+        name=operation_h1,
+        caption= ,
+        ylabel=512,
+        fill=\DecoderColor,
+        height=3,
+        width=9,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (operation_h0-south) -- (operation_h1-north);
+
+\pic[shift={(-0.6,-1.2,0)}] at (operation_h1-anchor)
+    {Box={
+        name=operation_h2,
+        caption= ,
+        ylabel=128,
+        fill=\DecoderColor,
+        height=3,
+        width=6,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (operation_h1-south) -- (operation_h2-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (operation_h2-anchor)
+    {Box={
+        name=operation_h3,
+        caption= ,
+        ylabel=64,
+        fill=\DecoderColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (operation_h2-south) -- (operation_h3-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (operation_h3-anchor)
+    {Box={
+        name=operation_out,
+        caption={Operation},
+        ylabel=2,
+        fill=\ActivationColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] operation_out-east) {Softmax};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (operation_h3-south) -- (operation_out-north);
+
+\pic[shift={(-5.7,-2.25,0)}] at (feat-anchor)
+    {Box={
+        name=translation_h0,
+        caption= ,
+        ylabel=1024,
+        fill=\DecoderColor,
+        height=3,
+        width=12,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-1.0) -| (translation_h0-north);
+
+\pic[shift={(-0.9,-1.2,0)}] at (translation_h0-anchor)
+    {Box={
+        name=translation_h1,
+        caption= ,
+        ylabel=512,
+        fill=\DecoderColor,
+        height=3,
+        width=9,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (translation_h0-south) -- (translation_h1-north);
+
+\pic[shift={(-0.6,-1.2,0)}] at (translation_h1-anchor)
+    {Box={
+        name=translation_h2,
+        caption= ,
+        ylabel=128,
+        fill=\DecoderColor,
+        height=3,
+        width=6,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (translation_h1-south) -- (translation_h2-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (translation_h2-anchor)
+    {Box={
+        name=translation_h3,
+        caption= ,
+        ylabel=64,
+        fill=\DecoderColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (translation_h2-south) -- (translation_h3-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (translation_h3-anchor)
+    {Box={
+        name=translation_out,
+        caption={Translation},
+        ylabel=3,
+        fill=\ActivationColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] translation_out-east) {Tanh};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (translation_h3-south) -- (translation_out-north);
+
+\pic[shift={(-1.2,-2.25,0)}] at (feat-anchor)
+    {Box={
+        name=rotation_h0,
+        caption= ,
+        ylabel=1024,
+        fill=\DecoderColor,
+        height=3,
+        width=12,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-1.0) -| (rotation_h0-north);
+
+\pic[shift={(-0.9,-1.2,0)}] at (rotation_h0-anchor)
+    {Box={
+        name=rotation_h1,
+        caption= ,
+        ylabel=512,
+        fill=\DecoderColor,
+        height=3,
+        width=9,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (rotation_h0-south) -- (rotation_h1-north);
+
+\pic[shift={(-0.6,-1.2,0)}] at (rotation_h1-anchor)
+    {Box={
+        name=rotation_h2,
+        caption= ,
+        ylabel=128,
+        fill=\DecoderColor,
+        height=3,
+        width=6,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (rotation_h1-south) -- (rotation_h2-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (rotation_h2-anchor)
+    {Box={
+        name=rotation_h3,
+        caption= ,
+        ylabel=64,
+        fill=\DecoderColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (rotation_h2-south) -- (rotation_h3-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (rotation_h3-anchor)
+    {Box={
+        name=rotation_out,
+        caption={Rotation},
+        ylabel=4,
+        fill=\ActivationColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] rotation_out-east) {Linear};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (rotation_h3-south) -- (rotation_out-north);
+
+\pic[shift={(3.3,-2.25,0)}] at (feat-anchor)
+    {Box={
+        name=scale_h0,
+        caption= ,
+        ylabel=1024,
+        fill=\DecoderColor,
+        height=3,
+        width=12,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-1.0) -| (scale_h0-north);
+
+\pic[shift={(-0.9,-1.2,0)}] at (scale_h0-anchor)
+    {Box={
+        name=scale_h1,
+        caption= ,
+        ylabel=512,
+        fill=\DecoderColor,
+        height=3,
+        width=9,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (scale_h0-south) -- (scale_h1-north);
+
+\pic[shift={(-0.6,-1.2,0)}] at (scale_h1-anchor)
+    {Box={
+        name=scale_h2,
+        caption= ,
+        ylabel=128,
+        fill=\DecoderColor,
+        height=3,
+        width=6,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (scale_h1-south) -- (scale_h2-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (scale_h2-anchor)
+    {Box={
+        name=scale_h3,
+        caption= ,
+        ylabel=64,
+        fill=\DecoderColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (scale_h2-south) -- (scale_h3-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (scale_h3-anchor)
+    {Box={
+        name=scale_out,
+        caption={Scale},
+        ylabel=3,
+        fill=\ActivationColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] scale_out-east) {Sigmoid};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (scale_h3-south) -- (scale_out-north);
+
+\pic[shift={(7.8,-2.25,0)}] at (feat-anchor)
+    {Box={
+        name=blending_h0,
+        caption= ,
+        ylabel=1024,
+        fill=\DecoderColor,
+        height=3,
+        width=12,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-1.0) -| (blending_h0-north);
+
+\pic[shift={(-0.9,-1.2,0)}] at (blending_h0-anchor)
+    {Box={
+        name=blending_h1,
+        caption= ,
+        ylabel=512,
+        fill=\DecoderColor,
+        height=3,
+        width=9,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (blending_h0-south) -- (blending_h1-north);
+
+\pic[shift={(-0.6,-1.2,0)}] at (blending_h1-anchor)
+    {Box={
+        name=blending_h2,
+        caption= ,
+        ylabel=128,
+        fill=\DecoderColor,
+        height=3,
+        width=6,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (blending_h1-south) -- (blending_h2-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (blending_h2-anchor)
+    {Box={
+        name=blending_h3,
+        caption= ,
+        ylabel=64,
+        fill=\DecoderColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (blending_h2-south) -- (blending_h3-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (blending_h3-anchor)
+    {Box={
+        name=blending_out,
+        caption={Blending},
+        ylabel=1,
+        fill=\ActivationColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] blending_out-east) {Sigmoid};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (blending_h3-south) -- (blending_out-north);
+
+\pic[shift={(12.3,-2.25,0)}] at (feat-anchor)
+    {Box={
+        name=roundness_h0,
+        caption= ,
+        ylabel=1024,
+        fill=\DecoderColor,
+        height=3,
+        width=12,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-1.0) -| (roundness_h0-north);
+
+\pic[shift={(-0.9,-1.2,0)}] at (roundness_h0-anchor)
+    {Box={
+        name=roundness_h1,
+        caption= ,
+        ylabel=512,
+        fill=\DecoderColor,
+        height=3,
+        width=9,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (roundness_h0-south) -- (roundness_h1-north);
+
+\pic[shift={(-0.6,-1.2,0)}] at (roundness_h1-anchor)
+    {Box={
+        name=roundness_h2,
+        caption= ,
+        ylabel=128,
+        fill=\DecoderColor,
+        height=3,
+        width=6,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (roundness_h1-south) -- (roundness_h2-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (roundness_h2-anchor)
+    {Box={
+        name=roundness_h3,
+        caption= ,
+        ylabel=64,
+        fill=\DecoderColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (roundness_h2-south) -- (roundness_h3-north);
+
+\pic[shift={(-0.3,-1.2,0)}] at (roundness_h3-anchor)
+    {Box={
+        name=roundness_out,
+        caption={Roundness},
+        ylabel=1,
+        fill=\ActivationColor,
+        height=3,
+        width=3,
+        depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] roundness_out-east) {Sigmoid};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (roundness_h3-south) -- (roundness_out-north);
+
+\end{tikzpicture}
+\end{document}
