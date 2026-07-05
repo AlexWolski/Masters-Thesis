@@ -23,6 +23,7 @@ def to_colors():
 \def\MaxPoolColor{rgb:orange,8;red,3}
 \def\DecoderColor{rgb:blue,5;white,5}
 \def\ActivationColor{rgb:red,5;blue,5}
+\def\GreyColor{rgb:black,3;white,5}
 \def\edgecolor{black}
 """
 
@@ -33,6 +34,8 @@ def to_colors():
 BOX_SCALE = 0.2
 # centre-to-centre vertical gap between encoder boxes
 ENC_GAP = 1.5
+# horizontal gap between the three in-line pool layers
+POOL_SPACING = 2.5
 
 
 # ---------------
@@ -74,6 +77,12 @@ def to_arrow_angle(of, to, drop=1.0):
     return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (" + of + "-south) -- ++(0,-" + str(drop) + ") -| (" + to + "-north);\n")
 
 
+def to_arrow_straight_down(of, to):
+    # Straight vertical line from `of`'s south anchor down to the point on `to`'s
+    # north edge at the same x-coordinate (TikZ |- intersection coordinate).
+    return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (" + of + "-south) -- (" + of + "-south |- " + to + "-north);\n")
+
+
 def half_w(width):
     return round(width * BOX_SCALE / 2.0, 3)
 
@@ -97,7 +106,7 @@ def out_shape(channels):
 # Encoder network
 # ---------------
 encoder = [
-    centered_box("input", r"\ConvColor", None, 10, 1, 1, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("input", r"\GreyColor", None, 10, 1, 1, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] input-west)", str(NUM_FEATURES), options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] input-east)", "Input Point Samples  (" + out_shape(NUM_FEATURES) + ": x,y,z + SDFs)"),
 
@@ -131,14 +140,26 @@ encoder = [
     text_node("([xshift=10pt] conv4-east)", "1D Convolution  (" + out_shape(1024) + ")"),
     to_arrow("conv3", "conv4"),
 
+    # Center pool layer, directly below conv4.
     centered_box("maxpool", r"\MaxPoolColor", "conv4", 10, 1, 10, ENC_GAP),
-    text_node("([xshift=10pt] maxpool-east)", "Max Pool (symmetric)"),
+    # text_node("([xshift=10pt] maxpool-east)", "Max Pool (symmetric)"),
     to_arrow("conv4", "maxpool"),
 
-    centered_box("feat", r"\ConvColor", "maxpool", 10, 1, 10, ENC_GAP),
+    # Left and right pool layers, in-line horizontally with the center pool.
+    to_box("maxpool_l", r"\MaxPoolColor", "(maxpool-anchor)", "(-{},0,0)".format(round(POOL_SPACING + half_w(10), 3), ), width=10, height=1, depth=10),
+    to_box("maxpool_r", r"\MaxPoolColor", "(maxpool-anchor)", "({},0,0)".format(round(POOL_SPACING - half_w(10), 3), ), width=10, height=1, depth=10),
+
+    # conv4 fans out to all three pool layers via right-angle connectors.
+    to_arrow_angle("conv4", "maxpool_l", drop=ENC_GAP / 2.0),
+    to_arrow_angle("conv4", "maxpool_r", drop=ENC_GAP / 2.0),
+
+    centered_box("feat", r"\GreyColor", "maxpool", 35, 1, 10, ENC_GAP),
     text_node("([xshift=-4pt] feat-west)", str(GLOBAL_FEAT), options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] feat-east)", "Global Feature  (1024)"),
     to_arrow("maxpool", "feat"),
+    # Side pool layers drop straight down into the widened global feature box.
+    to_arrow_straight_down("maxpool_l", "feat"),
+    to_arrow_straight_down("maxpool_r", "feat"),
 ]
 
 
@@ -197,11 +218,6 @@ def decoder_prong(index, prefix, out_size, head_label, activation):
 # -----------
 arch = [to_head(PLOTNN_REL), to_cor(), to_colors(), to_begin()]
 arch += encoder
-
-# Section titles.
-arch += [
-    text_node("([xshift=10pt, yshift=18pt] input-east)", "PointNet Encoder", options="anchor=west, font=\\large\\bfseries"),
-]
 
 for i, (prefix, out_size, label, activation) in enumerate(HEADS):
     arch += decoder_prong(i, prefix, out_size, label, activation)

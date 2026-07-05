@@ -18,6 +18,7 @@
 \def\MaxPoolColor{rgb:orange,8;red,3}
 \def\DecoderColor{rgb:blue,5;white,5}
 \def\ActivationColor{rgb:red,5;blue,5}
+\def\GreyColor{rgb:black,3;white,5}
 \def\edgecolor{black}
 
 \newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
@@ -32,7 +33,7 @@
 name=input,
 caption= ,
 xlabel={{2048, }},
-fill=\ConvColor,
+fill=\GreyColor,
 height=1,
 width=10,
 depth=1
@@ -162,17 +163,41 @@ depth=10
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] maxpool-east) {Max Pool (symmetric)};
-
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- (maxpool-north);
 
-\pic[shift={(-1.0,-1.5,0)}] at (maxpool-anchor)
+\pic[shift={(-3.5,0,0)}] at (maxpool-anchor)
+    {Box={
+name=maxpool_l,
+caption= ,
+fill=\MaxPoolColor,
+height=1,
+width=10,
+depth=10
+        }
+    };
+
+\pic[shift={(1.5,0,0)}] at (maxpool-anchor)
+    {Box={
+name=maxpool_r,
+caption= ,
+fill=\MaxPoolColor,
+height=1,
+width=10,
+depth=10
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- ++(0,-0.75) -| (maxpool_l-north);
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- ++(0,-0.75) -| (maxpool_r-north);
+
+\pic[shift={(-3.5,-1.5,0)}] at (maxpool-anchor)
     {Box={
 name=feat,
 caption= ,
-fill=\ConvColor,
+fill=\GreyColor,
 height=1,
-width=10,
+width=35,
 depth=10
         }
     };
@@ -183,7 +208,9 @@ depth=10
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool-south) -- (feat-north);
 
-\node[anchor=west, font=\large\bfseries] at ([xshift=10pt, yshift=18pt] input-east) {PointNet Encoder};
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool_l-south) -- (maxpool_l-south |- feat-north);
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool_r-south) -- (maxpool_r-south |- feat-north);
 
 \pic[shift={(-14.7,-2.25,0)}] at (feat-anchor)
     {Box={
