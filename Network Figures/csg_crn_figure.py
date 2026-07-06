@@ -38,7 +38,7 @@ ENC_GAP = 1.5
 POOL_REGRESSOR_HORIZONTAL_GAP = 3.0
 # extra vertical padding before the pooling layer and after the global features
 POOL_PAD = 1.0
-FEAT_PAD = 1.0
+FEAT_PAD = 3.5
 
 # Decoder spacing
 REGRESSOR_VERTICAL_GAP = 1.2
@@ -87,6 +87,20 @@ def to_arrow_angle(of, to, drop=1.0):
 
 def to_arrow_straight_down(of, to):
     return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (" + of + "-south) -- (" + of + "-south |- " + to + "-north);\n")
+
+
+def to_arrow_depth_step(start, drop1=1.0, dz=15, drop2=1.0, dx=0, end=None):
+    # Right-angle connector that steps through depth: drop in y, travel in z
+    # (negative = away from the viewer), then drop in y again. `start` is a full
+    # TikZ coordinate string (e.g. "([xshift=5pt] feat-south)"); dz/dx are in pt.
+    # If `end` is given, the arrow tip is named "<end>-anchor" so a centered_box
+    # can be placed there via prev=<end>.
+    tag = " coordinate (" + end + "-anchor)" if end else ""
+    return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] "
+            + start
+            + " -- ++(0,-" + str(drop1) + ",0) "
+            + "-- ++(" + str(dx) + "pt,0," + str(dz) + "pt) "
+            + "-- ++(0,-" + str(drop2) + ",0)" + tag + ";\n")
 
 
 def sloped_east_label(name, text, options="align=center, font=\\small\\bfseries"):
@@ -176,6 +190,15 @@ encoder = [
     # Side pool layers drop straight down into the widened global feature box.
     to_arrow_straight_down("maxpool_l", "feat"),
     to_arrow_straight_down("maxpool_r", "feat"),
+    # Two arrows exiting the centre of the global feature pool: down, away from
+    # the viewer (-z), then down again. A 3x3x3 decoder-coloured cube sits at
+    # the tip of each arrow.
+    to_arrow_depth_step("(feat-south)", drop1=3.0, dz=-3, drop2=1.0, end="cubeA"),
+    to_arrow_depth_step("(feat-south)", drop1=3.0, dz=-6, drop2=1.0, end="cubeB"),
+    centered_box("cubeA_box", r"\DecoderColor", "cubeA", 3, 3, 3, half_w(3)),
+    text_node("([xshift=10pt] cubeA_box-east)", "Primitive Decoder 2"),
+    centered_box("cubeB_box", r"\DecoderColor", "cubeB", 3, 3, 3, half_w(3)),
+    text_node("([xshift=10pt] cubeB_box-east)", r"Primitive Decoder \textit{n}"),
 ]
 
 

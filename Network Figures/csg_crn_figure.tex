@@ -220,7 +220,37 @@ depth=10
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool_r-south) -- (maxpool_r-south |- feat-north);
 
-\pic[shift={(-1.2,-2.2,0)}] at (feat-anchor)
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.0,0) -- ++(0pt,0,-3pt) -- ++(0,-1.0,0) coordinate (cubeA-anchor);
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.0,0) -- ++(0pt,0,-6pt) -- ++(0,-1.0,0) coordinate (cubeB-anchor);
+
+\pic[shift={(-0.3,-0.3,0)}] at (cubeA-anchor)
+    {Box={
+name=cubeA_box,
+caption= ,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] cubeA_box-east) {Primitive Decoder 2};
+
+\pic[shift={(-0.3,-0.3,0)}] at (cubeB-anchor)
+    {Box={
+name=cubeB_box,
+caption= ,
+fill=\DecoderColor,
+height=3,
+width=3,
+depth=3
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] cubeB_box-east) {Primitive Decoder \textit{n}};
+
+\pic[shift={(-1.2,-4.7,0)}] at (feat-anchor)
     {Box={
 name=dec1024,
 caption= ,
