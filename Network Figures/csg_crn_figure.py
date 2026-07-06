@@ -35,7 +35,12 @@ BOX_SCALE = 0.2
 # centre-to-centre vertical gap between encoder boxes
 ENC_GAP = 1.5
 # horizontal gap between the three in-line pool layers
-POOL_SPACING = 3.0
+POOL_REGRESSOR_HORIZONTAL_GAP = 3.0
+
+# Decoder spacing
+REGRESSOR_VERTICAL_GAP = 1.2
+REGRESSOR_HORIZONTAL_GAP = 4.0
+PRIM_DECODER_TO_HEAD_GAP = 2.25
 
 
 # ---------------
@@ -148,8 +153,8 @@ encoder = [
     to_arrow("conv4", "maxpool"),
 
     # Left and right pool layers, in-line horizontally with the center pool.
-    to_box("maxpool_l", r"\MaxPoolColor", "(maxpool-anchor)", "(-{},0,0)".format(round(POOL_SPACING + half_w(10), 3), ), width=10, height=1, depth=10),
-    to_box("maxpool_r", r"\MaxPoolColor", "(maxpool-anchor)", "({},0,0)".format(round(POOL_SPACING - half_w(10), 3), ), width=10, height=1, depth=10),
+    to_box("maxpool_l", r"\MaxPoolColor", "(maxpool-anchor)", "(-{},0,0)".format(round(POOL_REGRESSOR_HORIZONTAL_GAP + half_w(10), 3), ), width=10, height=1, depth=10),
+    to_box("maxpool_r", r"\MaxPoolColor", "(maxpool-anchor)", "({},0,0)".format(round(POOL_REGRESSOR_HORIZONTAL_GAP - half_w(10), 3), ), width=10, height=1, depth=10),
 
     # conv4 fans out to all three pool layers via right-angle connectors.
     to_arrow_angle("conv4", "maxpool_l", drop=ENC_GAP / 2.0),
@@ -171,6 +176,20 @@ encoder = [
 ]
 
 
+# -----------------------
+# Shared decoder layers
+# -----------------------
+shared_decoder = [
+    centered_box("dec1024", r"\DecoderColor", "feat", 12, 3, 3, REGRESSOR_VERTICAL_GAP, ylabel=1024),
+    text_node("([xshift=10pt] dec1024-east)", "Fully-Connected MLP"),
+    to_arrow("feat", "dec1024"),
+
+    centered_box("dec512", r"\DecoderColor", "dec1024", 9, 3, 3, REGRESSOR_VERTICAL_GAP, ylabel=512),
+    text_node("([xshift=20pt] dec512-east)", "Fully-Connected MLP"),
+    to_arrow("dec1024", "dec512"),
+]
+
+
 # ---------------
 # Decoder network
 # ---------------
@@ -184,40 +203,27 @@ HEADS = [
     ("roundness",    1, "Roundness",   "Sigmoid"),
 ]
 
-SPACING = 4.5            # horizontal gap between heads
-TOP_DROP = 2.25          # vertical gap from the global feature to each head
-DEC_GAP = 1.2            # centre-to-centre vertical gap between decoder boxes
-
 
 def decoder_prong(index, prefix, out_size, head_label, activation):
-    dx = round((index - (len(HEADS) - 1) / 2.0) * SPACING, 2)
+    dx = round((index - (len(HEADS) - 1) / 2.0) * REGRESSOR_HORIZONTAL_GAP, 2)
     elems = []
 
-    # Top hidden layer (1024), branched off the global feature and centred on
-    # x = dx (relative to the encoder axis at feat's centre).
+    # Top hidden layer (128), branched off the last shared decoder layer and
+    # centred on x = dx (relative to the encoder axis at dec512's centre).
     h0 = prefix + "_h0"
-    elems.append(to_box(h0, r"\DecoderColor", "(feat-anchor)", "({},-{},0)".format(round(dx - half_w(12), 3), TOP_DROP), width=12, height=3, depth=3, ylabel=1024))
-    elems.append(to_arrow_angle("feat", h0))
-    # elems.append(text_node("([yshift=14pt] {}-north)".format(h0), head_label, options="anchor=south, font=\\small\\bfseries"))
+    elems.append(to_box(h0, r"\DecoderColor", "(dec512-anchor)", "({},-{},0)".format(round(dx - half_w(6), 3), PRIM_DECODER_TO_HEAD_GAP), width=6, height=3, depth=3, ylabel=128))
+    elems.append(to_arrow_angle("dec512", h0))
 
-    # Remaining hidden layers, stacked straight down and centred on the prong.
+    # Remaining hidden layer, stacked straight down and centred on the prong.
     h1 = prefix + "_h1"
-    elems.append(centered_box(h1, r"\DecoderColor", h0, 9, 3, 3, DEC_GAP, ylabel=512))
+    elems.append(centered_box(h1, r"\DecoderColor", h0, 3, 3, 3, REGRESSOR_VERTICAL_GAP, ylabel=64))
     elems.append(to_arrow(h0, h1))
-
-    h2 = prefix + "_h2"
-    elems.append(centered_box(h2, r"\DecoderColor", h1, 6, 3, 3, DEC_GAP, ylabel=128))
-    elems.append(to_arrow(h1, h2))
-
-    h3 = prefix + "_h3"
-    elems.append(centered_box(h3, r"\DecoderColor", h2, 3, 3, 3, DEC_GAP, ylabel=64))
-    elems.append(to_arrow(h2, h3))
 
     # Activation output head (purple).
     out = prefix + "_out"
-    elems.append(centered_box(out, r"\ActivationColor", h3, 3, 3, 3, DEC_GAP, caption=head_label, ylabel=out_size))
+    elems.append(centered_box(out, r"\ActivationColor", h1, 3, 3, 3, REGRESSOR_VERTICAL_GAP, caption=head_label, ylabel=out_size))
     elems.append(text_node("([xshift=10pt] {}-east)".format(out), activation))
-    elems.append(to_arrow(h3, out))
+    elems.append(to_arrow(h1, out))
     return elems
 
 
@@ -226,6 +232,7 @@ def decoder_prong(index, prefix, out_size, head_label, activation):
 # -----------
 arch = [to_head(PLOTNN_REL), to_cor(), to_colors(), to_begin()]
 arch += encoder
+arch += shared_decoder
 
 for i, (prefix, out_size, label, activation) in enumerate(HEADS):
     arch += decoder_prong(i, prefix, out_size, label, activation)
