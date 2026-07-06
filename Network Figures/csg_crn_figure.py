@@ -36,10 +36,13 @@ BOX_SCALE = 0.2
 ENC_GAP = 1.5
 # horizontal gap between the three in-line pool layers
 POOL_REGRESSOR_HORIZONTAL_GAP = 3.0
+# extra vertical padding before the pooling layer and after the global features
+POOL_PAD = 1.0
+FEAT_PAD = 1.0
 
 # Decoder spacing
 REGRESSOR_VERTICAL_GAP = 1.2
-REGRESSOR_HORIZONTAL_GAP = 4.0
+REGRESSOR_HORIZONTAL_GAP = 3.5
 PRIM_DECODER_TO_HEAD_GAP = 2.25
 
 
@@ -118,47 +121,47 @@ encoder = [
     text_node("([xshift=-4pt] input-west)", str(NUM_FEATURES), options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] input-east)", r"Input Point Samples\\(3D coordinate + 3 distances)", options="anchor=west, align=left, font=\\small\\bfseries"),
 
-    centered_box("stnin", r"\TNetColor", "input", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("stnin", r"\TNetColor", "input", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] stnin-west)", "64", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] stnin-east)", "Input Transform Network"),
     to_arrow("input", "stnin"),
 
-    centered_box("conv1", r"\ConvColor", "stnin", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("conv1", r"\ConvColor", "stnin", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv1-west)", "64", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv1-east)", "1D Convolution"),
+    text_node("([xshift=10pt] conv1-east)", "conv1"),
     to_arrow("stnin", "conv1"),
 
-    centered_box("stnft", r"\TNetColor", "conv1", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("stnft", r"\TNetColor", "conv1", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] stnft-west)", "64", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] stnft-east)", "Feature Transform Network"),
     to_arrow("conv1", "stnft"),
 
-    centered_box("conv2", r"\ConvColor", "stnft", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("conv2", r"\ConvColor", "stnft", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv2-west)", "64", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv2-east)", "1D Convolution"),
+    text_node("([xshift=10pt] conv2-east)", "conv2"),
     to_arrow("stnft", "conv2"),
 
-    centered_box("conv3", r"\ConvColor", "conv2", 10, 1, 6, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("conv3", r"\ConvColor", "conv2", 10, 2, 6, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv3-west)", "128", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv3-east)", "1D Convolution"),
+    text_node("([xshift=10pt] conv3-east)", "conv3"),
     to_arrow("conv2", "conv3"),
 
-    centered_box("conv4", r"\ConvColor", "conv3", 10, 1, 9, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("conv4", r"\ConvColor", "conv3", 10, 2, 9, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv4-west)", "1024", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv4-east)", "1D Convolution"),
+    text_node("([xshift=10pt] conv4-east)", "conv4"),
     to_arrow("conv3", "conv4"),
 
     # Center pool layer, directly below conv4.
-    centered_box("maxpool", r"\MaxPoolColor", "conv4", 10, 1, 10, ENC_GAP),
+    centered_box("maxpool", r"\MaxPoolColor", "conv4", 10, 2, 10, ENC_GAP + POOL_PAD),
     to_arrow("conv4", "maxpool"),
 
     # Left and right pool layers, in-line horizontally with the center pool.
-    to_box("maxpool_l", r"\MaxPoolColor", "(maxpool-anchor)", "(-{},0,0)".format(round(POOL_REGRESSOR_HORIZONTAL_GAP + half_w(10), 3), ), width=10, height=1, depth=10),
-    to_box("maxpool_r", r"\MaxPoolColor", "(maxpool-anchor)", "({},0,0)".format(round(POOL_REGRESSOR_HORIZONTAL_GAP - half_w(10), 3), ), width=10, height=1, depth=10),
+    to_box("maxpool_l", r"\MaxPoolColor", "(maxpool-anchor)", "(-{},0,0)".format(round(POOL_REGRESSOR_HORIZONTAL_GAP + half_w(10), 3), ), width=10, height=2, depth=10),
+    to_box("maxpool_r", r"\MaxPoolColor", "(maxpool-anchor)", "({},0,0)".format(round(POOL_REGRESSOR_HORIZONTAL_GAP - half_w(10), 3), ), width=10, height=2, depth=10),
 
     # conv4 fans out to all three pool layers via right-angle connectors.
-    to_arrow_angle("conv4", "maxpool_l", drop=ENC_GAP / 2.0),
-    to_arrow_angle("conv4", "maxpool_r", drop=ENC_GAP / 2.0),
+    to_arrow_angle("conv4", "maxpool_l", drop=(ENC_GAP + POOL_PAD) / 2.0),
+    to_arrow_angle("conv4", "maxpool_r", drop=(ENC_GAP + POOL_PAD) / 2.0),
 
     # "Pool" label on the east face of each pool box, parallel to its side.
     sloped_east_label("maxpool_l", "Max"),
@@ -166,9 +169,9 @@ encoder = [
     sloped_east_label("maxpool_r", "Avg-TopK"),
     text_node("([xshift=40pt] maxpool_r-east)", "Pooling Layer"),
 
-    centered_box("feat", r"\GreyColor", "maxpool", 40, 1, 10, ENC_GAP),
+    centered_box("feat", r"\GreyColor", "maxpool", 40, 2, 10, ENC_GAP),
     text_node("([xshift=-10pt, yshift=-20pt] feat-south)", "3072", options="anchor=east, font=\\small"),
-    text_node("([xshift=40pt] feat-east)", "Global Feature"),
+    text_node("([xshift=40pt] feat-east)", "Global Features"),
     to_arrow("maxpool", "feat"),
     # Side pool layers drop straight down into the widened global feature box.
     to_arrow_straight_down("maxpool_l", "feat"),
@@ -180,13 +183,17 @@ encoder = [
 # Shared decoder layers
 # -----------------------
 shared_decoder = [
-    centered_box("dec1024", r"\DecoderColor", "feat", 12, 3, 3, REGRESSOR_VERTICAL_GAP, ylabel=1024),
-    text_node("([xshift=10pt] dec1024-east)", "Fully-Connected MLP"),
+    centered_box("dec1024", r"\DecoderColor", "feat", 12, 2, 2, REGRESSOR_VERTICAL_GAP + FEAT_PAD, ylabel=1024),
+    text_node("([xshift=10pt] dec1024-east)", "mlp1"),
     to_arrow("feat", "dec1024"),
 
-    centered_box("dec512", r"\DecoderColor", "dec1024", 9, 3, 3, REGRESSOR_VERTICAL_GAP, ylabel=512),
-    text_node("([xshift=20pt] dec512-east)", "Fully-Connected MLP"),
+    centered_box("dec512", r"\DecoderColor", "dec1024", 9, 2, 2, REGRESSOR_VERTICAL_GAP, ylabel=512),
+    text_node("([xshift=20pt] dec512-east)", "mlp2"),
     to_arrow("dec1024", "dec512"),
+
+    centered_box("prim", r"\GreyColor", "dec512", 9, 2, 2, REGRESSOR_VERTICAL_GAP, ylabel=512),
+    text_node("([xshift=20pt] prim-east)", "Primitive Features"),
+    to_arrow("dec512", "prim"),
 ]
 
 
@@ -208,20 +215,20 @@ def decoder_prong(index, prefix, out_size, head_label, activation):
     dx = round((index - (len(HEADS) - 1) / 2.0) * REGRESSOR_HORIZONTAL_GAP, 2)
     elems = []
 
-    # Top hidden layer (128), branched off the last shared decoder layer and
-    # centred on x = dx (relative to the encoder axis at dec512's centre).
+    # Top hidden layer (128), branched off the primitive features layer and
+    # centred on x = dx (relative to the encoder axis at prim's centre).
     h0 = prefix + "_h0"
-    elems.append(to_box(h0, r"\DecoderColor", "(dec512-anchor)", "({},-{},0)".format(round(dx - half_w(6), 3), PRIM_DECODER_TO_HEAD_GAP), width=6, height=3, depth=3, ylabel=128))
-    elems.append(to_arrow_angle("dec512", h0))
+    elems.append(to_box(h0, r"\DecoderColor", "(prim-anchor)", "({},-{},0)".format(round(dx - half_w(6), 3), PRIM_DECODER_TO_HEAD_GAP), width=6, height=2, depth=2, ylabel=128))
+    elems.append(to_arrow_angle("prim", h0))
 
     # Remaining hidden layer, stacked straight down and centred on the prong.
     h1 = prefix + "_h1"
-    elems.append(centered_box(h1, r"\DecoderColor", h0, 3, 3, 3, REGRESSOR_VERTICAL_GAP, ylabel=64))
+    elems.append(centered_box(h1, r"\DecoderColor", h0, 2, 2, 2, REGRESSOR_VERTICAL_GAP, ylabel=64))
     elems.append(to_arrow(h0, h1))
 
     # Activation output head (purple).
     out = prefix + "_out"
-    elems.append(centered_box(out, r"\ActivationColor", h1, 3, 3, 3, REGRESSOR_VERTICAL_GAP, caption=head_label, ylabel=out_size))
+    elems.append(centered_box(out, r"\ActivationColor", h1, 2, 2, 2, REGRESSOR_VERTICAL_GAP, caption=head_label, ylabel=out_size))
     elems.append(text_node("([xshift=10pt] {}-east)".format(out), activation))
     elems.append(to_arrow(h1, out))
     return elems

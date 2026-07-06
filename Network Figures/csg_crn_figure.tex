@@ -50,7 +50,7 @@ name=stnin,
 caption= ,
 xlabel={{2048, }},
 fill=\TNetColor,
-height=1,
+height=2,
 width=10,
 depth=3
         }
@@ -68,7 +68,7 @@ name=conv1,
 caption= ,
 xlabel={{2048, }},
 fill=\ConvColor,
-height=1,
+height=2,
 width=10,
 depth=3
         }
@@ -76,7 +76,7 @@ depth=3
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv1-west) {64};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv1-east) {1D Convolution};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv1-east) {conv1};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (stnin-south) -- (conv1-north);
 
@@ -86,7 +86,7 @@ name=stnft,
 caption= ,
 xlabel={{2048, }},
 fill=\TNetColor,
-height=1,
+height=2,
 width=10,
 depth=3
         }
@@ -104,7 +104,7 @@ name=conv2,
 caption= ,
 xlabel={{2048, }},
 fill=\ConvColor,
-height=1,
+height=2,
 width=10,
 depth=3
         }
@@ -112,7 +112,7 @@ depth=3
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv2-west) {64};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv2-east) {1D Convolution};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv2-east) {conv2};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (stnft-south) -- (conv2-north);
 
@@ -122,7 +122,7 @@ name=conv3,
 caption= ,
 xlabel={{2048, }},
 fill=\ConvColor,
-height=1,
+height=2,
 width=10,
 depth=6
         }
@@ -130,7 +130,7 @@ depth=6
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv3-west) {128};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv3-east) {1D Convolution};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv3-east) {conv3};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv2-south) -- (conv3-north);
 
@@ -140,7 +140,7 @@ name=conv4,
 caption= ,
 xlabel={{2048, }},
 fill=\ConvColor,
-height=1,
+height=2,
 width=10,
 depth=9
         }
@@ -148,16 +148,16 @@ depth=9
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv4-west) {1024};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv4-east) {1D Convolution};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv4-east) {conv4};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv3-south) -- (conv4-north);
 
-\pic[shift={(-1.0,-1.5,0)}] at (conv4-anchor)
+\pic[shift={(-1.0,-2.5,0)}] at (conv4-anchor)
     {Box={
 name=maxpool,
 caption= ,
 fill=\MaxPoolColor,
-height=1,
+height=2,
 width=10,
 depth=10
         }
@@ -170,7 +170,7 @@ depth=10
 name=maxpool_l,
 caption= ,
 fill=\MaxPoolColor,
-height=1,
+height=2,
 width=10,
 depth=10
         }
@@ -181,15 +181,15 @@ depth=10
 name=maxpool_r,
 caption= ,
 fill=\MaxPoolColor,
-height=1,
+height=2,
 width=10,
 depth=10
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- ++(0,-0.75) -| (maxpool_l-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- ++(0,-1.25) -| (maxpool_l-north);
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- ++(0,-0.75) -| (maxpool_r-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- ++(0,-1.25) -| (maxpool_r-north);
 
 \path ([xshift=16pt, yshift=-9pt] maxpool_l-neareast) edge [draw=none, "Max", sloped, midway, align=center, font=\small\bfseries] ([xshift=16pt, yshift=-9pt] maxpool_l-fareast);
 
@@ -204,7 +204,7 @@ depth=10
 name=feat,
 caption= ,
 fill=\GreyColor,
-height=1,
+height=2,
 width=40,
 depth=10
         }
@@ -212,7 +212,7 @@ depth=10
 
 \node[anchor=east, font=\small] at ([xshift=-10pt, yshift=-20pt] feat-south) {3072};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=40pt] feat-east) {Global Feature};
+\node[anchor=west, font=\small\bfseries] at ([xshift=40pt] feat-east) {Global Features};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool-south) -- (feat-north);
 
@@ -220,19 +220,19 @@ depth=10
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool_r-south) -- (maxpool_r-south |- feat-north);
 
-\pic[shift={(-1.2,-1.2,0)}] at (feat-anchor)
+\pic[shift={(-1.2,-2.2,0)}] at (feat-anchor)
     {Box={
 name=dec1024,
 caption= ,
 ylabel=1024,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=12,
-depth=3
+depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] dec1024-east) {Fully-Connected MLP};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] dec1024-east) {mlp1};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- (dec1024-north);
 
@@ -242,53 +242,69 @@ name=dec512,
 caption= ,
 ylabel=512,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=9,
-depth=3
+depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=20pt] dec512-east) {Fully-Connected MLP};
+\node[anchor=west, font=\small\bfseries] at ([xshift=20pt] dec512-east) {mlp2};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec1024-south) -- (dec512-north);
 
-\pic[shift={(-12.6,-2.25,0)}] at (dec512-anchor)
+\pic[shift={(-0.9,-1.2,0)}] at (dec512-anchor)
+    {Box={
+name=prim,
+caption= ,
+ylabel=512,
+fill=\GreyColor,
+height=2,
+width=9,
+depth=2
+        }
+    };
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=20pt] prim-east) {Primitive Features};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- (prim-north);
+
+\pic[shift={(-11.1,-2.25,0)}] at (prim-anchor)
     {Box={
 name=shape_h0,
 caption= ,
 ylabel=128,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=6,
-depth=3
+depth=2
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- ++(0,-1.0) -| (shape_h0-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (prim-south) -- ++(0,-1.0) -| (shape_h0-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (shape_h0-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (shape_h0-anchor)
     {Box={
 name=shape_h1,
 caption= ,
 ylabel=64,
 fill=\DecoderColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (shape_h0-south) -- (shape_h1-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (shape_h1-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (shape_h1-anchor)
     {Box={
 name=shape_out,
 caption={Shape},
 ylabel=3,
 fill=\ActivationColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
@@ -296,43 +312,43 @@ depth=3
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (shape_h1-south) -- (shape_out-north);
 
-\pic[shift={(-8.6,-2.25,0)}] at (dec512-anchor)
+\pic[shift={(-7.6,-2.25,0)}] at (prim-anchor)
     {Box={
 name=operation_h0,
 caption= ,
 ylabel=128,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=6,
-depth=3
+depth=2
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- ++(0,-1.0) -| (operation_h0-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (prim-south) -- ++(0,-1.0) -| (operation_h0-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (operation_h0-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (operation_h0-anchor)
     {Box={
 name=operation_h1,
 caption= ,
 ylabel=64,
 fill=\DecoderColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (operation_h0-south) -- (operation_h1-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (operation_h1-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (operation_h1-anchor)
     {Box={
 name=operation_out,
 caption={Operation},
 ylabel=2,
 fill=\ActivationColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
@@ -340,43 +356,43 @@ depth=3
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (operation_h1-south) -- (operation_out-north);
 
-\pic[shift={(-4.6,-2.25,0)}] at (dec512-anchor)
+\pic[shift={(-4.1,-2.25,0)}] at (prim-anchor)
     {Box={
 name=translation_h0,
 caption= ,
 ylabel=128,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=6,
-depth=3
+depth=2
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- ++(0,-1.0) -| (translation_h0-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (prim-south) -- ++(0,-1.0) -| (translation_h0-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (translation_h0-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (translation_h0-anchor)
     {Box={
 name=translation_h1,
 caption= ,
 ylabel=64,
 fill=\DecoderColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (translation_h0-south) -- (translation_h1-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (translation_h1-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (translation_h1-anchor)
     {Box={
 name=translation_out,
 caption={Translation},
 ylabel=3,
 fill=\ActivationColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
@@ -384,43 +400,43 @@ depth=3
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (translation_h1-south) -- (translation_out-north);
 
-\pic[shift={(-0.6,-2.25,0)}] at (dec512-anchor)
+\pic[shift={(-0.6,-2.25,0)}] at (prim-anchor)
     {Box={
 name=rotation_h0,
 caption= ,
 ylabel=128,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=6,
-depth=3
+depth=2
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- ++(0,-1.0) -| (rotation_h0-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (prim-south) -- ++(0,-1.0) -| (rotation_h0-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (rotation_h0-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (rotation_h0-anchor)
     {Box={
 name=rotation_h1,
 caption= ,
 ylabel=64,
 fill=\DecoderColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (rotation_h0-south) -- (rotation_h1-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (rotation_h1-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (rotation_h1-anchor)
     {Box={
 name=rotation_out,
 caption={Rotation},
 ylabel=4,
 fill=\ActivationColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
@@ -428,43 +444,43 @@ depth=3
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (rotation_h1-south) -- (rotation_out-north);
 
-\pic[shift={(3.4,-2.25,0)}] at (dec512-anchor)
+\pic[shift={(2.9,-2.25,0)}] at (prim-anchor)
     {Box={
 name=scale_h0,
 caption= ,
 ylabel=128,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=6,
-depth=3
+depth=2
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- ++(0,-1.0) -| (scale_h0-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (prim-south) -- ++(0,-1.0) -| (scale_h0-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (scale_h0-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (scale_h0-anchor)
     {Box={
 name=scale_h1,
 caption= ,
 ylabel=64,
 fill=\DecoderColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (scale_h0-south) -- (scale_h1-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (scale_h1-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (scale_h1-anchor)
     {Box={
 name=scale_out,
 caption={Scale},
 ylabel=3,
 fill=\ActivationColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
@@ -472,43 +488,43 @@ depth=3
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (scale_h1-south) -- (scale_out-north);
 
-\pic[shift={(7.4,-2.25,0)}] at (dec512-anchor)
+\pic[shift={(6.4,-2.25,0)}] at (prim-anchor)
     {Box={
 name=blending_h0,
 caption= ,
 ylabel=128,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=6,
-depth=3
+depth=2
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- ++(0,-1.0) -| (blending_h0-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (prim-south) -- ++(0,-1.0) -| (blending_h0-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (blending_h0-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (blending_h0-anchor)
     {Box={
 name=blending_h1,
 caption= ,
 ylabel=64,
 fill=\DecoderColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (blending_h0-south) -- (blending_h1-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (blending_h1-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (blending_h1-anchor)
     {Box={
 name=blending_out,
 caption={Blending},
 ylabel=1,
 fill=\ActivationColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
@@ -516,43 +532,43 @@ depth=3
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (blending_h1-south) -- (blending_out-north);
 
-\pic[shift={(11.4,-2.25,0)}] at (dec512-anchor)
+\pic[shift={(9.9,-2.25,0)}] at (prim-anchor)
     {Box={
 name=roundness_h0,
 caption= ,
 ylabel=128,
 fill=\DecoderColor,
-height=3,
+height=2,
 width=6,
-depth=3
+depth=2
         }
     };
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- ++(0,-1.0) -| (roundness_h0-north);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (prim-south) -- ++(0,-1.0) -| (roundness_h0-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (roundness_h0-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (roundness_h0-anchor)
     {Box={
 name=roundness_h1,
 caption= ,
 ylabel=64,
 fill=\DecoderColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (roundness_h0-south) -- (roundness_h1-north);
 
-\pic[shift={(-0.3,-1.2,0)}] at (roundness_h1-anchor)
+\pic[shift={(-0.2,-1.2,0)}] at (roundness_h1-anchor)
     {Box={
 name=roundness_out,
 caption={Roundness},
 ylabel=1,
 fill=\ActivationColor,
-height=3,
-width=3,
-depth=3
+height=2,
+width=2,
+depth=2
         }
     };
 
