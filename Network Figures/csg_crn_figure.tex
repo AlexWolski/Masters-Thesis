@@ -42,7 +42,7 @@ depth=1
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] input-west) {6};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] input-east) {Input Point Samples  (2048 x 6: x,y,z + SDFs)};
+\node[anchor=west, align=left, font=\small\bfseries] at ([xshift=10pt] input-east) {Input Point Samples\\(3D coordinate + 3 distances)};
 
 \pic[shift={(-1.0,-1.5,0)}] at (input-anchor)
     {Box={
@@ -58,7 +58,7 @@ depth=3
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] stnin-west) {64};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] stnin-east) {Input Transform Network  (2048 x 64)};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] stnin-east) {Input Transform Network};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (input-south) -- (stnin-north);
 
@@ -76,7 +76,7 @@ depth=3
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv1-west) {64};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv1-east) {1D Convolution  (2048 x 64)};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv1-east) {1D Convolution};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (stnin-south) -- (conv1-north);
 
@@ -94,7 +94,7 @@ depth=3
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] stnft-west) {64};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] stnft-east) {Feature Transform Network  (2048 x 64)};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] stnft-east) {Feature Transform Network};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv1-south) -- (stnft-north);
 
@@ -112,7 +112,7 @@ depth=3
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv2-west) {64};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv2-east) {1D Convolution  (2048 x 64)};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv2-east) {1D Convolution};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (stnft-south) -- (conv2-north);
 
@@ -130,7 +130,7 @@ depth=6
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv3-west) {128};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv3-east) {1D Convolution  (2048 x 128)};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv3-east) {1D Convolution};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv2-south) -- (conv3-north);
 
@@ -148,7 +148,7 @@ depth=9
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv4-west) {1024};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv4-east) {1D Convolution  (2048 x 1024)};
+\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv4-east) {1D Convolution};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv3-south) -- (conv4-north);
 
@@ -165,7 +165,7 @@ depth=10
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- (maxpool-north);
 
-\pic[shift={(-3.5,0,0)}] at (maxpool-anchor)
+\pic[shift={(-4.0,0,0)}] at (maxpool-anchor)
     {Box={
 name=maxpool_l,
 caption= ,
@@ -176,7 +176,7 @@ depth=10
         }
     };
 
-\pic[shift={(1.5,0,0)}] at (maxpool-anchor)
+\pic[shift={(2.0,0,0)}] at (maxpool-anchor)
     {Box={
 name=maxpool_r,
 caption= ,
@@ -191,20 +191,28 @@ depth=10
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (conv4-south) -- ++(0,-0.75) -| (maxpool_r-north);
 
-\pic[shift={(-3.5,-1.5,0)}] at (maxpool-anchor)
+\path ([xshift=16pt, yshift=-9pt] maxpool_l-neareast) edge [draw=none, "Max", sloped, midway, align=center, font=\small\bfseries] ([xshift=16pt, yshift=-9pt] maxpool_l-fareast);
+
+\path ([xshift=16pt, yshift=-9pt] maxpool-neareast) edge [draw=none, "Mean", sloped, midway, align=center, font=\small\bfseries] ([xshift=16pt, yshift=-9pt] maxpool-fareast);
+
+\path ([xshift=16pt, yshift=-9pt] maxpool_r-neareast) edge [draw=none, "Avg-TopK", sloped, midway, align=center, font=\small\bfseries] ([xshift=16pt, yshift=-9pt] maxpool_r-fareast);
+
+\node[anchor=west, font=\small\bfseries] at ([xshift=40pt] maxpool_r-east) {Pooling Layer};
+
+\pic[shift={(-4.0,-1.5,0)}] at (maxpool-anchor)
     {Box={
 name=feat,
 caption= ,
 fill=\GreyColor,
 height=1,
-width=35,
+width=40,
 depth=10
         }
     };
 
-\node[anchor=east, font=\small] at ([xshift=-4pt] feat-west) {1024};
+\node[anchor=east, font=\small] at ([xshift=-10pt, yshift=-20pt] feat-south) {3072};
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] feat-east) {Global Feature  (1024)};
+\node[anchor=west, font=\small\bfseries] at ([xshift=40pt] feat-east) {Global Feature};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool-south) -- (feat-north);
 

@@ -35,7 +35,7 @@ BOX_SCALE = 0.2
 # centre-to-centre vertical gap between encoder boxes
 ENC_GAP = 1.5
 # horizontal gap between the three in-line pool layers
-POOL_SPACING = 2.5
+POOL_SPACING = 3.0
 
 
 # ---------------
@@ -78,9 +78,12 @@ def to_arrow_angle(of, to, drop=1.0):
 
 
 def to_arrow_straight_down(of, to):
-    # Straight vertical line from `of`'s south anchor down to the point on `to`'s
-    # north edge at the same x-coordinate (TikZ |- intersection coordinate).
     return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (" + of + "-south) -- (" + of + "-south |- " + to + "-north);\n")
+
+
+def sloped_east_label(name, text, options="align=center, font=\\small\\bfseries"):
+    shift = "([xshift=16pt, yshift=-9pt] "
+    return ("\n\\path " + shift + name + "-neareast) edge [draw=none, \"" + text + "\", sloped, midway, " + options + "] " + shift + name + "-fareast);\n")
 
 
 def half_w(width):
@@ -108,41 +111,40 @@ def out_shape(channels):
 encoder = [
     centered_box("input", r"\GreyColor", None, 10, 1, 1, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] input-west)", str(NUM_FEATURES), options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] input-east)", "Input Point Samples  (" + out_shape(NUM_FEATURES) + ": x,y,z + SDFs)"),
+    text_node("([xshift=10pt] input-east)", r"Input Point Samples\\(3D coordinate + 3 distances)", options="anchor=west, align=left, font=\\small\\bfseries"),
 
     centered_box("stnin", r"\TNetColor", "input", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] stnin-west)", "64", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] stnin-east)", "Input Transform Network  (" + out_shape(64) + ")"),
+    text_node("([xshift=10pt] stnin-east)", "Input Transform Network"),
     to_arrow("input", "stnin"),
 
     centered_box("conv1", r"\ConvColor", "stnin", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv1-west)", "64", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv1-east)", "1D Convolution  (" + out_shape(64) + ")"),
+    text_node("([xshift=10pt] conv1-east)", "1D Convolution"),
     to_arrow("stnin", "conv1"),
 
     centered_box("stnft", r"\TNetColor", "conv1", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] stnft-west)", "64", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] stnft-east)", "Feature Transform Network  (" + out_shape(64) + ")"),
+    text_node("([xshift=10pt] stnft-east)", "Feature Transform Network"),
     to_arrow("conv1", "stnft"),
 
     centered_box("conv2", r"\ConvColor", "stnft", 10, 1, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv2-west)", "64", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv2-east)", "1D Convolution  (" + out_shape(64) + ")"),
+    text_node("([xshift=10pt] conv2-east)", "1D Convolution"),
     to_arrow("stnft", "conv2"),
 
     centered_box("conv3", r"\ConvColor", "conv2", 10, 1, 6, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv3-west)", "128", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv3-east)", "1D Convolution  (" + out_shape(128) + ")"),
+    text_node("([xshift=10pt] conv3-east)", "1D Convolution"),
     to_arrow("conv2", "conv3"),
 
     centered_box("conv4", r"\ConvColor", "conv3", 10, 1, 9, ENC_GAP, xlabel=NUM_INPUT_POINTS),
     text_node("([xshift=-4pt] conv4-west)", "1024", options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] conv4-east)", "1D Convolution  (" + out_shape(1024) + ")"),
+    text_node("([xshift=10pt] conv4-east)", "1D Convolution"),
     to_arrow("conv3", "conv4"),
 
     # Center pool layer, directly below conv4.
     centered_box("maxpool", r"\MaxPoolColor", "conv4", 10, 1, 10, ENC_GAP),
-    # text_node("([xshift=10pt] maxpool-east)", "Max Pool (symmetric)"),
     to_arrow("conv4", "maxpool"),
 
     # Left and right pool layers, in-line horizontally with the center pool.
@@ -153,9 +155,15 @@ encoder = [
     to_arrow_angle("conv4", "maxpool_l", drop=ENC_GAP / 2.0),
     to_arrow_angle("conv4", "maxpool_r", drop=ENC_GAP / 2.0),
 
-    centered_box("feat", r"\GreyColor", "maxpool", 35, 1, 10, ENC_GAP),
-    text_node("([xshift=-4pt] feat-west)", str(GLOBAL_FEAT), options="anchor=east, font=\\small"),
-    text_node("([xshift=10pt] feat-east)", "Global Feature  (1024)"),
+    # "Pool" label on the east face of each pool box, parallel to its side.
+    sloped_east_label("maxpool_l", "Max"),
+    sloped_east_label("maxpool", "Mean"),
+    sloped_east_label("maxpool_r", "Avg-TopK"),
+    text_node("([xshift=40pt] maxpool_r-east)", "Pooling Layer"),
+
+    centered_box("feat", r"\GreyColor", "maxpool", 40, 1, 10, ENC_GAP),
+    text_node("([xshift=-10pt, yshift=-20pt] feat-south)", "3072", options="anchor=east, font=\\small"),
+    text_node("([xshift=40pt] feat-east)", "Global Feature"),
     to_arrow("maxpool", "feat"),
     # Side pool layers drop straight down into the widened global feature box.
     to_arrow_straight_down("maxpool_l", "feat"),
