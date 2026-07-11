@@ -170,6 +170,16 @@ def background_box(center_x, center_y, width, height,
     )
 
 
+def backdrop_label(center_x, center_y, width, height, text, inset=0.35):
+    left = round(center_x - width / 2.0 + inset, 3)
+    top = round(center_y + height / 2.0 - inset, 3)
+    return text_node(
+        "(" + str(left) + ", " + str(top) + ")",
+        text,
+        options="anchor=north west, font=\\Large\\bfseries",
+    )
+
+
 def centered_box(name, fill, prev, width, height, depth, gap,
                  caption=" ", xlabel="", ylabel="", zlabel=""):
     if prev is None:
@@ -267,6 +277,7 @@ encoder = [
 
     # Encdoer backdrop
     background_box(ENCODER_BACKDROP_CENTER_X, ENCODER_BACKDROP_CENTER_Y, ENCODER_BACKDROP_WIDTH, ENCODER_BACKDROP_HEIGHT),
+    backdrop_label(ENCODER_BACKDROP_CENTER_X, ENCODER_BACKDROP_CENTER_Y, ENCODER_BACKDROP_WIDTH, ENCODER_BACKDROP_HEIGHT, "Encoder Network"),
 ]
 
 
@@ -345,6 +356,10 @@ arch += [background_box(
     outline_color=r"\DecoderBackdropOutlineColor",
     outline_width=DECODER_BACKDROP_OUTLINE_WIDTH,
     outline_opacity=DECODER_BACKDROP_OUTLINE_OPACITY,
+)]
+arch += [backdrop_label(
+    DECODER_BACKDROP_CENTER_X, DECODER_BACKDROP_CENTER_Y,
+    DECODER_BACKDROP_WIDTH, DECODER_BACKDROP_HEIGHT, "Primitive Decoder 1",
 )]
 
 arch += to_end()
