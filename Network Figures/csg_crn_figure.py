@@ -16,21 +16,23 @@ ENCODER_CONV = [64, 128, 1024]
 GLOBAL_FEAT = 1024
 DECODER_LAYERS = [1024, 512, 128, 64]
 
-# Extra colors
+# Extra colors and tikz libraries
 def to_colors():
     return r"""
+\usetikzlibrary{backgrounds}
 \def\TNetColor{rgb:orange,6;yellow,4}
 \def\MaxPoolColor{rgb:orange,8;red,3}
 \def\DecoderColor{rgb:blue,5;white,5}
 \def\ActivationColor{rgb:red,5;blue,5}
 \def\GreyColor{rgb:black,3;white,5}
+\def\EncoderBackdropColor{""" + ENCODER_BACKDROP_COLOR + r"""}
+\def\EncoderBackdropOutlineColor{""" + ENCODER_BACKDROP_OUTLINE_COLOR + r"""}
+\def\DecoderBackdropColor{""" + DECODER_BACKDROP_COLOR + r"""}
+\def\DecoderBackdropOutlineColor{""" + DECODER_BACKDROP_OUTLINE_COLOR + r"""}
 \def\edgecolor{black}
 """
 
-# Half the on-page width of a box. PlotNeuralNet's Box pic origin is its -west
-# corner and it extends +x by width*scale (Box.sty default scale = 0.2). Placing
-# a box at (prev-anchor) shifted left by its own half-width therefore centres it
-# on the previous box's vertical axis, keeping the whole column centre-aligned.
+# Half the on-page width of a box, used to keep boxes centered.
 BOX_SCALE = 0.2
 # centre-to-centre vertical gap between encoder boxes
 ENC_GAP = 1.5
@@ -38,12 +40,37 @@ ENC_GAP = 1.5
 POOL_REGRESSOR_HORIZONTAL_GAP = 3.0
 # extra vertical padding before the pooling layer and after the global features
 POOL_PAD = 1.0
-FEAT_PAD = 3.5
+FEAT_PAD = 4.5
+
+# height between the Global Pool layer and the regressor head placeholders.
+PRIM_DECODER_HEAD_DROP = 3.75
 
 # Decoder spacing
 REGRESSOR_VERTICAL_GAP = 1.2
 REGRESSOR_HORIZONTAL_GAP = 3.5
 PRIM_DECODER_TO_HEAD_GAP = 2.25
+
+ENCODER_BACKDROP_CENTER_X = 0.0
+ENCODER_BACKDROP_CENTER_Y = -7.5
+ENCODER_BACKDROP_WIDTH = 18
+ENCODER_BACKDROP_HEIGHT = 13.5
+ENCODER_BACKDROP_OPACITY = 0.2
+ENCODER_BACKDROP_CORNER_RADIUS = 8
+ENCODER_BACKDROP_COLOR = "rgb:red,2;white,8"
+ENCODER_BACKDROP_OUTLINE_COLOR = "rgb:red,4;white,4"
+ENCODER_BACKDROP_OUTLINE_WIDTH = 0.4
+ENCODER_BACKDROP_OUTLINE_OPACITY = 0.6
+
+DECODER_BACKDROP_CENTER_X = 0.0
+DECODER_BACKDROP_CENTER_Y = -22.7
+DECODER_BACKDROP_WIDTH = 26
+DECODER_BACKDROP_HEIGHT = 9.3
+DECODER_BACKDROP_OPACITY = 0.2
+DECODER_BACKDROP_CORNER_RADIUS = 8
+DECODER_BACKDROP_COLOR = "rgb:blue,2;cyan,1;white,8"
+DECODER_BACKDROP_OUTLINE_COLOR = "rgb:blue,4;cyan,2;white,4"
+DECODER_BACKDROP_OUTLINE_WIDTH = 0.4
+DECODER_BACKDROP_OUTLINE_OPACITY = 0.6
 
 
 # ---------------
@@ -110,6 +137,37 @@ def sloped_east_label(name, text, options="align=center, font=\\small\\bfseries"
 
 def half_w(width):
     return round(width * BOX_SCALE / 2.0, 3)
+
+
+def background_box(center_x, center_y, width, height,
+                   fill=r"\EncoderBackdropColor",
+                   opacity=ENCODER_BACKDROP_OPACITY,
+                   corner_radius=ENCODER_BACKDROP_CORNER_RADIUS,
+                   outline_color=r"\EncoderBackdropOutlineColor",
+                   outline_width=ENCODER_BACKDROP_OUTLINE_WIDTH,
+                   outline_opacity=ENCODER_BACKDROP_OUTLINE_OPACITY):
+    left = round(center_x - width / 2.0, 3)
+    right = round(center_x + width / 2.0, 3)
+    top = round(center_y + height / 2.0, 3)
+    bottom = round(center_y - height / 2.0, 3)
+
+    # Fill and outline are drawn as two separate strokes so each keeps its own
+    # opacity (a single \draw would share one opacity for line and fill).
+    return (
+        "\n\\begin{scope}[on background layer]\n"
+        "\\draw[fill=" + fill + ", opacity=" + str(opacity)
+        + ", draw=none, rounded corners=" + str(corner_radius) + "pt]\n"
+        "    (" + str(left) + ", " + str(top) + ")\n"
+        "    rectangle\n"
+        "    (" + str(right) + ", " + str(bottom) + ");\n"
+        "\\draw[draw=" + outline_color + ", line width=" + str(outline_width)
+        + "pt, opacity=" + str(outline_opacity)
+        + ", rounded corners=" + str(corner_radius) + "pt]\n"
+        "    (" + str(left) + ", " + str(top) + ")\n"
+        "    rectangle\n"
+        "    (" + str(right) + ", " + str(bottom) + ");\n"
+        "\\end{scope}\n"
+    )
 
 
 def centered_box(name, fill, prev, width, height, depth, gap,
@@ -200,12 +258,15 @@ encoder = [
     # Two arrows exiting the centre of the global feature pool: down, away from
     # the viewer (-z), then down again. A 3x3x3 decoder-coloured cube sits at
     # the tip of each arrow.
-    to_arrow_depth_step("(feat-south)", drop1=3.0, dz=-3, drop2=1.0, end="cubeA"),
-    to_arrow_depth_step("(feat-south)", drop1=3.0, dz=-6, drop2=1.0, end="cubeB"),
+    to_arrow_depth_step("(feat-south)", drop1=PRIM_DECODER_HEAD_DROP, dz=-3, drop2=1.0, end="cubeA"),
+    to_arrow_depth_step("(feat-south)", drop1=PRIM_DECODER_HEAD_DROP, dz=-6, drop2=1.0, end="cubeB"),
     centered_box("cubeA_box", r"\DecoderColor", "cubeA", 3, 3, 3, half_w(3)),
     text_node("([xshift=10pt] cubeA_box-east)", "Primitive Decoder 2"),
     centered_box("cubeB_box", r"\DecoderColor", "cubeB", 3, 3, 3, half_w(3)),
     text_node("([xshift=10pt] cubeB_box-east)", r"Primitive Decoder \textit{n}"),
+
+    # Encdoer backdrop
+    background_box(ENCODER_BACKDROP_CENTER_X, ENCODER_BACKDROP_CENTER_Y, ENCODER_BACKDROP_WIDTH, ENCODER_BACKDROP_HEIGHT),
 ]
 
 
@@ -274,6 +335,17 @@ arch += shared_decoder
 for i, (prefix, out_size, label, activation) in enumerate(HEADS):
     arch += decoder_prong(i, prefix, out_size, label, activation)
 
+# Low-opacity backdrop grouping the decoder network, below the encoder backdrop.
+arch += [background_box(
+    DECODER_BACKDROP_CENTER_X, DECODER_BACKDROP_CENTER_Y,
+    DECODER_BACKDROP_WIDTH, DECODER_BACKDROP_HEIGHT,
+    fill=r"\DecoderBackdropColor",
+    opacity=DECODER_BACKDROP_OPACITY,
+    corner_radius=DECODER_BACKDROP_CORNER_RADIUS,
+    outline_color=r"\DecoderBackdropOutlineColor",
+    outline_width=DECODER_BACKDROP_OUTLINE_WIDTH,
+    outline_opacity=DECODER_BACKDROP_OUTLINE_OPACITY,
+)]
 
 arch += to_end()
 

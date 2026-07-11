@@ -14,11 +14,16 @@
 \def\SoftmaxColor{rgb:magenta,5;black,7}   
 \def\SumColor{rgb:blue,5;green,15}
 
+\usetikzlibrary{backgrounds}
 \def\TNetColor{rgb:orange,6;yellow,4}
 \def\MaxPoolColor{rgb:orange,8;red,3}
 \def\DecoderColor{rgb:blue,5;white,5}
 \def\ActivationColor{rgb:red,5;blue,5}
 \def\GreyColor{rgb:black,3;white,5}
+\def\EncoderBackdropColor{rgb:red,2;white,8}
+\def\EncoderBackdropOutlineColor{rgb:red,4;white,4}
+\def\DecoderBackdropColor{rgb:blue,2;cyan,1;white,8}
+\def\DecoderBackdropOutlineColor{rgb:blue,4;cyan,2;white,4}
 \def\edgecolor{black}
 
 \newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
@@ -227,9 +232,9 @@ depth=10
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (maxpool_r-south) -- (maxpool_r-south |- feat-north);
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.0,0) -- ++(0pt,0,-3pt) -- ++(0,-1.0,0) coordinate (cubeA-anchor);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.75,0) -- ++(0pt,0,-3pt) -- ++(0,-1.0,0) coordinate (cubeA-anchor);
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.0,0) -- ++(0pt,0,-6pt) -- ++(0,-1.0,0) coordinate (cubeB-anchor);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.75,0) -- ++(0pt,0,-6pt) -- ++(0,-1.0,0) coordinate (cubeB-anchor);
 
 \pic[shift={(-0.3,-0.3,0)}] at (cubeA-anchor)
     {Box={
@@ -257,7 +262,18 @@ depth=3
 
 \node[anchor=west, font=\small\bfseries] at ([xshift=10pt] cubeB_box-east) {Primitive Decoder \textit{n}};
 
-\pic[shift={(-1.2,-4.7,0)}] at (feat-anchor)
+\begin{scope}[on background layer]
+\draw[fill=\EncoderBackdropColor, opacity=0.2, draw=none, rounded corners=8pt]
+    (-9.0, -0.75)
+    rectangle
+    (9.0, -14.25);
+\draw[draw=\EncoderBackdropOutlineColor, line width=0.4pt, opacity=0.6, rounded corners=8pt]
+    (-9.0, -0.75)
+    rectangle
+    (9.0, -14.25);
+\end{scope}
+
+\pic[shift={(-1.2,-5.7,0)}] at (feat-anchor)
     {Box={
 name=dec1024,
 caption= ,
@@ -612,6 +628,17 @@ depth=2
 \node[anchor=west, font=\small\bfseries] at ([xshift=10pt] roundness_out-east) {Sigmoid};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (roundness_h1-south) -- (roundness_out-north);
+
+\begin{scope}[on background layer]
+\draw[fill=\DecoderBackdropColor, opacity=0.2, draw=none, rounded corners=8pt]
+    (-13.0, -18.05)
+    rectangle
+    (13.0, -27.35);
+\draw[draw=\DecoderBackdropOutlineColor, line width=0.4pt, opacity=0.6, rounded corners=8pt]
+    (-13.0, -18.05)
+    rectangle
+    (13.0, -27.35);
+\end{scope}
 
 \end{tikzpicture}
 \end{document}
