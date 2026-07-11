@@ -131,37 +131,44 @@ def out_shape(channels):
 # Encoder network
 # ---------------
 encoder = [
-    centered_box("input", r"\GreyColor", None, 10, 1, 1, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("input", r"\GreyColor", None, 10, 1, 1, ENC_GAP),
+    text_node("([xshift=25pt, yshift=-2pt] input-nearsouthwest)", str(NUM_INPUT_POINTS), options="anchor=north east, font=\\small"),
     text_node("([xshift=-4pt] input-west)", str(NUM_FEATURES), options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] input-east)", r"Input Point Samples\\(3D coordinate + 3 distances)", options="anchor=west, align=left, font=\\small\\bfseries"),
 
-    centered_box("stnin", r"\TNetColor", "input", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("stnin", r"\TNetColor", "input", 10, 2, 3, ENC_GAP),
+    text_node("([xshift=25pt, yshift=-2pt] stnin-nearsouthwest)", str(NUM_INPUT_POINTS), options="anchor=north east, font=\\small"),
     text_node("([xshift=-4pt] stnin-west)", "64", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] stnin-east)", "Input Transform Network"),
     to_arrow("input", "stnin"),
 
-    centered_box("conv1", r"\ConvColor", "stnin", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("conv1", r"\ConvColor", "stnin", 10, 2, 3, ENC_GAP),
+    text_node("([xshift=25pt, yshift=-2pt] conv1-nearsouthwest)", str(NUM_INPUT_POINTS), options="anchor=north east, font=\\small"),
     text_node("([xshift=-4pt] conv1-west)", "64", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] conv1-east)", "conv1"),
     to_arrow("stnin", "conv1"),
 
-    centered_box("stnft", r"\TNetColor", "conv1", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("stnft", r"\TNetColor", "conv1", 10, 2, 3, ENC_GAP),
+    text_node("([xshift=25pt, yshift=-2pt] stnft-nearsouthwest)", str(NUM_INPUT_POINTS), options="anchor=north east, font=\\small"),
     text_node("([xshift=-4pt] stnft-west)", "64", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] stnft-east)", "Feature Transform Network"),
     to_arrow("conv1", "stnft"),
 
-    centered_box("conv2", r"\ConvColor", "stnft", 10, 2, 3, ENC_GAP, xlabel=NUM_INPUT_POINTS),
+    centered_box("conv2", r"\ConvColor", "stnft", 10, 2, 3, ENC_GAP),
+    text_node("([xshift=25pt, yshift=-2pt] conv2-nearsouthwest)", str(NUM_INPUT_POINTS), options="anchor=north east, font=\\small"),
     text_node("([xshift=-4pt] conv2-west)", "64", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] conv2-east)", "conv2"),
     to_arrow("stnft", "conv2"),
 
-    centered_box("conv3", r"\ConvColor", "conv2", 10, 2, 6, ENC_GAP, xlabel=NUM_INPUT_POINTS),
-    text_node("([xshift=-4pt] conv3-west)", "128", options="anchor=east, font=\\small"),
+    centered_box("conv3", r"\ConvColor", "conv2", 10, 2, 6, ENC_GAP),
+    text_node("([xshift=25pt, yshift=-2pt] conv3-nearsouthwest)", str(NUM_INPUT_POINTS), options="anchor=north east, font=\\small"),
+    text_node("([xshift=-10pt] conv3-west)", "128", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] conv3-east)", "conv3"),
     to_arrow("conv2", "conv3"),
 
-    centered_box("conv4", r"\ConvColor", "conv3", 10, 2, 9, ENC_GAP, xlabel=NUM_INPUT_POINTS),
-    text_node("([xshift=-4pt] conv4-west)", "1024", options="anchor=east, font=\\small"),
+    centered_box("conv4", r"\ConvColor", "conv3", 10, 2, 9, ENC_GAP),
+    text_node("([xshift=25pt, yshift=-2pt] conv4-nearsouthwest)", str(NUM_INPUT_POINTS), options="anchor=north east, font=\\small"),
+    text_node("([xshift=-10pt] conv4-west)", "1024", options="anchor=east, font=\\small"),
     text_node("([xshift=10pt] conv4-east)", "conv4"),
     to_arrow("conv3", "conv4"),
 

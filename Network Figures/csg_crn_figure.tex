@@ -32,13 +32,14 @@
     {Box={
 name=input,
 caption= ,
-xlabel={{2048, }},
 fill=\GreyColor,
 height=1,
 width=10,
 depth=1
         }
     };
+
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] input-nearsouthwest) {2048};
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] input-west) {6};
 
@@ -48,13 +49,14 @@ depth=1
     {Box={
 name=stnin,
 caption= ,
-xlabel={{2048, }},
 fill=\TNetColor,
 height=2,
 width=10,
 depth=3
         }
     };
+
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] stnin-nearsouthwest) {2048};
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] stnin-west) {64};
 
@@ -66,13 +68,14 @@ depth=3
     {Box={
 name=conv1,
 caption= ,
-xlabel={{2048, }},
 fill=\ConvColor,
 height=2,
 width=10,
 depth=3
         }
     };
+
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] conv1-nearsouthwest) {2048};
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv1-west) {64};
 
@@ -84,13 +87,14 @@ depth=3
     {Box={
 name=stnft,
 caption= ,
-xlabel={{2048, }},
 fill=\TNetColor,
 height=2,
 width=10,
 depth=3
         }
     };
+
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] stnft-nearsouthwest) {2048};
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] stnft-west) {64};
 
@@ -102,13 +106,14 @@ depth=3
     {Box={
 name=conv2,
 caption= ,
-xlabel={{2048, }},
 fill=\ConvColor,
 height=2,
 width=10,
 depth=3
         }
     };
+
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] conv2-nearsouthwest) {2048};
 
 \node[anchor=east, font=\small] at ([xshift=-4pt] conv2-west) {64};
 
@@ -120,7 +125,6 @@ depth=3
     {Box={
 name=conv3,
 caption= ,
-xlabel={{2048, }},
 fill=\ConvColor,
 height=2,
 width=10,
@@ -128,7 +132,9 @@ depth=6
         }
     };
 
-\node[anchor=east, font=\small] at ([xshift=-4pt] conv3-west) {128};
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] conv3-nearsouthwest) {2048};
+
+\node[anchor=east, font=\small] at ([xshift=-10pt] conv3-west) {128};
 
 \node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv3-east) {conv3};
 
@@ -138,7 +144,6 @@ depth=6
     {Box={
 name=conv4,
 caption= ,
-xlabel={{2048, }},
 fill=\ConvColor,
 height=2,
 width=10,
@@ -146,7 +151,9 @@ depth=9
         }
     };
 
-\node[anchor=east, font=\small] at ([xshift=-4pt] conv4-west) {1024};
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] conv4-nearsouthwest) {2048};
+
+\node[anchor=east, font=\small] at ([xshift=-10pt] conv4-west) {1024};
 
 \node[anchor=west, font=\small\bfseries] at ([xshift=10pt] conv4-east) {conv4};
 
