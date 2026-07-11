@@ -234,7 +234,9 @@ depth=10
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.75,0) -- ++(0pt,0,-3pt) -- ++(0,-1.0,0) coordinate (cubeA-anchor);
 
-\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (feat-south) -- ++(0,-3.75,0) -- ++(0pt,0,-6pt) -- ++(0,-1.0,0) coordinate (cubeB-anchor);
+\draw[connection, draw=black, opacity=1] (feat-south) -- ++(0,-3.75,0) coordinate (arrowstep-cubeB-a);
+\draw[connection, draw=black, opacity=1, dash pattern=on 7pt off 5.8pt, dash phase=4pt] (arrowstep-cubeB-a) -- ++(0pt,0,-6pt) coordinate (arrowstep-cubeB-b);
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (arrowstep-cubeB-b) -- ++(0,-1.0,0) coordinate (cubeB-anchor);
 
 \pic[shift={(-0.3,-0.3,0)}] at (cubeA-anchor)
     {Box={

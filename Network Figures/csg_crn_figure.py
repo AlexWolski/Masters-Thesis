@@ -116,18 +116,28 @@ def to_arrow_straight_down(of, to):
     return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (" + of + "-south) -- (" + of + "-south |- " + to + "-north);\n")
 
 
-def to_arrow_depth_step(start, drop1=1.0, dz=15, drop2=1.0, dx=0, end=None):
-    # Right-angle connector that steps through depth: drop in y, travel in z
-    # (negative = away from the viewer), then drop in y again. `start` is a full
-    # TikZ coordinate string (e.g. "([xshift=5pt] feat-south)"); dz/dx are in pt.
-    # If `end` is given, the arrow tip is named "<end>-anchor" so a centered_box
-    # can be placed there via prev=<end>.
+def to_arrow_depth_step(start, drop1=1.0, dz=15, drop2=1.0, dx=0, end=None,
+                        dotted_depth=False,
+                        depth_dash_pattern="on 7pt off 5.8pt",
+                        depth_dash_phase="4pt"):
     tag = " coordinate (" + end + "-anchor)" if end else ""
-    return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] "
-            + start
-            + " -- ++(0,-" + str(drop1) + ",0) "
-            + "-- ++(" + str(dx) + "pt,0," + str(dz) + "pt) "
-            + "-- ++(0,-" + str(drop2) + ",0)" + tag + ";\n")
+    if not dotted_depth:
+        return ("\n\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] "
+                + start
+                + " -- ++(0,-" + str(drop1) + ",0) "
+                + "-- ++(" + str(dx) + "pt,0," + str(dz) + "pt) "
+                + "-- ++(0,-" + str(drop2) + ",0)" + tag + ";\n")
+    p1 = "arrowstep-" + (end if end else "tmp") + "-a"
+    p2 = "arrowstep-" + (end if end else "tmp") + "-b"
+    return (
+        "\n\\draw[connection, draw=black, opacity=1] "
+        + start + " -- ++(0,-" + str(drop1) + ",0) coordinate (" + p1 + ");\n"
+        "\\draw[connection, draw=black, opacity=1, dash pattern=" + depth_dash_pattern
+        + ", dash phase=" + depth_dash_phase + "] "
+        "(" + p1 + ") -- ++(" + str(dx) + "pt,0," + str(dz) + "pt) coordinate (" + p2 + ");\n"
+        "\\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] "
+        "(" + p2 + ") -- ++(0,-" + str(drop2) + ",0)" + tag + ";\n"
+    )
 
 
 def sloped_east_label(name, text, options="align=center, font=\\small\\bfseries"):
@@ -269,7 +279,7 @@ encoder = [
     # the viewer (-z), then down again. A 3x3x3 decoder-coloured cube sits at
     # the tip of each arrow.
     to_arrow_depth_step("(feat-south)", drop1=PRIM_DECODER_HEAD_DROP, dz=-3, drop2=1.0, end="cubeA"),
-    to_arrow_depth_step("(feat-south)", drop1=PRIM_DECODER_HEAD_DROP, dz=-6, drop2=1.0, end="cubeB"),
+    to_arrow_depth_step("(feat-south)", drop1=PRIM_DECODER_HEAD_DROP, dz=-6, drop2=1.0, end="cubeB", dotted_depth=True),
     centered_box("cubeA_box", r"\DecoderColor", "cubeA", 3, 3, 3, half_w(3)),
     text_node("([xshift=10pt] cubeA_box-east)", "Primitive Decoder 2"),
     centered_box("cubeB_box", r"\DecoderColor", "cubeB", 3, 3, 3, half_w(3)),
