@@ -20,6 +20,8 @@ DECODER_LAYERS = [1024, 512, 128, 64]
 def to_colors():
     return r"""
 \usetikzlibrary{backgrounds}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
 \def\TNetColor{rgb:orange,6;yellow,4}
 \def\MaxPoolColor{rgb:orange,8;red,3}
 \def\DecoderColor{rgb:blue,5;white,5}
