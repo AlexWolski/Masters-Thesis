@@ -327,7 +327,7 @@ depth=2
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (dec512-south) -- (prim-north);
 
-\pic[shift={(-10.2,-2.25,0)}] at (prim-anchor)
+\pic[shift={(-9.6,-2.25,0)}] at (prim-anchor)
     {Box={
 name=shape_h0,
 caption= ,
@@ -367,11 +367,11 @@ depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] shape_out-east) {Softmax};
+\path ([xshift=15pt, yshift=-9pt] shape_out-neareast) -- ([xshift=15pt, yshift=-9pt] shape_out-fareast) node[sloped, pos=0, anchor=south west, align=left, font=\small\bfseries] {Softmax};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (shape_h1-south) -- (shape_out-north);
 
-\pic[shift={(-7.0,-2.25,0)}] at (prim-anchor)
+\pic[shift={(-6.6,-2.25,0)}] at (prim-anchor)
     {Box={
 name=operation_h0,
 caption= ,
@@ -411,11 +411,11 @@ depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] operation_out-east) {Softmax};
+\path ([xshift=15pt, yshift=-9pt] operation_out-neareast) -- ([xshift=15pt, yshift=-9pt] operation_out-fareast) node[sloped, pos=0, anchor=south west, align=left, font=\small\bfseries] {Softmax};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (operation_h1-south) -- (operation_out-north);
 
-\pic[shift={(-3.8,-2.25,0)}] at (prim-anchor)
+\pic[shift={(-3.6,-2.25,0)}] at (prim-anchor)
     {Box={
 name=translation_h0,
 caption= ,
@@ -455,7 +455,7 @@ depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] translation_out-east) {Tanh};
+\path ([xshift=15pt, yshift=-9pt] translation_out-neareast) -- ([xshift=15pt, yshift=-9pt] translation_out-fareast) node[sloped, pos=0, anchor=south west, align=left, font=\small\bfseries] {Tanh};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (translation_h1-south) -- (translation_out-north);
 
@@ -499,11 +499,11 @@ depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] rotation_out-east) {Linear};
+\path ([xshift=15pt, yshift=-9pt] rotation_out-neareast) -- ([xshift=15pt, yshift=-9pt] rotation_out-fareast) node[sloped, pos=0, anchor=south west, align=left, font=\small\bfseries] {Linear};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (rotation_h1-south) -- (rotation_out-north);
 
-\pic[shift={(2.6,-2.25,0)}] at (prim-anchor)
+\pic[shift={(2.4,-2.25,0)}] at (prim-anchor)
     {Box={
 name=scale_h0,
 caption= ,
@@ -543,11 +543,11 @@ depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] scale_out-east) {Sigmoid};
+\path ([xshift=15pt, yshift=-9pt] scale_out-neareast) -- ([xshift=15pt, yshift=-9pt] scale_out-fareast) node[sloped, pos=0, anchor=south west, align=left, font=\small\bfseries] {Sigmoid};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (scale_h1-south) -- (scale_out-north);
 
-\pic[shift={(5.8,-2.25,0)}] at (prim-anchor)
+\pic[shift={(5.4,-2.25,0)}] at (prim-anchor)
     {Box={
 name=blending_h0,
 caption= ,
@@ -587,11 +587,11 @@ depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] blending_out-east) {Sigmoid};
+\path ([xshift=15pt, yshift=-9pt] blending_out-neareast) -- ([xshift=15pt, yshift=-9pt] blending_out-fareast) node[sloped, pos=0, anchor=south west, align=left, font=\small\bfseries] {Sigmoid};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (blending_h1-south) -- (blending_out-north);
 
-\pic[shift={(9.0,-2.25,0)}] at (prim-anchor)
+\pic[shift={(8.4,-2.25,0)}] at (prim-anchor)
     {Box={
 name=roundness_h0,
 caption= ,
@@ -631,22 +631,22 @@ depth=2
         }
     };
 
-\node[anchor=west, font=\small\bfseries] at ([xshift=10pt] roundness_out-east) {Sigmoid};
+\path ([xshift=15pt, yshift=-9pt] roundness_out-neareast) -- ([xshift=15pt, yshift=-9pt] roundness_out-fareast) node[sloped, pos=0, anchor=south west, align=left, font=\small\bfseries] {Sigmoid};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (roundness_h1-south) -- (roundness_out-north);
 
 \begin{scope}[on background layer]
 \draw[fill=\DecoderBackdropColor, opacity=0.2, draw=none, rounded corners=8pt]
-    (-12.0, -18.05)
+    (-11.0, -18.05)
     rectangle
-    (12.0, -27.35);
+    (11.0, -27.35);
 \draw[draw=\DecoderBackdropOutlineColor, line width=0.4pt, opacity=0.6, rounded corners=8pt]
-    (-12.0, -18.05)
+    (-11.0, -18.05)
     rectangle
-    (12.0, -27.35);
+    (11.0, -27.35);
 \end{scope}
 
-\node[anchor=north west, font=\Large\bfseries] at (-11.65, -18.4) {Primitive Decoder 1};
+\node[anchor=north west, font=\Large\bfseries] at (-10.65, -18.4) {Primitive Decoder 1};
 
 \end{tikzpicture}
 \end{document}

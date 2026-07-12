@@ -49,7 +49,7 @@ PRIM_DECODER_HEAD_DROP = 3.75
 
 # Decoder spacing
 REGRESSOR_VERTICAL_GAP = 1.2
-REGRESSOR_HORIZONTAL_GAP = 3.2
+REGRESSOR_HORIZONTAL_GAP = 3.0
 PRIM_DECODER_TO_HEAD_GAP = 2.25
 
 ENCODER_BACKDROP_CENTER_X = 0.0
@@ -65,7 +65,7 @@ ENCODER_BACKDROP_OUTLINE_OPACITY = 0.6
 
 DECODER_BACKDROP_CENTER_X = 0.0
 DECODER_BACKDROP_CENTER_Y = -22.7
-DECODER_BACKDROP_WIDTH = 24
+DECODER_BACKDROP_WIDTH = 22
 DECODER_BACKDROP_HEIGHT = 9.3
 DECODER_BACKDROP_OPACITY = 0.2
 DECODER_BACKDROP_CORNER_RADIUS = 8
@@ -142,9 +142,18 @@ def to_arrow_depth_step(start, drop1=1.0, dz=15, drop2=1.0, dx=0, end=None,
     )
 
 
-def sloped_east_label(name, text, options="align=center, font=\\small\\bfseries"):
-    shift = "([xshift=16pt, yshift=-9pt] "
-    return ("\n\\path " + shift + name + "-neareast) edge [draw=none, \"" + text + "\", sloped, midway, " + options + "] " + shift + name + "-fareast);\n")
+def sloped_east_label(name, text, options="align=center, font=\\small\\bfseries",
+                      xshift=16, yshift=-9, pos="midway"):
+    shift = "([xshift={}pt, yshift={}pt] ".format(xshift, yshift)
+    return ("\n\\path " + shift + name + "-neareast) edge [draw=none, \"" + text + "\", sloped, " + pos + ", " + options + "] " + shift + name + "-fareast);\n")
+
+
+def sloped_east_label_start(name, text, options="align=left, font=\\small\\bfseries",
+                            xshift=16, yshift=-9, anchor="south west"):
+    shift = "([xshift={}pt, yshift={}pt] ".format(xshift, yshift)
+    return ("\n\\path " + shift + name + "-neareast) -- " + shift + name
+            + "-fareast) node[sloped, pos=0, anchor=" + anchor + ", " + options
+            + "] {" + text + "};\n")
 
 
 def half_w(width):
@@ -343,7 +352,7 @@ def decoder_prong(index, prefix, out_size, head_label, activation):
     # Activation output head (purple).
     out = prefix + "_out"
     elems.append(centered_box(out, r"\ActivationColor", h1, 2, 2, 2, REGRESSOR_VERTICAL_GAP, caption=head_label, ylabel=out_size))
-    elems.append(text_node("([xshift=10pt] {}-east)".format(out), activation))
+    elems.append(sloped_east_label_start(out, activation, xshift=15, yshift=-9))
     elems.append(to_arrow(h1, out))
     return elems
 
