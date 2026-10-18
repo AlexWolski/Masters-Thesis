@@ -25,7 +25,7 @@
 .pdf
 
 ## Generated files
-*.pdf
+/*.pdf
 *.txt
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
