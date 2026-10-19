@@ -97,3 +97,10 @@ Once we have refined the reconstruction, we can sample another point cloud from 
 \label{sec:training}
 
 We use a progressive training method inspired by Curriculum DeepSDF. In the first phase, all the initial reconstructions are empty. We represent this by representing the initial reconstruction as a single point at the origin. After training for a set number of epochs, we synthesize refined reconstructions and add them to the dataset. The second phase will randomly select samples from the initial and synthesized datasets. This process continues until the reconstructions reach a threshold accuracy. With this scheme, we train the model to refine partial reconstruction. And model can learn more efficiently by starting with easier samples and progressing to harder ones.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=1.0]{Figures/Shared Params Training/shared_training_figure.pdf}
+	\caption{Shared Parameter Training.}
+	\label{fig:shared_training}
+\end{figure}
