@@ -1,9 +1,9 @@
 import os
 import sys
 
-# Import PlotNeuralNet dependency from the network figure folder
+# Import PlotNeuralNet dependency from the parent figures folder
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-PLOTNN_REL = os.path.join("..", "Network Figures", "PlotNeuralNet")
+PLOTNN_REL = os.path.join("..", "PlotNeuralNet")
 sys.path.append(os.path.join(_THIS_DIR, PLOTNN_REL))
 
 from pycore.tikzeng import to_head, to_cor, to_begin, to_end, to_generate
