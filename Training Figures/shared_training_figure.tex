@@ -1,0 +1,211 @@
+
+\documentclass[border=8pt, multi, tikz]{standalone} 
+\usepackage{import}
+\subimport{../Network Figures/PlotNeuralNet/layers/}{init}
+\usetikzlibrary{positioning}
+\usetikzlibrary{3d} %for including external image 
+
+\def\ConvColor{rgb:yellow,5;red,2.5;white,5}
+\def\ConvReluColor{rgb:yellow,5;red,5;white,5}
+\def\PoolColor{rgb:red,1;black,0.3}
+\def\UnpoolColor{rgb:blue,2;green,1;black,0.3}
+\def\FcColor{rgb:blue,5;red,2.5;white,5}
+\def\FcReluColor{rgb:blue,5;red,5;white,4}
+\def\SoftmaxColor{rgb:magenta,5;black,7}   
+\def\SumColor{rgb:blue,5;green,15}
+
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{fit}
+\usetikzlibrary{shapes.misc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\def\TNetColor{rgb:orange,6;yellow,4}
+\def\MaxPoolColor{rgb:orange,8;red,3}
+\def\DecoderColor{rgb:blue,5;white,5}
+\def\ActivationColor{rgb:red,5;blue,5}
+\def\GreyColor{rgb:black,3;white,5}
+\def\TransformColor{rgb:green,3;blue,1;white,6}
+\def\OutputBackdropColor{rgb:blue,2;cyan,1;white,8}
+\def\OutputBackdropOutlineColor{rgb:blue,4;cyan,2;white,4}
+\def\edgecolor{black}
+
+\newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
+\tikzstyle{copyconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
+
+\pic[shift={(2.7,0.0,0)}] at (0,0,0)
+    {Box={
+name=csg_prev,
+caption= ,
+fill=\GreyColor,
+height=3,
+width={3,3,3},
+depth=3
+        }
+    };
+
+\pic[shift={(4.5,0.0,0)}] at (0,0,0)
+    {Box={
+name=csg_new,
+caption= ,
+fill=\ActivationColor,
+height=3,
+width={3,3,3},
+depth=3
+        }
+    };
+
+\draw[decorate, decoration={brace, amplitude=6pt, mirror}, thick] ([xshift=2pt, yshift=-6pt] csg_prev-nearsouthwest) -- ([xshift=-2pt, yshift=-6pt] csg_new-nearsoutheast) node[midway, below=8pt, align=center, font=\small\bfseries] {Primitives from cascades 0..\textit{n}$-$1};
+
+\pic[shift={(-5.5,0.0,0)}] at (0,0,0)
+    {Box={
+name=target,
+caption= ,
+fill=\GreyColor,
+height=1,
+width=10,
+depth=1
+        }
+    };
+
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] target-nearsouthwest) {2048};
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] target-west) {4};
+
+\node[anchor=north, align=center, font=\small\bfseries] at ([yshift=-14pt] target-south) {Target Input Samples\\(3D coordinate + distance)};
+
+\pic[shift={(-1.2,-2.7,0)}] at (0,0,0)
+    {Box={
+name=transform,
+caption= ,
+fill=\TransformColor,
+height=4,
+width=12,
+depth=10
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (target-east) -| ([xshift=-0.6cm] transform-north);
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] ([xshift=-4pt] csg_prev-west) -| ([xshift=0.6cm] transform-north);
+
+\node[anchor=west, align=left, font=\small] at (1.8, -2.7) {\textbf{Preprocessing Layer}\\[4pt]Sample CSG at the query points\\and compute the missing,\\filled, and excess volumes};
+
+\pic[shift={(-1.0,-5.300000000000001,0)}] at (0,0,0)
+    {Box={
+name=input,
+caption= ,
+fill=\GreyColor,
+height=1,
+width=10,
+depth=1
+        }
+    };
+
+\node[anchor=north east, font=\small] at ([xshift=25pt, yshift=-2pt] input-nearsouthwest) {2048};
+
+\node[anchor=east, font=\small] at ([xshift=-4pt] input-west) {6};
+
+\node[anchor=west, align=left, font=\small] at (1.8, -5.300000000000001) {\textbf{Input Point Samples}\\\textbf{(3D coordinate + 3 distances)}};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (transform-south) -- (input-north);
+
+\pic[shift={(-1.2,-7.9,0)}] at (0,0,0)
+    {Box={
+name=network,
+caption= ,
+fill=\DecoderColor,
+height=4,
+width=12,
+depth=10
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (input-south) -- (network-north);
+
+\node[anchor=west, align=left, font=\small] at (1.8, -7.9) {\textbf{CSG-CRN Primitive}\\\textbf{Prediction Network}\\[4pt]Network parameters shared\\for all cascades};
+
+\pic[shift={(-0.9,-10.5,0)}] at (0,0,0)
+    {Box={
+name=new_prims,
+caption= ,
+fill=\ActivationColor,
+height=3,
+width={3,3,3},
+depth=3
+        }
+    };
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (network-south) -- (new_prims-north);
+
+\node[anchor=south west, yshift=4pt, align=left, font=\small] at (1.8, -10.5) {\textbf{\textit{n} New Primitives}};
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (new_prims-east) -| (7.8, 0.0) -- (csg_new-east);
+
+\node[cross out, draw=red, line width=1.6pt, minimum size=9pt, inner sep=0pt] at (4.35, -10.5) {};
+
+\node[anchor=north, yshift=-6pt, font=\small\bfseries] at (4.35, -10.5) {no-grad};
+
+\pic[shift={(-6.1,-12.7,0)}] at (0,0,0)
+    {Box={
+name=cascade_1,
+caption= ,
+fill=\GreyColor,
+height=3,
+width={3,3,3},
+depth=3
+        }
+    };
+
+\node[anchor=north, font=\small\bfseries] (cascade_1_label) at ([yshift=-8pt] cascade_1-south) {Cascade 1};
+
+\pic[shift={(-3.5,-12.7,0)}] at (0,0,0)
+    {Box={
+name=cascade_2,
+caption= ,
+fill=\GreyColor,
+height=3,
+width={3,3,3},
+depth=3
+        }
+    };
+
+\node[anchor=north, font=\small\bfseries] (cascade_2_label) at ([yshift=-8pt] cascade_2-south) {Cascade 2};
+
+\pic[shift={(-0.9,-12.7,0)}] at (0,0,0)
+    {Box={
+name=cascade_n,
+caption= ,
+fill=\ActivationColor,
+height=3,
+width={3,3,3},
+depth=3
+        }
+    };
+
+\node[anchor=north, font=\small\bfseries] (cascade_n_label) at ([yshift=-8pt] cascade_n-south) {Cascade \textit{n}};
+
+\node[anchor=center, font=\small\bfseries] at (-3.9, -12.7) {+};
+
+\node[anchor=center, font=\small\bfseries] at (-1.3, -12.7) {+};
+
+\node[anchor=base, font=\small\bfseries] at (cascade_2_label.base -| -1.3,0) {$\cdots$};
+
+\begin{scope}[on background layer]
+\node[fit=(cascade_1-nearsouthwest)(cascade_1-farnorthwest)(cascade_n-farnortheast)(cascade_1_label)(cascade_n_label), inner sep=8pt, rounded corners=8pt, fill=\OutputBackdropColor, fill opacity=0.2, draw=\OutputBackdropOutlineColor, draw opacity=0.6, line width=0.4pt] {};
+\end{scope}
+
+\draw[connection, draw=black, opacity=1, dash pattern=on 3.2pt off 2pt, -{Stealth[length=3.5mm]}] (new_prims-south) -- ++(0,-0.8) -| (cascade_1-north);
+
+\draw[connection, draw=black, opacity=1, dash pattern=on 3.2pt off 2pt, -{Stealth[length=3.5mm]}] (new_prims-south) -- ++(0,-0.8) -| (cascade_2-north);
+
+\draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (new_prims-south) -- (cascade_n-north);
+
+\node[anchor=west, align=left, font=\small] at (1.8, -12.7) {\textbf{Output CSG Model}};
+
+\end{tikzpicture}
+\end{document}
