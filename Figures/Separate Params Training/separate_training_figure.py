@@ -42,11 +42,14 @@ TRANSFORM_COLOR = "rgb:green,3;blue,1;white,6"
 # Number of cascades drawn before the chain is continued with an ellipsis
 NUM_DRAWN_CASCADES = 3
 
-# Vertical offsets within a cascade, from its top box. Cascade 0 has no
-# preprocessing layer or input samples, so its network is the top box.
-INPUT_DY = -2.6
-NETWORK_DY = INPUT_DY - 2.6
-NEW_PRIMS_DY = NETWORK_DY - 2.6
+# Vertical steps within a cascade: between the preprocessing layer, input samples,
+# and network boxes, and from the network down to its new primitives. Cascade 0 has
+# no preprocessing layer or input samples, so its network is the top box.
+BOX_STEP = -2.0
+PRIMS_STEP = -2.6
+INPUT_DY = BOX_STEP
+NETWORK_DY = 2 * BOX_STEP
+NEW_PRIMS_DY = NETWORK_DY + PRIMS_STEP
 # Vertical gap between the backdrops of consecutive cascades
 CASCADE_GAP = 1.0
 
@@ -76,7 +79,7 @@ CASCADE_BACKDROP_OUTLINE_OPACITY = 0.6
 CASCADE_BACKDROP_OUTLINE_WIDTH = 0.4
 CASCADE_BACKDROP_CORNER_RADIUS = 8
 CASCADE_BACKDROP_LEFT = -3.0
-CASCADE_BACKDROP_RIGHT = 7.0
+CASCADE_BACKDROP_RIGHT = 9.2
 CASCADE_BACKDROP_TOP_PAD = 2.1
 CASCADE_BACKDROP_BOTTOM_PAD = 0.8
 CASCADE_TITLE_INSET = 0.35
@@ -86,13 +89,13 @@ CONTINUATION_DROP = 1.2
 
 # Output CSG model, right of the cascade chain.
 # Every cascade's primitives are added together, like the shared-parameter figure.
-OUTPUT_X = 10.8             # center of the output primitive groups
+OUTPUT_X = 12.4             # center of the output primitive groups
 OUTPUT_GROUP_SPACING = 2.4  # vertical distance between group centers
 # The stack is anchored so this cascade's group sits level with its new primitives,
 # making the arrow between them a straight line with no bends.
 OUTPUT_ALIGN_CASCADE = 1
 # Arrows from the other cascades turn vertically at this shared lane
-OUTPUT_BUS_X = 8.7
+OUTPUT_BUS_X = 10.2
 
 # Backdrop around the output CSG primitives, styled like the shared-parameter figure
 OUTPUT_BACKDROP_COLOR = "rgb:blue,2;cyan,1;white,8"
@@ -217,7 +220,7 @@ def cascade_backdrop(name, top_y, bottom_y, title):
 # The y of a cascade's new primitives, below its top box. Cascade 0 has only the
 # network above them; later cascades also hold the preprocessing layer and input samples.
 def cascade_new_prims_y(k, top_y):
-    return top_y + (INPUT_DY if k == 0 else NEW_PRIMS_DY)
+    return top_y + (PRIMS_STEP if k == 0 else NEW_PRIMS_DY)
 
 
 # ------------------------------------------------------------------
@@ -239,7 +242,7 @@ def cascade(k, top_y):
         elements += [
             # Preprocessing layer turns the target and previous primitives into the network input point samples.
             box_at(p + "transform", r"\TransformColor", 0, transform_y, NET_BOX_WIDTH, NET_BOX_HEIGHT, NET_BOX_DEPTH),
-            right_label(transform_y, ["Preprocessing Layer"], ["Sample CSG at the query points", "and compute the missing,", "filled, and excess volumes"]),
+            right_label(transform_y, ["Preprocessing Layer"], ["Sample CSG at the query points and compute", "the missing, filled, and excess volumes"]),
 
             *sample_slab(p + "input", 0, input_y, NUM_INPUT_FEATURES),
             right_label(input_y, ["Input Point Samples", "(3D coordinate + 3 distances)"]),
