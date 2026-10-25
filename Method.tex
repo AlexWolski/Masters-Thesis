@@ -55,7 +55,7 @@ Later iterations of CSG-CRN concatenated the target and initial reconstruction s
 \subsection{Decoder~Network}
 \label{subsec:decoder_network_method}
 
-Decoder network
+The decoder network architecture is inspired by \cite{Paschalidou2019}. The decoder network is mirrored for each output primitive primitive. The network consists of an intermediary fully-connected subnet that distills the global feature vector from the encoder network to a primitive feature vector. Then a 7 headed regressor network decodes the primitive parameters and boolean operation for the CSG command output.
 
 \begin{figure}
 	\centering
