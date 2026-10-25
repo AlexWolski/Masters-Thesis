@@ -28,6 +28,8 @@ def to_colors():
 \def\TransformColor{""" + TRANSFORM_COLOR + r"""}
 \def\CascadeBackdropColor{""" + CASCADE_BACKDROP_COLOR + r"""}
 \def\CascadeBackdropOutlineColor{""" + CASCADE_BACKDROP_OUTLINE_COLOR + r"""}
+\def\OutputBackdropColor{""" + OUTPUT_BACKDROP_COLOR + r"""}
+\def\OutputBackdropOutlineColor{""" + OUTPUT_BACKDROP_OUTLINE_COLOR + r"""}
 \def\edgecolor{black}
 """
 
@@ -38,14 +40,15 @@ BOX_SCALE = 0.2
 TRANSFORM_COLOR = "rgb:green,3;blue,1;white,6"
 
 # Number of cascades drawn before the chain is continued with an ellipsis
-NUM_DRAWN_CASCADES = 2
+NUM_DRAWN_CASCADES = 3
 
-# Vertical offsets within a cascade, from its preprocessing layer
+# Vertical offsets within a cascade, from its top box. Cascade 0 has no
+# preprocessing layer or input samples, so its network is the top box.
 INPUT_DY = -2.6
 NETWORK_DY = INPUT_DY - 2.6
 NEW_PRIMS_DY = NETWORK_DY - 2.6
-# Distance between the preprocessing layers of consecutive cascades
-CASCADE_SPACING = 11.7
+# Vertical gap between the backdrops of consecutive cascades
+CASCADE_GAP = 1.0
 
 # Simplified network boxes
 NET_BOX_WIDTH = 12
@@ -80,6 +83,25 @@ CASCADE_TITLE_INSET = 0.35
 
 # Length of the final link below the last drawn cascade's backdrop, ending at the ellipsis
 CONTINUATION_DROP = 1.2
+
+# Output CSG model, right of the cascade chain.
+# Every cascade's primitives are added together, like the shared-parameter figure.
+OUTPUT_X = 10.8             # center of the output primitive groups
+OUTPUT_GROUP_SPACING = 2.4  # vertical distance between group centers
+# The stack is anchored so this cascade's group sits level with its new primitives,
+# making the arrow between them a straight line with no bends.
+OUTPUT_ALIGN_CASCADE = 1
+# Arrows from the other cascades turn vertically at this shared lane
+OUTPUT_BUS_X = 8.7
+
+# Backdrop around the output CSG primitives, styled like the shared-parameter figure
+OUTPUT_BACKDROP_COLOR = "rgb:blue,2;cyan,1;white,8"
+OUTPUT_BACKDROP_OUTLINE_COLOR = "rgb:blue,4;cyan,2;white,4"
+OUTPUT_BACKDROP_OPACITY = 0.2
+OUTPUT_BACKDROP_OUTLINE_OPACITY = 0.6
+OUTPUT_BACKDROP_OUTLINE_WIDTH = 0.4
+OUTPUT_BACKDROP_CORNER_RADIUS = 8
+OUTPUT_BACKDROP_PADDING = 8
 
 # Left edge of the right-hand label column, clear of the network boxes and their depth
 LABEL_X = 1.8
@@ -192,54 +214,73 @@ def cascade_backdrop(name, top_y, bottom_y, title):
     ]
 
 
+# The y of a cascade's new primitives, below its top box. Cascade 0 has only the
+# network above them; later cascades also hold the preprocessing layer and input samples.
+def cascade_new_prims_y(k, top_y):
+    return top_y + (INPUT_DY if k == 0 else NEW_PRIMS_DY)
+
+
 # ------------------------------------------------------------------
 # One cascade: its own CSG-CRN network predicting n new primitives.
-# Cascade 0 starts from the target alone; later cascades also take the
-# primitives predicted by the previous cascade, arriving from above.
+# Cascade 0 takes the target input samples directly; later cascades
+# preprocess the target together with the primitives predicted by the
+# previous cascade, arriving from above.
 # ------------------------------------------------------------------
-def cascade(k, transform_y):
+def cascade(k, top_y):
     p = "c{}_".format(k)
-    input_y = transform_y + INPUT_DY
-    network_y = transform_y + NETWORK_DY
-    new_prims_y = transform_y + NEW_PRIMS_DY
+    first = (k == 0)
+    network_y = top_y if first else top_y + NETWORK_DY
+    new_prims_y = cascade_new_prims_y(k, top_y)
 
-    return [
-        # Preprocessing layer turns the target (and previous primitives) into the network input point samples.
-        box_at(p + "transform", r"\TransformColor", 0, transform_y, NET_BOX_WIDTH, NET_BOX_HEIGHT, NET_BOX_DEPTH),
-        right_label(transform_y, ["Preprocessing Layer"], ["Sample CSG at the query points", "and compute the missing,", "filled, and excess volumes"]),
+    elements = []
+    if not first:
+        transform_y = top_y
+        input_y = top_y + INPUT_DY
+        elements += [
+            # Preprocessing layer turns the target and previous primitives into the network input point samples.
+            box_at(p + "transform", r"\TransformColor", 0, transform_y, NET_BOX_WIDTH, NET_BOX_HEIGHT, NET_BOX_DEPTH),
+            right_label(transform_y, ["Preprocessing Layer"], ["Sample CSG at the query points", "and compute the missing,", "filled, and excess volumes"]),
 
-        *sample_slab(p + "input", 0, input_y, NUM_INPUT_FEATURES),
-        right_label(input_y, ["Input Point Samples", "(3D coordinate + 3 distances)"]),
-        to_arrow(p + "transform", p + "input"),
+            *sample_slab(p + "input", 0, input_y, NUM_INPUT_FEATURES),
+            right_label(input_y, ["Input Point Samples", "(3D coordinate + 3 distances)"]),
+            to_arrow(p + "transform", p + "input"),
+        ]
 
-        # Encoder and primitive decoders, simplified to a single box with this cascade's own parameters.
+    # Encoder and primitive decoders, simplified to a single box with this cascade's own parameters.
+    elements += [
         box_at(p + "network", r"\DecoderColor", 0, network_y, NET_BOX_WIDTH, NET_BOX_HEIGHT, NET_BOX_DEPTH),
-        to_arrow(p + "input", p + "network"),
-        right_label(network_y, ["CSG-CRN Primitive", "Prediction Network"], [r"Network parameters $\theta_{" + str(k) + "}$", "used only by cascade " + str(k)]),
+        right_label(network_y, ["CSG-CRN"]),
+    ]
+    if not first:
+        elements.append(to_arrow(p + "input", p + "network"))
 
-        # Network output is n new primitives.
+    # Shared target input samples come in from the left: directly into cascade 0's
+    # network, and into the preprocessing layer of every later cascade.
+    entry_box = p + ("network" if first else "transform")
+    entry_shift = 0.0 if first else TARGET_ENTRY_SHIFT
+
+    elements += [
+        # Network output is n new primitives. The label is raised to clear the arrow to the output CSG model.
         prim_group(p + "new_prims", r"\ActivationColor", 0, new_prims_y),
         to_arrow(p + "network", p + "new_prims"),
-        right_label(new_prims_y, [r"\textit{n} New Primitives"]),
+        right_label(new_prims_y, [r"\textit{n} New Primitives"], options="anchor=south west, yshift=4pt"),
 
-        # Shared target input samples come in from the left and turn down into the preprocessing layer.
         "\n" + ARROW + " ([xshift=" + str(TARGET_BUS_SHIFT) + "cm] target-south) |- "
-        "([xshift=-" + str(TARGET_ENTRY_SHIFT) + "cm, yshift=" + str(TARGET_ENTRY_RISE) + "cm] " + p + "transform-north) -- "
-        "([xshift=-" + str(TARGET_ENTRY_SHIFT) + "cm] " + p + "transform-north);\n",
+        "([xshift=-" + str(entry_shift) + "cm, yshift=" + str(TARGET_ENTRY_RISE) + "cm] " + entry_box + "-north) -- "
+        "([xshift=-" + str(entry_shift) + "cm] " + entry_box + "-north);\n",
 
-        *cascade_backdrop(p + "backdrop", transform_y + CASCADE_BACKDROP_TOP_PAD, new_prims_y - CASCADE_BACKDROP_BOTTOM_PAD, "Cascade " + str(k)),
+        *cascade_backdrop(p + "backdrop", top_y + CASCADE_BACKDROP_TOP_PAD, new_prims_y - CASCADE_BACKDROP_BOTTOM_PAD, "Cascade " + str(k)),
     ]
+    return elements
 
 
 # Link carrying a cascade's new primitives straight down, either into the next cascade's
 # preprocessing layer or, after the last drawn cascade, to an ellipsis showing the chain continues.
-def cascade_link(k, transform_y, last):
+def cascade_link(k, top_y, last):
     p = "c{}_".format(k)
-    new_prims_y = transform_y + NEW_PRIMS_DY
-    next_transform_y = transform_y - CASCADE_SPACING
+    backdrop_bottom = cascade_new_prims_y(k, top_y) - CASCADE_BACKDROP_BOTTOM_PAD
     # Middle of the gap between this cascade's backdrop and the next one's
-    backdrop_bottom = new_prims_y - CASCADE_BACKDROP_BOTTOM_PAD
-    mid = point(0, (backdrop_bottom + next_transform_y + CASCADE_BACKDROP_TOP_PAD) / 2.0)
+    mid = point(0, backdrop_bottom - CASCADE_GAP / 2.0)
 
     if last:
         # End a little below the backdrop, past the no-grad mark.
@@ -255,6 +296,56 @@ def cascade_link(k, transform_y, last):
     return elements + no_grad_mark(mid)
 
 
+# -------------------------------------------------------------------
+# Output CSG model: every cascade's primitives are added together,
+# stacked right of the chain with an arrow from each cascade.
+# align_y is the y of cascade OUTPUT_ALIGN_CASCADE's group, level with
+# that cascade's new primitives.
+# -------------------------------------------------------------------
+def output_csg_model(align_y):
+    group_ys = [align_y + (OUTPUT_ALIGN_CASCADE - k) * OUTPUT_GROUP_SPACING
+                for k in range(NUM_DRAWN_CASCADES)]
+
+    elements = []
+    fit = ""
+    for k, y in enumerate(group_ys):
+        name = "out{}".format(k)
+        elements += [
+            prim_group(name, r"\ActivationColor", OUTPUT_X, y),
+            "\n\\node[anchor=north, font=\\small\\bfseries] (" + name + "_label) at ([yshift=-8pt] " + name + "-south) {Cascade " + str(k) + "};\n",
+        ]
+        fit += "(" + name + "-nearsouthwest)(" + name + "-farnortheast)(" + name + "_label)"
+
+    # The output CSG is the union of every cascade's primitives, continuing past the drawn ones.
+    for k in range(len(group_ys) - 1):
+        elements.append(text_node(point(OUTPUT_X, (group_ys[k] + group_ys[k + 1]) / 2.0), "+", options="anchor=center, font=\\small\\bfseries"))
+    elements.append("\n\\node[anchor=north, font=\\Large] (out_dots) at ([yshift=-2pt] out{}_label.south) {{$\\vdots$}};\n".format(NUM_DRAWN_CASCADES - 1))
+    fit += "(out_dots)"
+
+    elements += [
+        # Backdrop around every cascade's primitives, titled above.
+        "\n\\begin{scope}[on background layer]\n"
+        "\\node[fit={" + fit + "}, "
+        "inner sep=" + str(OUTPUT_BACKDROP_PADDING) + "pt, rounded corners=" + str(OUTPUT_BACKDROP_CORNER_RADIUS) + "pt, "
+        "fill=\\OutputBackdropColor, fill opacity=" + str(OUTPUT_BACKDROP_OPACITY) + ", "
+        "draw=\\OutputBackdropOutlineColor, draw opacity=" + str(OUTPUT_BACKDROP_OUTLINE_OPACITY) + ", "
+        "line width=" + str(OUTPUT_BACKDROP_OUTLINE_WIDTH) + "pt] (out_backdrop) {};\n"
+        "\\end{scope}\n",
+        text_node("([yshift=6pt] out_backdrop.north)", r"Output CSG Model", options="anchor=south, align=center, font=\\small\\bfseries"),
+    ]
+
+    # Each cascade's new primitives are added to the output model. The aligned cascade's
+    # arrow runs straight across; the others turn vertically in the shared lane, whose
+    # segments stay disjoint above and below the stack.
+    for k, y in enumerate(group_ys):
+        if k == OUTPUT_ALIGN_CASCADE:
+            elements.append("\n" + ARROW + " (c" + str(k) + "_new_prims-east) -- (out" + str(k) + "-west);\n")
+        else:
+            elements.append("\n" + ARROW + " (c" + str(k) + "_new_prims-east) -| " + point(OUTPUT_BUS_X, y) + " -- (out" + str(k) + "-west);\n")
+
+    return elements
+
+
 # Target input samples shared by every cascade
 target = [
     *sample_slab("target", TARGET_X, TARGET_Y, NUM_TARGET_FEATURES),
@@ -265,14 +356,24 @@ target = [
 # -----------
 # Main Output
 # -----------
+# Top-box y of each cascade, stacked downward with a constant gap between backdrops
+cascade_tops = []
+next_top = 0.0
+for k in range(NUM_DRAWN_CASCADES):
+    cascade_tops.append(next_top)
+    backdrop_bottom = cascade_new_prims_y(k, next_top) - CASCADE_BACKDROP_BOTTOM_PAD
+    next_top = backdrop_bottom - CASCADE_GAP - CASCADE_BACKDROP_TOP_PAD
+
 arch = [to_head(PLOTNN_REL), to_cor(), to_colors(), to_begin()]
 arch += target
 
-for k in range(NUM_DRAWN_CASCADES):
-    arch += cascade(k, -k * CASCADE_SPACING)
+for k, top_y in enumerate(cascade_tops):
+    arch += cascade(k, top_y)
 
-for k in range(NUM_DRAWN_CASCADES):
-    arch += cascade_link(k, -k * CASCADE_SPACING, last=(k == NUM_DRAWN_CASCADES - 1))
+for k, top_y in enumerate(cascade_tops):
+    arch += cascade_link(k, top_y, last=(k == NUM_DRAWN_CASCADES - 1))
+
+arch += output_csg_model(cascade_new_prims_y(OUTPUT_ALIGN_CASCADE, cascade_tops[OUTPUT_ALIGN_CASCADE]))
 
 arch += to_end()
 
