@@ -6,9 +6,48 @@
 \section{Loss~Function~Comparison}
 \label{sec:loss_function_comparison}
 
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Loss Function Renders/TARGET.png}
+		\caption{Target}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Loss Function Renders/CHAMFER.png}
+		\caption{CD}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Loss Function Renders/L1.png}
+		\caption{L1}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Loss Function Renders/LOG.png}
+		\caption{LOG}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Loss Function Renders/MSE.png}
+		\caption{MSE}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Loss Function Renders/OCC.png}
+		\caption{OCC}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Loss Function Renders/SIG.png}
+		\caption{SIG}
+	\end{subfigure}
+	\caption{Comparison of reconstruction outputs from six different loss function metrics.}
+	\label{fig:loss_function_renders}
+\end{figure}
+
 \begin{table}[ht]
 	\centering
-	\caption{Performance comparison of different loss functions. All training runs were performed with Separate model parameters, 3 output primitives, 3 cascades, 2048 input samples, and 2048 loss samples. All testing was performed with 10000 samples and a Marching Cubes resolution of 512.}
 	\label{tab:loss_function_comparison}
 	\singlespace
 	\footnotesize
@@ -29,8 +68,8 @@
 		SIG & 0.4078   & 121.76         & 1309.5         & 0.3882          & 72 & 7.2 & 31.2   & 161 & 174 \\
 		\hline
 	\end{tabular}
+	\caption{Performance comparison of six different loss functions. All training runs were performed with Separate model parameters, 3 output primitives, 3 cascades, 2048 input samples, and 2048 loss samples. All testing was performed with 10000 samples and a Marching Cubes resolution of 512.}
 \end{table}
-
 
 
 \section{Cascade~Output~Size}
