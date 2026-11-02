@@ -24,7 +24,7 @@ As PointNet was originally implemented in TensorFlow, we based our implementatio
 \section{Decoder~Network}
 \label{sec:decoder_network_implementation}
 
-The decoder network is inspired by prior primitive fitting models. Although the model only produces one primitive at a time, the training scheme encourages the model to predict future primitives. We follow the training method outlined in~\cite{Kleineberg2020}, where a batch of primitives are generated before back propagating the model. By running multiple iterations of refinement before computing the loss, we prevent the model from fitting primitives greedily. The model should be encouraged to add oversized primitives that can be refined later. Limiting the output to one primitive would eliminate this behavior as it produces a worse loss value. By generating multiple primitives at once, the model is encouraged to think ahead a few iterations.
+The decoder network implementation is based on <Insert reference to superquadrics paper here>.
 
 
 \section{Loss~Function}
