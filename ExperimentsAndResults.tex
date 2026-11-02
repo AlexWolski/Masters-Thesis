@@ -3,7 +3,35 @@
 \chapter{Experiments~and~Results}
 \label{chap:experiments_and_results}
 
-\section{Cascade Output Size}
+\section{Loss~Function~Comparison}
+\label{sec:loss_function_comparison}
+
+\begin{table}[ht]
+	\centering
+	\caption{Performance comparison of different loss functions. All training runs were performed with Separate model parameters, 3 output primitives, 3 cascades, 2048 input samples, and 2048 loss samples. All testing was performed with 10000 samples and a Marching Cubes resolution of 512.}
+	\label{tab:loss_function_comparison}
+	\singlespace
+	\footnotesize
+	\setlength{\tabcolsep}{3pt}
+	\setcellgapes{4pt}
+	\makegapedcells
+	\begin{tabular}{|l|r|r|r|r|r|r|r|r|r|}
+		\hline
+		\makecell{Loss\\Function} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Peak GPU\\(GB)} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
+		\Xhline{1pt}
+		CD  & 155.8787 & 155.78         & 1488.4         & 0.3002          & 5  & 9.4 & 1441.4 & 180 & 203 \\
+		L1  & 0.0303   & 77.81          & 1012.1         & 0.4415          & 72 & 7.2 & 50.9   & 294 & 310 \\
+		LOG & 0.2981   & 81.23          & 1010.1         & \textbf{0.4750} & 72 & 7.2 & 51.9   & 294 & 301 \\
+		MSE & 0.0027   & \textbf{71.97} & \textbf{938.5} & 0.3714          & 72 & 7.2 & 36.7   & 200 & 206 \\
+		OCC & 0.5527   & 221.47         & 1345.5         & 0.2536          & 72 & 6.2 & 33.9   & 182 & 216 \\
+		SIG & 0.4078   & 121.76         & 1309.5         & 0.3882          & 72 & 7.2 & 31.2   & 161 & 174 \\
+		\hline
+	\end{tabular}
+\end{table}
+
+
+
+\section{Cascade~Output~Size}
 \label{sec:prims_per_cascade_experiment}
 
 Cascaded refinement number of primitives per cascade
