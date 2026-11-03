@@ -3,8 +3,18 @@
 \chapter{Experiments~and~Results}
 \label{chap:experiments_and_results}
 
-\section{Loss~Function~Comparison}
-\label{sec:loss_function_comparison}
+We conduct experiments to gauge the performance of different configurations for CSG-CRN and explore its capabilities.
+
+\section{Reconstruction~Loss~Metric~Comparison}
+\label{sec:reconstruction_loss_comparison}
+
+The CSG-CRN architecture implements a unique combination of SDF volumes, constructive solid geometry, and cascaded refinement. A fine-tuned loss function is required to compensate for the complications presented by the architecture and stabilize training. Auxiliary loss metrics are used to help control the results, but the the reconstruction loss metric ultimately determines the quality of the model.
+
+We experimented with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters, 9 total primitives (3 per cascade x 3 cascades), 2048 input samples, 2048 loss samples, and with the Primitive auxiliary loss enabled. All testing was performed with 10000 samples and a Marching Cubes resolution of 512. The testing metrics are CD, Earth Movers Distance (ED), and Intersection over Union (IoU). Note that a simplified configuration was used and these results don't represent the final configuration for the CSG-CRN model.
+
+The MSE loss performed best in the CD and EMD testing metrics while the LOG loss performed best in the IoU metric. Although MSE had the best quantitative results for CD and EMD, a visual inspection reveals that the airplane reconstruction contains holes, is missing tail fins, has excess volume around the wings, and has a warped fuselage. In comparison, the LOG loss airplane reconstruction is continuous, has tail fins, more accurate wings, and a smooth surface throughout. The LOG loss result has excess volume around one wing, but that would be refined with further iterations.
+
+
 
 \begin{figure}[ht]
 	\centering
@@ -42,7 +52,7 @@
 		\includegraphics[width=\linewidth]{Images/Loss Function Renders/SIG.png}
 		\caption{SIG}
 	\end{subfigure}
-	\caption{Comparison of reconstruction outputs from six different loss function metrics.}
+	\caption{Comparison of output shapes across six different reconstruction loss metrics.}
 	\label{fig:loss_function_renders}
 \end{figure}
 
@@ -68,7 +78,7 @@
 		SIG & 0.4078   & 121.76         & 1309.5         & 0.3882          & 72 & 7.2 & 31.2   & 161 & 174 \\
 		\hline
 	\end{tabular}
-	\caption{Performance comparison of six different loss functions. All training runs were performed with Separate model parameters, 3 output primitives, 3 cascades, 2048 input samples, and 2048 loss samples. All testing was performed with 10000 samples and a Marching Cubes resolution of 512.}
+	\caption{Performance comparison of six different reconstruction loss metrics. Lower is better for CD and EMD. Higher is better for IoU.}
 \end{table}
 
 
