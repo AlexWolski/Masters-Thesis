@@ -28,6 +28,11 @@
 /*.pdf
 *.txt
 
+# Compiled files for python scripts
+__pycache__/
+*.py[cod]
+*$py.class
+
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
 *.bcf
