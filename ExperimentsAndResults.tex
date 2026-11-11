@@ -12,7 +12,7 @@ The CSG-CRN architecture implements a unique combination of SDF volumes, constru
 
 We experimented with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters, 9 total primitives (3 per cascade x 3 cascades), 2048 input samples, 2048 loss samples, and with the Primitive auxiliary loss enabled. All testing was performed with 10000 samples and a Marching Cubes resolution of 512. The testing metrics are CD, Earth Movers Distance (ED), and Intersection over Union (IoU). Note that a simplified configuration was used and these results don't represent the final configuration for the CSG-CRN model.
 
-The MSE loss performed best in the CD and EMD testing metrics while the LOG loss performed best in the IoU metric. Although MSE had the best quantitative results for CD and EMD, a visual inspection reveals that the airplane reconstruction contains holes, is missing tail fins, has excess volume around the wings, and has a warped fuselage. In comparison, the LOG loss airplane reconstruction is continuous, has tail fins, more accurate wings, and a smooth surface throughout. The LOG loss result has excess volume around one wing, but that would be refined with further iterations.
+The sigmoid loss performed best in the CD and EMD testing metrics while the LOG loss performed best in the IoU metric. Although the sigmoid model had the best quantitative results for CD and EMD, a visual inspection reveals that the airplane reconstruction is missing tail fins, missing a nose, and has warped wings. In comparison, the LOG loss airplane reconstruction is smooth and has more complete wings, although one wing is oversize. The CD, MSE, and OCC loss function runs plateaued in performance hit an early stop significantly earlier (<216 epochs) than the L1, LOG, and sigmoid losses (>300 epochs.)
 
 
 
@@ -80,6 +80,35 @@ The MSE loss performed best in the CD and EMD testing metrics while the LOG loss
 	\end{tabular}
 	\caption{Performance comparison of six different reconstruction loss metrics. Lower is better for CD and EMD. Higher is better for IoU.}
 \end{table}
+
+
+\section{Surface-Uniform~Ratio}
+\label{sec:surface_uniform_ratio_experiment}
+
+We experiment with different ratios of near-surface samples to uniformly distributed samples used for the model input and loss computation. Models were trained on Surface-Uniform ratios ranging from 0.0 to 1.0 at 0.1 intervals. We test two loss functions: L1 and LOG. A new model was trained for each combination of loss function and Surface-Uniform ratio value. Each configuration was trained three times on separate seeds to get an average result, totaling 66 trained models. The same model configuration was used as the \nameref{sec:reconstruction_loss_comparison} experiments, except only 1024 input samples were used instead of 2048.
+
+The trend lines for the CD and EMD metrics are inconclusive due to high variance. But the IoU metric shows a statistically significant result in a linear regression, with $p < 0.001$ for both loss functions. Although the difference is small, the results indicate that a Surface-Uniform ratio of 0.0 produces the best results.
+
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}{0.32\textwidth}
+		\includegraphics[width=\linewidth]{Images/Surface Uniform Ratio Figures/Surface Uniform Ratio Chamfer.png}
+		\caption{CD vs Surface-Uniform Ratio. Lower is better.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
+		\includegraphics[width=\linewidth]{Images/Surface Uniform Ratio Figures/Surface Uniform Ratio EMD.png}
+		\caption{EMD vs Surface-Uniform Ratio. Lower is better.}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.32\textwidth}
+		\includegraphics[width=\linewidth]{Images/Surface Uniform Ratio Figures/Surface Uniform Ratio IoU.png}
+		\caption{IoU vs Surface-Uniform Ratio. Higher is better.}
+	\end{subfigure}
+	\caption{}
+	\label{fig:surface_uniform_ratio}
+\end{figure}
 
 
 \section{Cascade~Output~Size}
