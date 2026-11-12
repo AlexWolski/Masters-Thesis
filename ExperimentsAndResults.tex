@@ -111,6 +111,87 @@ The trend lines for the CD and EMD metrics are inconclusive due to high variance
 \end{figure}
 
 
+\section{Input~Sample~Size}
+\label{sec:input_size_experiment}
+
+
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/TARGET.png}
+		\caption{Target}
+	\end{subfigure}
+
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/128.png}
+		\caption{128}
+	\end{subfigure}
+	\hspace{0.03\textwidth}
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/256.png}
+		\caption{256}
+	\end{subfigure}
+	\hspace{0.03\textwidth}
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/512.png}
+		\caption{512}
+	\end{subfigure}
+	\hspace{0.03\textwidth}
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/1024.png}
+		\caption{1024}
+	\end{subfigure}
+
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/2048.png}
+		\caption{2048}
+	\end{subfigure}
+	\hspace{0.03\textwidth}
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/4096.png}
+		\caption{4096}
+	\end{subfigure}
+	\hspace{0.03\textwidth}
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/8192.png}
+		\caption{8192}
+	\end{subfigure}
+	\hspace{0.03\textwidth}
+	\begin{subfigure}{0.13\textwidth}
+		\includegraphics[width=\linewidth]{Images/Input Size Renders/16384.png}
+		\caption{16384}
+	\end{subfigure}
+	\caption{}
+	\label{fig:input_size_renders}
+\end{figure}
+
+\begin{table}[ht]
+	\centering
+	\singlespace
+	\footnotesize
+	\setlength{\tabcolsep}{3pt}
+	\setcellgapes{4pt}
+	\makegapedcells
+	\renewcommand{\bfdefault}{b}
+	\begin{tabular}{|r|r|r|r|r|r|r|r|r|}
+		\hline
+		\makecell{Input/Loss\\Samples} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
+		\Xhline{1pt}
+		128   & 0.3205 & 247.62         & 1440.1         & 0.3876          & 404 & 17.0  & 270 & 292 \\
+		256   & 0.3135 & 341.19         & 1769.8         & 0.4286          & 327 & 14.2  & 234 & 236 \\
+		512   & 0.3020 & \textbf{71.87} & \textbf{741.6} & 0.4614          & 160 & 26.1  & 283 & 291 \\
+		1024  & 0.2942 & 82.79          & 837.0          & 0.4871          & 81  & 27.0  & 192 & 206 \\
+		2048  & 0.2904 & 97.69          & 1113.7         & 0.4808          & 40  & 69.0  & 309 & 313 \\
+		4096  & 0.3075 & 82.17          & 959.1          & 0.4678          & 20  & 80.1  & 154 & 185 \\
+		8192  & 0.2682 & 161.90         & 1252.3         & \textbf{0.5272} & 10  & 183.2 & 243 & 257 \\
+		16384 & 0.3091 & 184.87         & 1043.3         & 0.4759          & 5   & 322.1 & 198 & 238 \\
+		\hline
+	\end{tabular}
+	\caption{}
+	\label{tab:input_size_comparison}
+\end{table}
+
+
 \section{Cascade~Output~Size}
 \label{sec:prims_per_cascade_experiment}
 
