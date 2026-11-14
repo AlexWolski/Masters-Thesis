@@ -198,6 +198,91 @@ The trend lines for the CD and EMD metrics are inconclusive due to high variance
 Cascaded refinement number of primitives per cascade
 
 
+\begin{figure}[ht]
+	\centering
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/TARGET.png}
+		\caption{Target}
+	\end{subfigure}
+	\hspace{0.01\textwidth}
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Single Pass 16x1.png}
+		\caption{Single Pass 16x1}
+	\end{subfigure}
+
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 8x2.png}
+		\caption{Separate 8x2}
+	\end{subfigure}
+	\hspace{0.01\textwidth}
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 4x4.png}
+		\caption{Separate 4x4}
+	\end{subfigure}
+	\hspace{0.01\textwidth}
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 2x8.png}
+		\caption{Separate 2x8}
+	\end{subfigure}
+	\hspace{0.01\textwidth}
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 1x16.png}
+		\caption{Separate 1x16}
+	\end{subfigure}
+
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 8x2.png}
+		\caption{Shared 8x2}
+	\end{subfigure}
+	\hspace{0.01\textwidth}
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 4x4.png}
+		\caption{Shared 4x4}
+	\end{subfigure}
+	\hspace{0.01\textwidth}
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 2x8.png}
+		\caption{Shared 2x8}
+	\end{subfigure}
+	\hspace{0.01\textwidth}
+	\begin{subfigure}[t]{0.17\textwidth}
+		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 1x16.png}
+		\caption{Shared 1x16}
+	\end{subfigure}
+	\caption{}
+	\label{fig:prims_per_cascade_renders}
+\end{figure}
+
+\begin{table}[ht]
+	\centering
+	\singlespace
+	\footnotesize
+	\setlength{\tabcolsep}{3pt}
+	\setcellgapes{4pt}
+	\makegapedcells
+	\renewcommand{\bfdefault}{b}
+	\begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|}
+		\hline
+		\makecell{Training\\Mode} & \makecell{Prims x\\Cascades} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Params\\(M)} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
+		\Xhline{1pt}
+		\makecell[l]{Single\\Pass} & 16x1 & 0.2714 & 73.68          & 574.8          & 0.5315          & 122 & 69.9  & 35.1  & 110  & 150  \\
+		\hline
+		\multirow{4}{*}{Separate} & 8x2  & 0.2844 & 43.36          & 641.6          & 0.5103          & 170 & 72.7  & 39.1  & 245  & 256  \\
+		                          & 4x4  & 0.2791 & 62.80          & 632.9          & 0.5282          & 207 & 78.4  & 39.1  & 327  & 332  \\
+		                          & 2x8  & 0.2902 & 109.83         & 880.3          & 0.5055          & 230 & 89.6  & 66.6  & 541  & 581  \\
+		                          & 1x16 & 0.3252 & 140.88         & 875.6          & 0.4277          & 234 & 112.1 & 122.6 & 1115 & 1147 \\
+		\hline
+		\multirow{4}{*}{Shared}   & 8x2  & 0.2301 & \textbf{14.36} & \textbf{489.3} & \textbf{0.6054} & 181 & 36.3  & 43.5  & 147  & 187  \\
+		                          & 4x4  & 0.2627 & 34.91          & 522.1          & 0.5586          & 375 & 19.6  & 42.3  & 133  & 173  \\
+		                          & 2x8  & 0.3344 & 184.61         & 1225.9         & 0.3963          & 404 & 11.2  & 64.1  & 144  & 160  \\
+		                          & 1x16 & 0.3407 & 222.42         & 924.2          & 0.4334          & 404 & 7.0   & 183.5 & 254  & 269  \\
+		\hline
+	\end{tabular}
+	\caption{}
+	\label{tab:prims_per_cascade_comparison}
+\end{table}
+
+
 \section{ShapeNet~Benchmark}
 \label{sec:shapenet_experiment}
 
