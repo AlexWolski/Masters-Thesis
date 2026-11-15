@@ -85,7 +85,7 @@ The sigmoid loss performed best in the CD and EMD testing metrics while the LOG 
 \section{Surface-Uniform~Ratio}
 \label{sec:surface_uniform_ratio_experiment}
 
-We experiment with different ratios of near-surface samples to uniformly distributed samples used for the model input and loss computation. Models were trained on Surface-Uniform ratios ranging from 0.0 to 1.0 at 0.1 intervals. We test two loss functions: L1 and LOG. A new model was trained for each combination of loss function and Surface-Uniform ratio value. Each configuration was trained three times on separate seeds to get an average result, totaling 66 trained models. The same model configuration was used as the \nameref{sec:reconstruction_loss_comparison} experiments, except only 1024 input samples were used instead of 2048.
+We experiment with different ratios of near-surface samples to uniformly distributed samples used for the model input and loss computation. Models were trained on Surface-Uniform ratios ranging from 0.0 to 1.0 at 0.1 intervals. We test two loss functions with the best visual accuracy from the previous experiment: L1 and LOG. A new model was trained for each combination of loss function and Surface-Uniform ratio value. Each configuration was trained three times on separate seeds to get an average result, totaling 66 trained models. The same model configuration was used as the \nameref{sec:reconstruction_loss_comparison} experiments, except only 1024 input samples were used instead of 2048.
 
 The trend lines for the CD and EMD metrics are inconclusive due to high variance. But the IoU metric shows a statistically significant result in a linear regression, with $p < 0.001$ for both loss functions. Although the difference is small, the results indicate that a Surface-Uniform ratio of 0.0 produces the best results.
 
@@ -114,6 +114,11 @@ The trend lines for the CD and EMD metrics are inconclusive due to high variance
 \section{Input~Sample~Size}
 \label{sec:input_size_experiment}
 
+The encoder network size is correlated with performance and training time. A benchmark test is conducted to determine the configuration that produces the best reconstructions. The number of SDF point sample inputs is increased together with the number of sample points used for loss computation. The same model configuration was used as the \nameref{sec:reconstruction_loss_comparison} experiment except we use the LOG metric for all runs. We double the model size for each test starting with 128 and ending at 16384. Each training run was limited to 3.5 GiB of GPU memory with the batch size maximized for the available memory. Holding GPU memory constant for all runs allows for comparing training times and measuring the performance degradation from oversize models.
+
+Predictably, the training time trends upward as we increase the encoder size. The variance in training time is caused by the early-stop mechanism ending some runs short. The 512 input size model was only 54\% slower than the 128 input size run despite having a 4x larger encoder and training for the same number of epochs. This is because the decoder network comprises the majority of the model at these small input sizes. In contrast, the 16384 input size model is 76\% larger than the 16384 input size model.
+
+The 512 input size model has the best results in CD and EMD while the 8192 input size model had the best result in IoU. The 512 input size model has qualitatively worse reconstructions than the larger models, further showing the CD and EMD metrics are not good measures of visual quality. The 16384 input size model produces warped outputs and ranks only fourth best in IoU score despite being the largest. This is due to the low batch size.
 
 \begin{figure}[ht]
 	\centering
@@ -161,7 +166,7 @@ The trend lines for the CD and EMD metrics are inconclusive due to high variance
 		\includegraphics[width=\linewidth]{Images/Input Size Renders/16384.png}
 		\caption{16384}
 	\end{subfigure}
-	\caption{}
+	\caption{Comparison of output shapes across models trained on eight different input and loss sample sizes.}
 	\label{fig:input_size_renders}
 \end{figure}
 
@@ -187,7 +192,7 @@ The trend lines for the CD and EMD metrics are inconclusive due to high variance
 		16384 & 0.3091 & 184.87         & 1043.3         & 0.4759          & 5   & 322.1 & 198 & 238 \\
 		\hline
 	\end{tabular}
-	\caption{}
+	\caption{Performance and training time comparison of eight input and loss sample size configurations. Lower is better for CD and EMD. Higher is better for IoU.}
 	\label{tab:input_size_comparison}
 \end{table}
 
