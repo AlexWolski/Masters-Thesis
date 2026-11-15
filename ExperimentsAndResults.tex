@@ -197,64 +197,79 @@ The 512 input size model has the best results in CD and EMD while the 8192 input
 \end{table}
 
 
-\section{Cascade~Output~Size}
+\section{Cascaded~Refinement~Configuration~and~Training~Mode}
 \label{sec:prims_per_cascade_experiment}
 
-Cascaded refinement number of primitives per cascade
+This section compares the cascaded refinement architecture against the end-to-end architecture of all previous work in primitive 3D reconstruction. All experiments are normalized to use a maximum of 10 GiB of video RAM and output 16 output primitives. One CSG-CRN model is trained to predict 16 primitives in one pass to serve as the end-to-end model baseline. And eight CSG-CRN models are trained to compare the cascaded refinement configurations. The four cascade configurations resulting in 16 primitives are eight, four, two, and one primitives per pass with two, four, eight, and sixteen passes respectively. We train models with both separate and shared parameters for a total of 8 trained cascading models.
+
+The results show that the shared parameter models overall outperform the separate parameters across the board. All shared models have a lower IoU than the corresponding separate model except for the 2 primitive $\times$ 8 passes configuration outlier. The 8 primitive $\times$ 2 pass shared parameter model ranks best in all metrics by a large margin, including the single-pass baseline. The 4 primitive $\times$ 4 passes shared model also outperforms the baseline, but none of the shared parameter models do. For both shared and separate parameter models, the performance trends downward as the number of cascades increases. The primary cause is an increase in greedy primitive fitting behavior where the initial cascade struggles to represent the entire target with a limited number of primitives. Then each subsequent cascade works off of a bad foundation.
+
+An additional result of interest is the total network size. All separate parameter models are larger than the baseline single-pass model since the network weights are duplicated for each cascade. In contrast, all shared parameter models are smaller than the baseline since the same network weights are running inference multiple times. The 4 primitive $\times$ 4 pass shared model performed better than baseline at less than 30\% of the network size. Despite the smaller size, the shared model took 20\% longer to train since it trains on both the initial pass and the refinement pass.
 
 
 \begin{figure}[ht]
 	\centering
+	\captionsetup[subfigure]{justification=centering}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/TARGET.png}
 		\caption{Target}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Single Pass 16x1.png}
 		\caption{Single Pass 16x1}
 	\end{subfigure}
 
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 8x2.png}
 		\caption{Separate 8x2}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 4x4.png}
 		\caption{Separate 4x4}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 2x8.png}
 		\caption{Separate 2x8}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 1x16.png}
 		\caption{Separate 1x16}
 	\end{subfigure}
 
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 8x2.png}
 		\caption{Shared 8x2}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 4x4.png}
 		\caption{Shared 4x4}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 2x8.png}
 		\caption{Shared 2x8}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
+		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 1x16.png}
 		\caption{Shared 1x16}
 	\end{subfigure}
-	\caption{}
+	\caption{Comparison of output shapes across models trained on different cascaded refinement configurations. A single pass model (top right) serves as a baseline. The configuration format is $primitives\;per\;cascade \times number\;of\;cascades$.}
 	\label{fig:prims_per_cascade_renders}
 \end{figure}
 
@@ -283,7 +298,7 @@ Cascaded refinement number of primitives per cascade
 		                          & 1x16 & 0.3407 & 222.42         & 924.2          & 0.4334          & 404 & 7.0   & 183.5 & 254  & 269  \\
 		\hline
 	\end{tabular}
-	\caption{}
+	\caption{Performance, network size, and training time comparison of eight cascaded refinement configurations. Lower is better for CD and EMD. Higher is better for IoU.}
 	\label{tab:prims_per_cascade_comparison}
 \end{table}
 
