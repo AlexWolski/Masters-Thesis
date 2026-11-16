@@ -9,28 +9,28 @@ This chapter presents the data-processing, architecture and training of the CSG-
 \section{Input~Shape~Representation}
 \label{sec:input_shape_representation}
 
-CSG-CRN predicts a list of implicit SDF primitives and boolean commands to refine an initial CSG model reconstruction. The resultant refined CSG model is then discretized and fed back into the CSG-CRN network for further cascaded refinement. The discretization method must be differential to enable loss computation, and must efficient to reduce training time. Given these restrictions, an SDF sample point cloud was chosen as the input shape representation. The SDF values can be quickly computed in a differentiable manner. And the point cloud of samples can be kept a constant size regardless of how many CSG commands are in the shape reconstruction.
+CSG-CRN predicts a list of implicit SDF primitives and boolean commands to refine an initial CSG model reconstruction. The resultant refined CSG model is then discretized and fed back into the CSG-CRN network for further cascaded refinement. The discretization method must be differential to enable loss computation and efficient to reduce training time. Given these restrictions, an SDF sample point cloud was chosen as the input shape format. SDF values can be quickly computed in a differentiable manner. And the flexibility of a point cloud allows for a fixed encoder size regardless of how many cascades have been run.
 
-Before training begins, each mesh shape sample in the dataset is preprocessed to produce an SDF sample point cloud. A fixed number of query points $p \in \mathbb{R}^3$ are randomly generated in a unit sphere. Then the signed distance is computed from each query point to the shape mesh surface. The result is a list of four-dimensional vectors containing point samples and signed distance values representing a target volume. Calculating signed distances for meshes is computationally expensive, so the operation is performed once and saved as an SDF dataset.
+Before training begins, each mesh shape sample in the dataset is preprocessed to produce an SDF sample point cloud. A fixed number of query points $p \in \mathbb{R}^3$ are randomly generated in a unit sphere. Then the signed distance is computed from each query point to the mesh surface. The result is a list of four-dimensional vectors containing point samples and signed distance values that represent the target mesh. Calculating signed distances for meshes is expensive, so the computation is performed once and saved as an SDF dataset.
 
-The same process is applied to generate SDF sample point clouds for CSG model reconstructions. Computing signed distance values for an SDF CSG model is trivial since the primitives themselves are SDFs. For each CSG command, the primitive SDF is used to compute a signed distance given a query point, and the boolean operation is used to combine the signed distances for each primitive. This computation is both differentiable and efficient.
+The same process is used to generate an SDF sample point cloud for the CSG model output of CSG-CRN. Computing signed distance values for an SDF CSG model is trivial since the primitives themselves are SDFs. For each CSG command, the primitive SDF is used to compute a signed distance given a query point. Then the boolean operations are applied to produce a signed distance for the complete reconstruction. This computation is both differentiable and efficient.
 
-The query points generated in the preprocessing step can also be used as the query points for the initial reconstruction SDF sample point cloud. By using the same query points for both, a single five-dimensional vector can represent both the input and initial reconstruction as opposed to two separate four-dimensional vectors. The combined format is $[p_x, p_y, p_z, d_{target}, d_{recon}]$, where $q$ is the query point, $d_{target}$, is the signed distance to the target volume, and $d_{recon}$ is the signed distance to the initial reconstruction.
+The query points in the the target shape dataset can also be used as the query points for the CSG model output of CSG-CRN. The naive approach for encoding the target and reconstruction shapes separately results in two four-dimensional vectors. By using the same query points for both shapes, a single five-dimensional vector can represent both the input and initial reconstruction. The combined format is $[p_x, p_y, p_z, d_{target}, d_{recon}]$, where $q$ is the query point, $d_{target}$, is the signed distance to the target volume, and $d_{recon}$ is the signed distance to the initial reconstruction.
 
-Early versions of the CSG-CRN network used the combined five-dimensional vector as the input shape representation. However, we found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction distances to compute the missing, filled, and excess volumes.
+Early versions of the CSG-CRN network used only the combined five-dimensional vector as the input shape representation. However, we found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction distances to compute the missing, filled, and excess volumes.
 
-The missing volume is found by subtracting the reconstruction from the target
+The missing volume is found by subtracting the reconstruction from the target:
 \[d_{missing}=\max(d_{target}, -d_{recon}).\]
 
-The filled volume is found by intersecting both the target and reconstruction
+The filled volume is found by intersecting both the target and reconstruction:
 \[d_{filled}=\max(d_{target}, d_{recon}).\]
 
-The excess volume is found by subtracting the target from the reconstruction
+The excess volume is found by subtracting the target from the reconstruction:
 \[d_{excess}=\max(-d_{target}, d_{recon}).\]
 
-The query point and three distance values comprise the six-dimensional input vector.
+The query point and three distance values comprise the six-dimensional input vector:
 
-\[input = [p, d_{missing}, d_{filled}, d_{excess}]\]
+\[input = [p, d_{missing}, d_{filled}, d_{excess}].\]
 
 
 \section{Point~Sampling}
@@ -47,35 +47,29 @@ We apply a similar approach when sampling query points for both our model input 
 \subsection{Encoder~Network}
 \label{subsec:encoder_network_method}
 
-Early designs for the CSG-CRN architecture included a self-supervised Siamese network to encode the difference in features between the target volume input and initial reconstruction input. The shape samples are encoded separately by identical networks that share weights. The resultant latent vectors are processed by an intermediary fully-connected layer to find differences in the two inputs and encode for the next shape prediction. This architecture has been successfully employed by previous work~\cite{Cui2020, Sarode2019} to track objects using point-cloud inputs. However, testing showed that the architecture was a poor fit for our application. Siamese networks work best when the two input samples have only small differences. This limitation is observed in object tracking networks where the Siamese encoder fails to track fast-deforming objects~\cite{Cui2020}. Since the shape inputs to CSG-CRN can change drastically between cascades, the Siamese encoder fails to converge.
+Early designs for the CSG-CRN architecture included a self-supervised Siamese network to encode the difference in features between the target volume input and initial reconstruction input. The shape samples are encoded separately by identical networks that share weights. The resultant latent vectors are processed by an intermediary fully-connected layer to find differences in the two inputs and encode for the next shape prediction. This architecture has been successfully employed by previous work~\cite{Cui2020, Sarode2019} to track objects using point-cloud inputs. However, out testing showed that the architecture was a poor fit for our application. Siamese networks work best when the two input samples are largely identical with minor variations. Large differences in the two inputs make it difficult for a Siamese network to converge. This is seen in prior work with object tracking networks where the Siamese encoder fails to track fast-deforming objects~\cite{Cui2020}. The shape inputs to CSG-CRN can change drastically between cascades and results in the Siamese encoder failing to converge.
 
-Later iterations of CSG-CRN concatenated the target and initial reconstruction shapes so they could be consumed by a single encoder network. Each input sample is a six-dimensional vector comprising a query point and distances representing missing, filled, and excess volumes. 
- Details on the pre-processing step for computing the input vector are described in the \nameref{sec:input_shape_representation} section. The six-dimensional input vector is encoded by a modified version of PointNet that is capable of ingesting multiple distance values in addition to the standard $R^3$ point inputs.
+Later iterations of CSG-CRN concatenate the target and initial reconstruction shapes and process them using a single encoder network. Each input sample is a six-dimensional vector comprising a query point and distances representing missing, filled, and excess volumes (See \nameref{sec:input_shape_representation}). The six-dimensional input vector is encoded by a modified version of PointNet that is capable of ingesting multiple distance values in addition to the standard $R^3$ point inputs.
 
 \subsection{Decoder~Network}
 \label{subsec:decoder_network_method}
 
-The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command.
+The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
 
-Similar to prior primitive fitting architectures~\cite{Tulsiani2017,Paschalidou2019}, the regressor network is duplicated for each output primitive. Producing multiple primitive shapes before computing the loss prevents the model from fitting greedily. The more primitives that are generated before optimizing, the more accurately each primitive is fitted to the target volume. Optimizing a single primitive results in an overly broad output shape that must represent the entire target volume. Although further cascades can subtract from the broad initial reconstruction and refine it, this approach requires more output primitives and produces a worse final result.
+\[f_\theta (X, Y) = (p, s, t, q, \alpha, \gamma).\]
 
-CSGNet~\cite{Sharma2018} successfully avoids greedy primitive fitting by running multiple forward passes and generating multiple primitives before optimizing. While this approach can be applied to CSG-CRN, the performance would greatly suffer since the backward step would need to flow through the preprocessing that is applied between cascades.
+Similar to prior primitive fitting architectures~\cite{Tulsiani2017,Paschalidou2019}, the regressor network is duplicated for each output primitive. Producing multiple primitive shapes before computing the loss prevents the model from fitting greedily. The more primitives that are generated before optimizing, the more accurately each primitive can be fitted to the target volume. Optimizing a single primitive results in a broad output shape that tries to represent the entire target volume. Although further cascades can subtract from the broad initial reconstruction to refine it, this approach requires more output primitives and produces a worse final result.
 
+CSGNet~\cite{Sharma2018} successfully avoids greedy primitive fitting by running multiple forward passes and generating multiple primitives before optimizing. While this approach can be applied to CSG-CRN, the performance would greatly suffer since the backward step needs to flow through the SDF computations and point sampling logic applied between cascades.
+
+Experiments revealed that the CSG-CRN model would exploit the subtract operation in the later stages of training. Subtracting thin primitives from a reconstruction has little impact on the loss and avoids a potentially increasing the loss by adding a primitive. To prevent this behavior, a maximum number of subtract operations per cascade can be configured in the decoder.
 
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.7]{Images/csg_crn_figure.pdf}
-	\caption{Network Architecture.}
+	\caption{CSG-CRN Network Architecture.}
 	\label{fig:network_architecture}
 \end{figure}
-
-
-\section{CSG-Primitive~Prediction}
-\label{sec:csg_primitive_prediction}
-
-To predict a CSG primitive, we optimize for the function
-\[f_\theta (X, Y) = (p, s, t, q, \alpha, \gamma).\]
-We optimize the network parameters $\theta$, given an input point cloud $X$ and initial reconstruction point cloud $Y$. The model predicts the parameters of a primitive: primitive shape $p$, scale $s$, translation $t$, quaternion rotation $q$, blending factor $\alpha$, and boolean operation $\gamma$.
 
 
 \section{CSG-To-SDF~Conversion}
