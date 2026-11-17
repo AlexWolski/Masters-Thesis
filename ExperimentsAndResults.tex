@@ -392,6 +392,76 @@ Accuracy metrics for both one-pass and highest performing cascaded models in the
 \end{table}
 
 
+\section{Unseen~Shape~Class~Reconstruction}
+\label{sec:unseen_class_experiment}
+
+
+\begin{figure}[ht]
+	\centering
+	\captionsetup[subfigure]{justification=centering}
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Person TARGET.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink TARGET.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs TARGET.png}
+		\caption{Target}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Person ModelNet40.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink ModelNet40.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs ModelNet40.png}
+		\caption{ModelNet40}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Person ShapeNet.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink ShapeNet.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs ShapeNet.png}
+		\caption{ShapeNet}
+	\end{subfigure}
+	\caption{}
+	\label{fig:unseen_class_renders}
+\end{figure}
+
+\begin{table}[ht]
+	\centering
+	\singlespace
+	\footnotesize
+	\setlength{\tabcolsep}{3pt}
+	\setcellgapes{4pt}
+	\makegapedcells
+	\renewcommand{\bfdefault}{b}
+	\begin{tabular}{|l|l|r|r|r|r|r|r|r|r|}
+		\hline
+		\makecell{Shape\\Category} & \makecell{Training\\Set} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
+		\Xhline{1pt}
+		\multirow{2}{*}{Person} & ModelNet40          & 0.3379 & 53.13          & \textbf{840.3}  & 0.3903          & 64 & 74.3  & 134 & 174 \\
+		                        & \smash[b]{ShapeNet} & 0.3197 & \textbf{48.27} & 848.9           & \textbf{0.4096} & 64 & 685.8 & 42  & 52  \\
+		\hline
+		\multirow{2}{*}{Sink}   & ModelNet40          & 0.3251 & 82.26          & 803.6           & 0.2520          & 64 & 74.3  & 134 & 174 \\
+		                        & \smash[b]{ShapeNet} & 0.2730 & \textbf{50.20} & \textbf{710.2}  & \textbf{0.3725} & 64 & 685.8 & 42  & 52  \\
+		\hline
+		\multirow{2}{*}{Stairs} & ModelNet40          & 0.3616 & 112.89         & 1117.3          & 0.1920          & 64 & 74.3  & 134 & 174 \\
+		                        & \smash[b]{ShapeNet} & 0.3344 & \textbf{84.11} & \textbf{1041.9} & \textbf{0.2437} & 64 & 685.8 & 42  & 52  \\
+		\hline
+		\multirow{2}{*}{All}    & ModelNet40          & 0.3418 & 84.88          & 926.1           & 0.2701          & 64 & 74.3  & 134 & 174 \\
+		                        & \smash[b]{ShapeNet} & 0.3083 & \textbf{61.76} & \textbf{868.3}  & \textbf{0.3371} & 64 & 685.8 & 42  & 52  \\
+		\hline
+	\end{tabular}
+	\caption{}
+	\label{tab:unseen_class_comparison}
+\end{table}
+
+
 \section{Partial~Reconstruction~Refinement}
 \label{sec:partial_recon_experiment}
 
