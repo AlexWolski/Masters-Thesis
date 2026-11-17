@@ -500,19 +500,28 @@ Take a mesh, occlude part of the geometry, and convert it to an SDF input sample
 
 	\begin{subfigure}{\textwidth}
 		\centering
-		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Reconstruction.png}
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Reconstruction Whole Dataset.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Rabbit Bell Reconstruction.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Teddy Bear Reconstruction.png}
 
 		\footnotesize
-		\makebox[0.13\textwidth]{IoU 0.8144}
+		\makebox[0.13\textwidth]{IoU 0.7665}
 		\hspace{0.03\textwidth}
-		\makebox[0.13\textwidth]{IoU 0.6828}
+		\makebox[0.13\textwidth]{IoU 0.7252}
 		\hspace{0.03\textwidth}
-		\makebox[0.13\textwidth]{IoU 0.5902}
-		\caption{CSG Reconstruction}
+		\makebox[0.13\textwidth]{IoU 0.6242}
+		\caption{General ShapeNet Model Reconstruction}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Reconstruction Single Category.png}
+
+		\footnotesize
+		\makebox[0.13\textwidth]{IoU 0.8123}
+		\caption{Car Model Reconstruction}
 	\end{subfigure}
 	\caption{}
 	\label{fig:photogrammetry_renders}
