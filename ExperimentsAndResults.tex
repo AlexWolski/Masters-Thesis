@@ -306,7 +306,11 @@ An additional result of interest is the total network size. All separate paramet
 \section{ShapeNet~Benchmark}
 \label{sec:shapenet_experiment}
 
-Accuracy metrics for both one-pass and highest performing cascaded models in the previous section.
+We apply the most effective training configuration found in the previous experiment to train on the ShapeNet dataset. Five models are trained separately on curated shape categories airplane, bench, car, char, and sofa. In addition, one model is trained on all 54 shape categories in ShapeNet. All models are trained with a data split of 80\% training, 10\% validation, and 10\% testing. For the model trained on all samples, this translates to 41367 test samples and 5137 samples each for validation and testing. We choose 1024 input samples and 2048 loss samples to reduce model complexity and size. The chosen loss sample size is larger since it provides higher accuracy without affecting the size of the model. Each model outputs 16 primitives per pass for 3 passes totaling 48 primitives. Unlike previous experiments, we limit the model to 4 subtract operations per pass to encourage prediction of smaller details. Each model is trained with a batch size of 64. All other configurations are identical to previous experiments.
+
+Both the models trained on one shape category and the model trained on the entire dataset show strong results. The Sofa category has the highest overall accuracy with an average IoU over 0.8. The Bench category has the lowest average IoU at around 0.52, since the point cloud input struggles to encode benches with thin slats and gaps at a 1024 input sample resolution. The models trained on a single shape category perform significantly better on all categories except for Benches where the results are roughly even.
+
+A visual inspection reveals that the models trained on single shape categories have better blending and continuity. This is especially apparent in the car reconstructions where individual primitives can not be identified in the single-category model reconstruction. The whole-dataset model has good volumetric accuracy but misses details and produces more lumpy surfaces.
 
 
 \begin{figure}[ht]
@@ -353,7 +357,7 @@ Accuracy metrics for both one-pass and highest performing cascaded models in the
 		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Sofa Whole Dataset.png}
 		\caption{Whole Dataset Training}
 	\end{subfigure}
-	\caption{}
+	\caption{Comparison of output shapes for models trained on one shape category (second row) versus trained on the whole of the ShapeNet dataset (third row.)}
 	\label{fig:shapenet_benchmark_renders}
 \end{figure}
 
@@ -387,7 +391,7 @@ Accuracy metrics for both one-pass and highest performing cascaded models in the
 		\makecell[l]{All}         & Whole Dataset           & 0.2261 & 23.38          & 541.9                     & 0.6440          & 64 & 685.8 & 42  & 52  \\
 		\hline
 	\end{tabular}
-	\caption{}
+	\caption{Performance and training time comparison the five models trained on a single shape category each against one model trained on all 54 shape categories of the ShapeNet dataset.}
 	\label{tab:shapenet_benchmark_comparison}
 \end{table}
 
