@@ -309,6 +309,87 @@ An additional result of interest is the total network size. All separate paramet
 Accuracy metrics for both one-pass and highest performing cascaded models in the previous section.
 
 
+\begin{figure}[ht]
+	\centering
+	\captionsetup[subfigure]{justification=centering}
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Airplane TARGET.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Bench TARGET.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Car TARGET.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Chair TARGET.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Sofa TARGET.png}
+		\caption{Target}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Airplane Single Category.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Bench Single Category.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Car Single Category.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Chair Single Category.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Sofa Single Category.png}
+		\caption{Single Category}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Airplane Whole Dataset.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Bench Whole Dataset.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Car Whole Dataset.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Chair Whole Dataset.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Sofa Whole Dataset.png}
+		\caption{Whole Dataset}
+	\end{subfigure}
+	\caption{}
+	\label{fig:shapenet_benchmark_renders}
+\end{figure}
+
+\begin{table}[ht]
+	\centering
+	\singlespace
+	\footnotesize
+	\setlength{\tabcolsep}{3pt}
+	\setcellgapes{4pt}
+	\makegapedcells
+	\renewcommand{\bfdefault}{b}
+	\begin{tabular}{|l|l|r|r|r|r|r|r|r|r|}
+		\hline
+		\makecell{Shape\\Category} & \makecell{Training\\Set} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
+		\Xhline{1pt}
+		\multirow{2}{*}{Airplane} & \smash[b]{Single Category} & 0.2065 & \textbf{11.00} & \textbf{414.8} & \textbf{0.6765} & 64 & 203.5 & 167 & 207 \\
+		                          & Whole Dataset              & 0.2218 & 13.29          & 461.9          & 0.6150          & 64 & 685.8 & 42  & 52  \\
+		\hline
+		\multirow{2}{*}{Bench}    & \smash[b]{Single Category} & 0.2193 & 21.37          & 488.4          & 0.5202          & 64 & 76.3  & 148 & 188 \\
+		                          & Whole Dataset              & 0.2156 & \textbf{16.02} & \textbf{473.8} & \textbf{0.5234} & 64 & 685.8 & 42  & 52  \\
+		\hline
+		\multirow{2}{*}{Car}      & \smash[b]{Single Category} & 0.2295 & \textbf{19.45} & \textbf{481.1} & \textbf{0.6859} & 64 & 181.9 & 157 & 197 \\
+		                          & Whole Dataset              & 0.2476 & 23.65          & 565.4          & 0.6646          & 64 & 685.8 & 42  & 52  \\
+		\hline
+		\multirow{2}{*}{Chair}    & \smash[b]{Single Category} & 0.2176 & \textbf{18.11} & \textbf{471.6} & \textbf{0.6683} & 64 & 283.9 & 163 & 203 \\
+		                          & Whole Dataset              & 0.2413 & 25.94          & 578.6          & 0.6076          & 64 & 685.8 & 42  & 52  \\
+		\hline
+		\multirow{2}{*}{Sofa}     & \smash[b]{Single Category} & 0.2074 & 16.97          & \textbf{438.6} & \textbf{0.8069} & 64 & 138.8 & 159 & 199 \\
+		                          & Whole Dataset              & 0.2104 & \textbf{15.83} & 441.2          & 0.8013          & 64 & 685.8 & 42  & 52  \\
+		\hline
+	\end{tabular}
+	\caption{}
+	\label{tab:shapenet_benchmark_comparison}
+\end{table}
+
+
 \section{Partial~Reconstruction~Refinement}
 \label{sec:partial_recon_experiment}
 
