@@ -471,4 +471,52 @@ A visual inspection reveals that the models trained on single shape categories h
 
 Take a mesh, occlude part of the geometry, and convert it to an SDF input sample. Perhaps 10 samples from a few categories. Determine the cascade to use by generating the first refinement on all cascade models and choosing the highest. Run refinement for all remaining trained cascade models.
 
+\section{Photogrammetry~Reconstruction}
+\label{sec:photogrammetry_reconstruction}
+
+
+\begin{figure}[ht]
+	\centering
+	\captionsetup[subfigure]{justification=centering}
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Video Frame.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Rabbit Bell Video Frame.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Teddy Bear Video Frame.png}
+		\caption{Video Scan}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Point Cloud.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Rabbit Bell Point Cloud.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Teddy Bear Point Cloud.png}
+		\caption{Extracted Point Cloud}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Reconstruction.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Rabbit Bell Reconstruction.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Teddy Bear Reconstruction.png}
+
+		\footnotesize
+		\makebox[0.13\textwidth]{IoU 0.8144}
+		\hspace{0.03\textwidth}
+		\makebox[0.13\textwidth]{IoU 0.6828}
+		\hspace{0.03\textwidth}
+		\makebox[0.13\textwidth]{IoU 0.5902}
+		\caption{CSG Reconstruction}
+	\end{subfigure}
+	\caption{}
+	\label{fig:photogrammetry_renders}
+\end{figure}
+
+
 
