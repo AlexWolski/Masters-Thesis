@@ -3,16 +3,16 @@
 \chapter{Experiments~and~Results}
 \label{chap:experiments_and_results}
 
-We conduct experiments to gauge the performance of different configurations for CSG-CRN and explore its capabilities.
+We conduct experiments to gauge the performance of different configurations for CSG-CRN and explore its capabilities.\footnote{\raggedright All datasets and trained model used in the experiments are available at: \href{https://huggingface.co/datasets/AlexWolski/CSGCRN-SDF-Dataset}{\nolinkurl{huggingface.co/datasets/AlexWolski/CSGCRN-SDF-Dataset}}}
 
 \section{Reconstruction~Loss~Metric~Comparison}
 \label{sec:reconstruction_loss_comparison}
 
 The CSG-CRN architecture implements a unique combination of SDF volumes, constructive solid geometry, and cascaded refinement. A fine-tuned loss function is required to compensate for the complications presented by the architecture and stabilize training. Auxiliary loss metrics are used to help control the results, but the the reconstruction loss metric ultimately determines the quality of the model.
 
-We experimented with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters, 9 total primitives (3 per cascade x 3 cascades), and 2048 input and loss samples. The model was trained on the Airplane category of the ShapeNet dataset with 3237 training samples, 404 validation samples, and 404 testing samples. The scheduler was configured to lower the learning rate after 20 epochs without improvement and stop training a cascade after 40 cascades without improvement. All testing was performed with 10000 samples and a Marching Cubes resolution of 512. The testing metrics are CD, Earth Movers Distance (ED), and Intersection over Union (IoU). Note that a simplified configuration was used and these results don't represent the final configuration for the CSG-CRN model.
+We experiment with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters, 9 primitives (3 per cascade x 3 cascades), and 2048 input and loss samples. The model was trained on the Airplane category of the ShapeNet dataset with 3237 training, 404 validation, and 404 testing samples. All training was performed on an RTX 3080 graphics card. The scheduler was configured to lower the learning rate after 20 epochs without improvement and stop training a cascade after 40 cascades without improvement. All testing was performed with 10000 samples and a Marching Cubes resolution of 512.
 
-The sigmoid loss performed best in the CD and EMD testing metrics while the LOG loss performed best in the IoU metric. Although the sigmoid model had the best quantitative results for CD and EMD, a visual inspection reveals that the airplane reconstruction is missing tail fins, missing a nose, and has warped wings. In comparison, the LOG loss airplane reconstruction is smooth and has more complete wings, although one wing is oversize. The CD, MSE, and OCC loss function runs plateaued in performance hit an early stop significantly earlier (<216 epochs) than the L1, LOG, and sigmoid losses (>300 epochs.)
+The sigmoid loss performed best in the CD and EMD testing metrics while LOG loss performed best in IoU. Although the sigmoid model wins in two metrics, a visual inspection reveals that the reconstruction is missing tail fins, the nose, and has warped wings. In contrast, the LOG loss airplane output is smoother and has more complete wings. All subsequent experiments are conducted with LOG loss and an emphasis on the IoU metric.
 
 
 
