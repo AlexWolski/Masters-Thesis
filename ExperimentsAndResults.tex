@@ -401,7 +401,7 @@ A visual inspection reveals that the models trained on single shape categories h
 \section{Unseen~Shape~Class~Reconstruction}
 \label{sec:unseen_class_experiment}
 
-The model trained on the ShapeNet dataset can be used to reconstruct unseen shape categories. To demonstrate, we run inference on the Person, Sink, and Stairs categories from the ModelNet40 dataset.
+The model trained on the ShapeNet dataset can be used to reconstruct unseen shape categories. To demonstrate, we run inference on the Person, Sink, and Stairs categories from the ModelNet40 dataset~\cite{Wu2015}.
 
 The reconstruction quality of the unseen shape categories is much lower than on the ShapeNet dataset. The best category is Person at 0.41 IoU and the worst is Stairs at 0.24 IoU. This is compared to the average IoU metric of 0.64 on the ShapeNet dataset. However, the model succeeds in creating a rough block-out of the target shape and demonstrates a level of generalization. 
 
