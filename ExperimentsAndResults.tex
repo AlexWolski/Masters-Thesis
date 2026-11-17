@@ -460,7 +460,13 @@ The reconstruction quality of the unseen shape categories is much lower than on 
 \section{Partial~Reconstruction~Refinement}
 \label{sec:partial_recon_experiment}
 
-Take a mesh, occlude part of the geometry, and convert it to an SDF input sample. Perhaps 10 samples from a few categories. Determine the cascade to use by generating the first refinement on all cascade models and choosing the highest. Run refinement for all remaining trained cascade models.
+A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. 10 mesh samples were randomly selected from each of the Airplane, Bench, Car, Chair, and Sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a 50 sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and runnign only two passes.
+
+Both the single-category models and the general whole-dataset model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes are comparable to the unseen shape category results. Volume is generally added in the correct region and not added over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that is absent from the the whole-dataset model. However, the accuracy metrics show that both perform about the same.
+
+This experiment demonstrates that the cascades are not structured. If each cascade was designated a specific portion of a shape template to predict, the model would fail to consistently restore randomized parts of the target shape. The ability to do so indicates that the encoder can compare the target input against the initial reconstruction input to determine what volume is missing.
+
+\newpage
 
 
 \begin{figure}[ht]
@@ -468,60 +474,60 @@ Take a mesh, occlude part of the geometry, and convert it to an SDF input sample
 	\captionsetup[subfigure]{justification=centering}
 	\begin{subfigure}{\textwidth}
 		\centering
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Airplane TARGET.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Airplane TARGET.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Bench TARGET.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Bench TARGET.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Car TARGET.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Car TARGET.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Chair TARGET.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair TARGET.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Sofa TARGET.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa TARGET.png}
 		\caption{Target}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
 		\centering
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Airplane Occluded.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Airplane Occluded.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Bench Occluded.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Bench Occluded.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Car Occluded.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Car Occluded.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Chair Occluded.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Occluded.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Sofa Occluded.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Occluded.png}
 		\caption{Occluded Input}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
 		\centering
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Airplane Single Category.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Airplane Single Category.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Bench Single Category.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Bench Single Category.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Car Single Category.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Car Single Category.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Chair Single Category.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Single Category.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Sofa Single Category.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Single Category.png}
 		\caption{Single Shape Category Training}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
 		\centering
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Airplane Whole Dataset.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Airplane Whole Dataset.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Bench Whole Dataset.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Bench Whole Dataset.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Car Whole Dataset.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Car Whole Dataset.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Chair Whole Dataset.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Whole Dataset.png}
 		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Partial Reconstruction Renders/Sofa Whole Dataset.png}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Whole Dataset.png}
 		\caption{Whole Dataset Training}
 	\end{subfigure}
-	\caption{}
+	\caption{Refinement of partially complete shapes by single and all trained ShapeNet models.}
 	\label{fig:partial_recon_renders}
 \end{figure}
 
@@ -533,30 +539,30 @@ Take a mesh, occlude part of the geometry, and convert it to an SDF input sample
 	\setcellgapes{4pt}
 	\makegapedcells
 	\renewcommand{\bfdefault}{b}
-	\begin{tabular}{|l|l|r|r|r|r|r|r|}
+	\begin{tabular}{|l|l|r|r|r|}
 		\hline
-		\makecell{Shape\\Category} & \makecell{Training\\Set} & \makecell{Occluded\\CD} & \makecell{Occluded\\EMD} & \makecell{Occluded\\IoU} & \makecell{Refined\\CD} & \makecell{Refined\\EMD} & \makecell{Refined\\IoU} \\
+		\makecell{Shape Category} & \makecell{Training Set} & \makecell{Refined CD} & \makecell{Refined EMD} & \makecell{Refined IoU} \\
 		\Xhline{1pt}
-		\multirow{2}{*}{Airplane} & \smash[b]{Single Category} & \multirow{2}{*}{140.45} & \multirow{2}{*}{202.4} & \multirow{2}{*}{0.9118} & 27.04          & 587.8          & 0.7473          \\
-		                          & Whole Dataset              &                         &                        &                         & \textbf{15.40} & \textbf{428.3} & \textbf{0.8146} \\
+		\multirow{2}{*}{Airplane} & \smash[b]{Single Category} & 27.04          & 587.8          & 0.7473          \\
+		                          & Whole Dataset              & \textbf{15.40} & \textbf{428.3} & \textbf{0.8146} \\
 		\hline
-		\multirow{2}{*}{Bench}    & \smash[b]{Single Category} & \multirow{2}{*}{97.62}  & \multirow{2}{*}{276.3} & \multirow{2}{*}{0.7595} & 19.52          & \textbf{463.0} & \textbf{0.7000} \\
-		                          & Whole Dataset              &                         &                        &                         & \textbf{12.02} & 486.4          & 0.6752          \\
+		\multirow{2}{*}{Bench}    & \smash[b]{Single Category} & 19.52          & \textbf{463.0} & \textbf{0.7000} \\
+		                          & Whole Dataset              & \textbf{12.02} & 486.4          & 0.6752          \\
 		\hline
-		\multirow{2}{*}{Car}      & \smash[b]{Single Category} & \multirow{2}{*}{127.27} & \multirow{2}{*}{330.0} & \multirow{2}{*}{0.8627} & 33.70          & 545.4          & 0.7590          \\
-		                          & Whole Dataset              &                         &                        &                         & \textbf{16.88} & \textbf{490.9} & \textbf{0.7976} \\
+		\multirow{2}{*}{Car}      & \smash[b]{Single Category} & 33.70          & 545.4          & 0.7590          \\
+		                          & Whole Dataset              & \textbf{16.88} & \textbf{490.9} & \textbf{0.7976} \\
 		\hline
-		\multirow{2}{*}{Chair}    & \smash[b]{Single Category} & \multirow{2}{*}{423.77} & \multirow{2}{*}{277.6} & \multirow{2}{*}{0.8305} & \textbf{47.36} & \textbf{306.2} & \textbf{0.8558} \\
-		                          & Whole Dataset              &                         &                        &                         & 52.62          & 701.9          & 0.7109          \\
+		\multirow{2}{*}{Chair}    & \smash[b]{Single Category} & \textbf{47.36} & \textbf{306.2} & \textbf{0.8558} \\
+		                          & Whole Dataset              & 52.62          & 701.9          & 0.7109          \\
 		\hline
-		\multirow{2}{*}{Sofa}     & \smash[b]{Single Category} & \multirow{2}{*}{169.54} & \multirow{2}{*}{340.5} & \multirow{2}{*}{0.7740} & 48.73          & 831.9          & 0.7248          \\
-		                          & Whole Dataset              &                         &                        &                         & \textbf{20.98} & \textbf{563.6} & \textbf{0.7724} \\
+		\multirow{2}{*}{Sofa}     & \smash[b]{Single Category} & 48.73          & 831.9          & 0.7248          \\
+		                          & Whole Dataset              & \textbf{20.98} & \textbf{563.6} & \textbf{0.7724} \\
 		\hline
-		\multirow{2}{*}{All}      & \smash[b]{Single Category} & \multirow{2}{*}{191.73} & \multirow{2}{*}{285.3} & \multirow{2}{*}{0.8277} & 35.27          & 546.9          & \textbf{0.7574} \\
-		                          & Whole Dataset              &                         &                        &                         & \textbf{23.58} & \textbf{534.2} & 0.7542          \\
+		\multirow{2}{*}{All}      & \smash[b]{Single Category} & 35.27          & 546.9          & \textbf{0.7574} \\
+		                          & Whole Dataset              & \textbf{23.58} & \textbf{534.2} & 0.7542          \\
 		\hline
 	\end{tabular}
-	\caption{}
+	\caption{Partial shape refinement metrics for single and all category trained models.}
 	\label{tab:partial_recon_comparison}
 \end{table}
 
