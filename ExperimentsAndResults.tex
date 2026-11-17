@@ -310,7 +310,9 @@ We apply the most effective training configuration found in the previous experim
 
 Both the models trained on one shape category and the model trained on the entire dataset show strong results. The Sofa category has the highest overall accuracy with an average IoU over 0.8. The Bench category has the lowest average IoU at around 0.52, since the point cloud input struggles to encode benches with thin slats and gaps at a 1024 input sample resolution. The models trained on a single shape category perform significantly better on all categories except for Benches where the results are roughly even.
 
-A visual inspection reveals that the models trained on single shape categories have better blending and continuity. This is especially apparent in the car reconstructions where individual primitives can not be identified in the single-category model reconstruction. The whole-dataset model has good volumetric accuracy but misses details and produces more lumpy surfaces.
+A visual inspection reveals that the models trained on single shape categories have better blending and continuity. This is especially apparent in the car reconstructions where the primitives are blended to the point they can not be distinguished as separate shapes. The whole-dataset model has good volumetric accuracy but misses smaller details. The generalized model produces results with holes, gaps, and lumpy surfaces.
+
+\newpage
 
 
 \begin{figure}[ht]
@@ -399,6 +401,9 @@ A visual inspection reveals that the models trained on single shape categories h
 \section{Unseen~Shape~Class~Reconstruction}
 \label{sec:unseen_class_experiment}
 
+The model trained on the ShapeNet dataset can be used to reconstruct unseen shape categories. To demonstrate, we run inference on the Person, Sink, and Stairs categories from the ModelNet40 dataset.
+
+The reconstruction quality of the unseen shape categories is much lower than on the ShapeNet dataset. The best category is Person at 0.41 IoU and the worst is Stairs at 0.24 IoU. This is compared to the average IoU metric of 0.64 on the ShapeNet dataset. However, the model succeeds in creating a rough block-out of the target shape and demonstrates a level of generalization. 
 
 \begin{figure}[ht]
 	\centering
@@ -410,17 +415,7 @@ A visual inspection reveals that the models trained on single shape categories h
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink TARGET.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs TARGET.png}
-		\caption{Target}
-	\end{subfigure}
-
-	\begin{subfigure}{\textwidth}
-		\centering
-		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Person ModelNet40.png}
-		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink ModelNet40.png}
-		\hspace{0.03\textwidth}
-		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs ModelNet40.png}
-		\caption{ModelNet40}
+		\caption{Target ModelNet40 Shapes}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -430,9 +425,9 @@ A visual inspection reveals that the models trained on single shape categories h
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink ShapeNet.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs ShapeNet.png}
-		\caption{ShapeNet}
+		\caption{ShapeNet Trained Model Reconstructions}
 	\end{subfigure}
-	\caption{}
+	\caption{Target shapes from the ModelNet40 dataset (top row) and reconstructions created by a model trained on the ShapeNet dataset (bottom row.)}
 	\label{fig:unseen_class_renders}
 \end{figure}
 
@@ -444,24 +439,20 @@ A visual inspection reveals that the models trained on single shape categories h
 	\setcellgapes{4pt}
 	\makegapedcells
 	\renewcommand{\bfdefault}{b}
-	\begin{tabular}{|l|l|r|r|r|r|r|r|r|r|}
+	\begin{tabular}{|l|l|r|r|r|r|}
 		\hline
-		\makecell{Shape\\Category} & \makecell{Training\\Set} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
+		\makecell{Shape\\Category}& \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} \\
 		\Xhline{1pt}
-		\multirow{2}{*}{Person} & ModelNet40          & 0.3379 & 53.13          & \textbf{840.3}  & 0.3903          & 64 & 74.3  & 134 & 174 \\
-		                        & \smash[b]{ShapeNet} & 0.3197 & \textbf{48.27} & 848.9           & \textbf{0.4096} & 64 & 685.8 & 42  & 52  \\
+		Person & 0.3197 & 48.27 & 848.9  & 0.4096 \\
 		\hline
-		\multirow{2}{*}{Sink}   & ModelNet40          & 0.3251 & 82.26          & 803.6           & 0.2520          & 64 & 74.3  & 134 & 174 \\
-		                        & \smash[b]{ShapeNet} & 0.2730 & \textbf{50.20} & \textbf{710.2}  & \textbf{0.3725} & 64 & 685.8 & 42  & 52  \\
+		Sink   & 0.2730 & 50.20 & 710.2  & 0.3725 \\
 		\hline
-		\multirow{2}{*}{Stairs} & ModelNet40          & 0.3616 & 112.89         & 1117.3          & 0.1920          & 64 & 74.3  & 134 & 174 \\
-		                        & \smash[b]{ShapeNet} & 0.3344 & \textbf{84.11} & \textbf{1041.9} & \textbf{0.2437} & 64 & 685.8 & 42  & 52  \\
+		Stairs & 0.3344 & 84.11 & 1041.9 & 0.2437 \\
 		\hline
-		\multirow{2}{*}{All}    & ModelNet40          & 0.3418 & 84.88          & 926.1           & 0.2701          & 64 & 74.3  & 134 & 174 \\
-		                        & \smash[b]{ShapeNet} & 0.3083 & \textbf{61.76} & \textbf{868.3}  & \textbf{0.3371} & 64 & 685.8 & 42  & 52  \\
+		All    & 0.3083 & 61.76 & 868.3  & 0.3371 \\
 		\hline
 	\end{tabular}
-	\caption{}
+	\caption{Reconstruction accuracy metrics for ModelNet40 reconstructions created by a model trained on the ShapeNet dataset.}
 	\label{tab:unseen_class_comparison}
 \end{table}
 
