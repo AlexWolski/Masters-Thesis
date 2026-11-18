@@ -272,7 +272,7 @@ def cascade(k, top_y):
         "([xshift=-" + str(entry_shift) + "cm, yshift=" + str(TARGET_ENTRY_RISE) + "cm] " + entry_box + "-north) -- "
         "([xshift=-" + str(entry_shift) + "cm] " + entry_box + "-north);\n",
 
-        *cascade_backdrop(p + "backdrop", top_y + CASCADE_BACKDROP_TOP_PAD, new_prims_y - CASCADE_BACKDROP_BOTTOM_PAD, "Cascade " + str(k)),
+        *cascade_backdrop(p + "backdrop", top_y + CASCADE_BACKDROP_TOP_PAD, new_prims_y - CASCADE_BACKDROP_BOTTOM_PAD, "Cascade " + str(k + 1)),
     ]
     return elements
 
@@ -315,7 +315,7 @@ def output_csg_model(align_y):
         name = "out{}".format(k)
         elements += [
             prim_group(name, r"\ActivationColor", OUTPUT_X, y),
-            "\n\\node[anchor=north, font=\\small\\bfseries] (" + name + "_label) at ([yshift=-8pt] " + name + "-south) {Cascade " + str(k) + "};\n",
+            "\n\\node[anchor=north, font=\\small\\bfseries] (" + name + "_label) at ([yshift=-8pt] " + name + "-south) {Cascade " + str(k + 1) + "};\n",
         ]
         fit += "(" + name + "-nearsouthwest)(" + name + "-farnortheast)(" + name + "_label)"
 

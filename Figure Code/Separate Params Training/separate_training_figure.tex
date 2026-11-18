@@ -87,7 +87,7 @@ depth=3
 \node[fit={(-3.0, 2.1) (9.2, -3.4)}, inner sep=0pt, rounded corners=8pt, fill=\CascadeBackdropColor, fill opacity=0.15, draw=\CascadeBackdropOutlineColor, draw opacity=0.6, line width=0.4pt] (c0_backdrop) {};
 \end{scope}
 
-\node[anchor=north west, font=\small\bfseries] at ([xshift=0.35cm, yshift=-0.35cm] c0_backdrop.north west) {Cascade 0};
+\node[anchor=north west, font=\small\bfseries] at ([xshift=0.35cm, yshift=-0.35cm] c0_backdrop.north west) {Cascade 1};
 
 \pic[shift={(-1.2,-6.5,0)}] at (0,0,0)
     {Box={
@@ -157,7 +157,7 @@ depth=3
 \node[fit={(-3.0, -4.4) (9.2, -13.9)}, inner sep=0pt, rounded corners=8pt, fill=\CascadeBackdropColor, fill opacity=0.15, draw=\CascadeBackdropOutlineColor, draw opacity=0.6, line width=0.4pt] (c1_backdrop) {};
 \end{scope}
 
-\node[anchor=north west, font=\small\bfseries] at ([xshift=0.35cm, yshift=-0.35cm] c1_backdrop.north west) {Cascade 1};
+\node[anchor=north west, font=\small\bfseries] at ([xshift=0.35cm, yshift=-0.35cm] c1_backdrop.north west) {Cascade 2};
 
 \pic[shift={(-1.2,-17.0,0)}] at (0,0,0)
     {Box={
@@ -227,7 +227,7 @@ depth=3
 \node[fit={(-3.0, -14.9) (9.2, -24.4)}, inner sep=0pt, rounded corners=8pt, fill=\CascadeBackdropColor, fill opacity=0.15, draw=\CascadeBackdropOutlineColor, draw opacity=0.6, line width=0.4pt] (c2_backdrop) {};
 \end{scope}
 
-\node[anchor=north west, font=\small\bfseries] at ([xshift=0.35cm, yshift=-0.35cm] c2_backdrop.north west) {Cascade 2};
+\node[anchor=north west, font=\small\bfseries] at ([xshift=0.35cm, yshift=-0.35cm] c2_backdrop.north west) {Cascade 3};
 
 \draw[connection, draw=black, opacity=1, -{Stealth[length=3.5mm]}] (c0_new_prims-south) -- (c1_transform-north);
 
@@ -260,7 +260,7 @@ depth=3
         }
     };
 
-\node[anchor=north, font=\small\bfseries] (out0_label) at ([yshift=-8pt] out0-south) {Cascade 0};
+\node[anchor=north, font=\small\bfseries] (out0_label) at ([yshift=-8pt] out0-south) {Cascade 1};
 
 \pic[shift={(11.5,-13.1,0)}] at (0,0,0)
     {Box={
@@ -273,7 +273,7 @@ depth=3
         }
     };
 
-\node[anchor=north, font=\small\bfseries] (out1_label) at ([yshift=-8pt] out1-south) {Cascade 1};
+\node[anchor=north, font=\small\bfseries] (out1_label) at ([yshift=-8pt] out1-south) {Cascade 2};
 
 \pic[shift={(11.5,-15.5,0)}] at (0,0,0)
     {Box={
@@ -286,7 +286,7 @@ depth=3
         }
     };
 
-\node[anchor=north, font=\small\bfseries] (out2_label) at ([yshift=-8pt] out2-south) {Cascade 2};
+\node[anchor=north, font=\small\bfseries] (out2_label) at ([yshift=-8pt] out2-south) {Cascade 3};
 
 \node[anchor=center, font=\small\bfseries] at (12.4, -11.9) {+};
 
