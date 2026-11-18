@@ -85,9 +85,9 @@ The sigmoid loss performed best in the CD and EMD testing metrics while LOG loss
 \section{Surface-Uniform~Ratio}
 \label{sec:surface_uniform_ratio_experiment}
 
-We experiment with different ratios of near-surface samples to uniformly distributed samples used for the model input and loss computation. Models were trained on Surface-Uniform ratios ranging from 0.0 to 1.0 at 0.1 intervals. We test two loss functions with the best visual accuracy from the previous experiment: L1 and LOG. A new model was trained for each combination of loss function and Surface-Uniform ratio value. Each configuration was trained three times on separate seeds to get an average result, totaling 66 trained models. The same model configuration was used as the \nameref{sec:reconstruction_loss_comparison} experiments, except only 1024 input samples were used instead of 2048.
+We experiment with different ratios of near-surface samples to uniformly distributed samples used for the model input and loss computation. Models were trained on Surface-Uniform ratios ranging from 0.0 (only near surface) to 1.0 (only uniform). We test two loss functions with the best visual accuracy from the previous experiment: L1 and LOG. A new model was trained for each combination of loss function and Surface-Uniform ratio value. Each configuration was trained three times on separate seeds to get an average result, totaling 66 trained models. The same configuration as the \nameref{sec:reconstruction_loss_comparison} experiment was used, except for the input samples being reduced to 1024.
 
-The trend lines for the CD and EMD metrics are inconclusive due to high variance. But the IoU metric shows a statistically significant result in a linear regression, with $p < 0.001$ for both loss functions. Although the difference is small, the results indicate that a Surface-Uniform ratio of 0.0 produces the best results.
+The trend lines for the CD and EMD metrics are inconclusive due to high variance. But the IoU metric shows a statistically significant result with $p < 0.001$ for both loss functions. The results indicate that a Surface-Uniform ratio of 0.0 produces marginally better results, so we used this configuration for all subsequent experiments.
 
 
 \begin{figure}[ht]
