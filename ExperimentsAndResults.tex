@@ -576,7 +576,7 @@ We run performance tests to compare CSG-CRN to prior works in primitive 3D recon
 
 The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). For the ShapeNet dataset, we selected 5 shape samples from each shape category that was in the test set of all four models being compared. For the unseen dataset, we use the same 56 shape samples in the Person, Sink, and Stairs categories that was used in the \nameref{sec:unseen_class_experiment} experiment.
 
-The CD metrics presented in this section are not comparable to the earlier experiments. All other testing on CSG-CRN used the ChamferDistance library with 10,000 samples, Marching Cubes resolution of 512, unit sphere bounds, Sum reduction and no scaling. To align with the testing methods of the previous work, the CD metrics are computed with 4,096 samples, Marching Cubes resolution of 128, box bounds, mean reduction and a final scaling of 1,000.
+The CD metrics presented in this section are not comparable to the earlier experiments. All other testing on CSG-CRN used the ChamferDistance library~\cite{Jatavallabhula2024, Ravi2020} with 10,000 samples, Marching Cubes resolution of 512, unit sphere bounds, Sum reduction and no scaling. To align with the testing methods of the previous work, the CD metrics are computed with 4,096 samples, Marching Cubes resolution of 128, box bounds, mean reduction and a final scaling of 1,000.
 
 \begin{table}[ht]
 	\centering
@@ -628,6 +628,29 @@ The CD metrics presented in this section are not comparable to the earlier exper
 	\end{tabular}
 	\caption{Comparison of models on ModelNet40 dataset.}
 	\label{tab:prior_work_unseen_comparison}
+\end{table}
+
+\begin{table}[ht]
+	\centering
+	\singlespace
+	\footnotesize
+	\setlength{\tabcolsep}{3pt}
+	\setcellgapes{4pt}
+	\makegapedcells
+	\renewcommand{\bfdefault}{b}
+	\begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|r|r|}
+		\hline
+		\multicolumn{1}{|c|}{\multirowcell{2}{Model}} & \multicolumn{2}{c|}{Airplane} & \multicolumn{2}{c|}{Bench} & \multicolumn{2}{c|}{Car} & \multicolumn{2}{c|}{Chair} & \multicolumn{2}{c|}{Sofa} & \multicolumn{2}{c|}{All} \\
+		\cline{2-13}
+		                       & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} \\
+		\Xhline{1pt}
+		CSG-CRN   & \textbf{0.163} & \textbf{0.6817} & \textbf{0.614} & \textbf{0.5149} & \textbf{0.515} & \textbf{0.6642} & \textbf{0.478} & \textbf{0.6660} & \textbf{0.514} & \textbf{0.7797} & \textbf{0.446} & \textbf{0.6715} \\
+		\hline
+		CSG-Stump & 0.500 & 0.4465 & 0.994 & 0.4666 & 0.626 & 0.6503 & 1.205 & 0.5217 & 0.758 & 0.7474 & 0.804 & 0.5734 \\
+		\hline
+	\end{tabular}
+	\caption{}
+	\label{tab:prior_work_single_category_comparison}
 \end{table}
 
 
