@@ -9,11 +9,64 @@
 \subsection{SDF~Primitives}
 \label{subsec:sdf_primitives}
 
+CSG-CRN uses three shape primitives with SDF functions derived from~\cite{Quilez2011}. Given a query point $p$, each function returns a signed distance value. The SDF functions themselves do not apply transformations. Instead, translation and rotation must be applied to the query point to represent a transformation of the SDF primitive.
+
+The simplest SDF function is the ellipsoid:
+
+\begin{align}
+	SDF_{ellipsoid}(p) &= \frac{k_0 (k_0 - 1)}{k_1}
+	\label{eq:sdf_ellipsoid} \\
+	k_0 &= \left\lVert \frac{p}{s} \right\rVert_2, \qquad
+	k_1 = \left\lVert \frac{p}{s^2} \right\rVert_2,
+	\nonumber
+\end{align}
+
+where $s$ is the radius of the ellipsoid along each axis. $\frac{p}{s}$ is an element-wise division.
+
+The cuboid and cylinder SDF functions include a roundness variable $\rho$. $\rho$ is subtracted from the final SDF value since a level set gets rounder the farther it is from the object surface. This has a side effect of growing the primitive, so we multiply $\rho$ by the scale of the object to maintain the size of the primitive. We scale by the smallest half-extent for cuboids and scale by the height for cylinders.
+
+Cuboid SDF with rounding:
+
+\begin{align}
+	SDF_{cuboid}(p) &= \lVert \max(u, 0) \rVert_2 + \min(\max(u_x, u_y, u_z), 0) - r
+	\label{eq:sdf_cuboid} \\
+	u &= |p| - (s - r), \qquad r = \rho \min(s_x, s_y, s_z),
+	\nonumber
+\end{align}
+
+where $s$ is the half-extent of the cuboid along each axis.
+
+Cylinder SDF with rounding:
+
+\begin{align}
+	SDF_{cylinder}(p) &= \lVert \max(v, 0) \rVert_2 + \min(\max(v_1, v_2), 0) - r
+	\label{eq:sdf_cylinder} \\
+	v &= \left( \frac{k_0 (k_0 - 1)}{k_1} + r, \; |p_z| - (s_z - r) \right), \qquad r = \rho s_z
+	\nonumber \\
+	k_0 &= \left\lVert \frac{(p_x, p_y)}{(s_x, s_y)} \right\rVert_2, \qquad
+	k_1 = \left\lVert \frac{(p_x, p_y)}{(s_x^2, s_y^2)} \right\rVert_2.
+	\nonumber
+\end{align}
+
+where $s_x$ and $s_y$ are the radii of the elliptical cross section and $s_z$ is the half-extent of the cylinder height.
+
 \subsection{Boolean~Operations}
 \label{subsec:boolean_operations}
 
+CSG-CRN can predict a union operation $min(a,b)$ or a subtraction operation $max(a,-b)$. In addition, the command includes a blending factor $\alpha$ to smooth out the result of the operation. We achieve this by implementing the smooth minimum $smin$ and smooth maximum $smax$ from~\cite{Quilez2013}.
+
+\begin{align}
+	\smin_\alpha(a, b) &= \min(a, b) - \frac{\alpha}{4} h^2, \qquad
+	h = \frac{\max(\alpha - |a - b|, 0)}{\alpha}
+	\label{eq:smooth_min} \\
+	\smax_\alpha(a, b) &= -\smin_\alpha(-a, -b).
+	\label{eq:smooth_max}
+\end{align}
+
 \section{Marching~Cubes}
 \label{sec:marching_cubes}
+
+The SDF CSG output of CSG-CRN can be exported and directly used by programs such as MagicaCSG. Other use cases, such as computing accuracy metrics, require a discretized mesh output. This can be achieved using the Marching Cubes algorithm~\cite{Lorensen1987}. The signed distance is computed for each vertex of a grid encompassing the output bounds. Using the occupancy value of each grid point, the algorithm can determine which cells the surface passes and generate a mesh face for each of those cells.
 
 \section{Accuracy~Metrics}
 \label{sec:accuracy_metrics}
@@ -21,8 +74,27 @@
 \subsection{Chamfer~Distance}
 \label{subsec:chamfer_distance}
 
+Chamfer Distance (CD) is a metric measuring the average distance error between two surfaces. A uniformly distributed set of surface samples $S_1$ and $S_2$ are gathered for each of the two surfaces. The more surface samples used, the more accurate the metric becomes. The one-direction CD is computed by finding the closest sample in $S_2$ for sample in $S_1$ and measuring the distance. This paper uses the bi-directional CD, which doubles the process by also finding the closest sample in $S_1$ for each sample in $S_2$~\cite{Fan2017}.
+
+\begin{equation}
+	d_{CD}(S_1, S_2) = \sum_{p \in S_1} \min_{q \in S_2} \lVert p - q \rVert_2^2 + \sum_{q \in S_2} \min_{p \in S_1} \lVert p - q \rVert_2^2, \qquad S_1, S_2 \subset \mathbb{R}^3.
+	\label{eq:chamfer_distance}
+\end{equation}
+
 \subsection{Earth~Movers~Distance}
 \label{subsec:earth_movers_distance}
 
+Earth Mover's Distance (EMD) approximates the total distance samples on one surface need to me moved to reach the second surface. Similar to CD, a uniform set of surface samples $S_1$ and $S_2$ are needed for the surfaces being compared. Where CD allows multiple samples in $S_1$ to be mapped to the same sample in $S_2$, EMD requires a one-to-one bijection $\phi$~\cite{Fan2017, Achlioptas2018}
+\begin{equation}
+	d_{EMD}(S_1, S_2) = \min_{\phi : S_1 \to S_2} \sum_{p \in S_1} \lVert p - \phi(p) \rVert_2, \qquad S_1, S_2 \subset \mathbb{R}^3.
+	\label{eq:earth_movers_distance}
+\end{equation}
+
 \subsection{Intersection~Over~Union}
 \label{subsec:intersection_over_union}
+
+The Intersection Over Union (IoU) metric is the intersection of two volumes $A$ and $B$ divided by their union. We approximate the intersection and union volumes using a set of uniformly sampled points $U$. The IoU score decreases for each sample where the occupancy values of $A$ and $B$ disagree, and increases for each sample where the occupancy values agree~\cite{Mescheder2019}.
+\begin{equation}
+	\IoU(A, B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \wedge SDF_B(U_i) \le 0]}{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \vee SDF_B(U_i) \le 0]},
+	\label{eq:intersection_over_union}
+\end{equation}
