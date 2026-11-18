@@ -45,7 +45,17 @@ The query point and three distance values comprise the six-dimensional input vec
 
 Previous work~\cite{Genova2019} demonstrates that the method used to collect point samples for a loss function impacts the reconstruction accuracy of the model. A uniformly sampled point cloud evenly encompassing the operational bounds leads the model to omit thin structures and fine details. A point cloud containing only samples near to the target surface will result in better surface detail but worse volumetric accuracy further away from the surface. \cite{Genova2019} takes a hybrid approach by computing the loss function twice; once using uniformly sampled points and once using points sampled near the surface of the target volume. The two loss values are weighted and summed to create a loss function that achieves both good volumetric and surface accuracy.
 
-We apply a similar approach when sampling query points for both our model input and loss function. The dataset contains a large number of uniformly sampled query points and distance values for each input shape sample. Using a heuristic algorithm, a subset of the uniform samples are filtered based on their distance to either the target or reconstruction surfaces to produce a near-surface point cloud. The near-surface and uniform samples are then combined and shuffled at a configured ratio to form a mixed point cloud that focuses on surface quality while penalizing large volumetric inaccuracies.
+We apply a similar approach when sampling query points for both our model input and loss function. The dataset contains a large number of uniformly sampled query points and distance values for each input shape sample. Using a heuristic algorithm, a subset of the uniform samples are filtered based on their distance to either the target or reconstruction surfaces to produce a near-surface point cloud. The near-surface and uniform samples are then combined and shuffled at a configured ratio to form a mixed point cloud that focuses on surface quality while penalizing large volumetric inaccuracies. We call this the Surface-Uniform ratio, where 0 is near-surface samples only and 1 is uniform samples only.
+
+
+\section{Dataset~Processing}
+\label{sec:dataset_processing}
+
+We use the ShapeNetCore v2 dataset~\cite{Chang2015} for training and performance testing. This is a collection of 51,641 3D meshes sorted into 54 categories. ShapeNet is commonly used by related work and makes for easy performance comparison.
+
+The dataset needs to be preprocessed before it can be used in CSG-CRN. A signed distance value can only be computed for watertight manifolds where an interior and exterior volume are clearly defined. We apply a re-meshing algorithm to seal any holes and remove loose geometry that is present in the dataset. We apply the Manifold remeshing algorithm provided by Point Cloud Utils~\cite{Williams2022}. Then we normalize the mesh by centering it on the origin and scaling it to fit a unit sphere using tools provided by Mesh to SDF~\cite{Kleineberg2024}.
+
+Once the meshes have been cleaned, we extract three types of point samples. Samples directly on the mesh surface are required for the Chamfer Distance and Earth Movers Distance accuracy metrics. The surface samples are generated using Point Cloud Utils, which uses mesh face area weighting to ensure the points are uniformly distributed on the surface. The surface sample can then be used to generate near-surface samples following the method used by DeepSDF~\cite{Park2019}. The surface points are offset by adding 3D Gaussian noise with a standard deviation of 0.1. Lastly, samples are generated uniformly in a unit sphere. Point Cloud Utils is used compute the signed distance to the mesh for both the near-surface and uniform samples. The final dataset we produced contains 16,384 uniform samples, 16,384 near surface samples, and 30,000 surface samples.
 
 
 \section{Network~Architecture}
@@ -74,7 +84,7 @@ Experiments revealed that the CSG-CRN model would exploit the subtract operation
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.7]{Images/csg_crn_figure.pdf}
-	\caption{CSG-CRN Network Architecture.}
+	\caption{CSG-CRN Network Architecture. The encoder is derived from PointNet and the decoder is a multi-headed regressor.}
 	\label{fig:network_architecture}
 \end{figure}
 
