@@ -1,0 +1,48 @@
+
+\documentclass[border=8pt, multi, tikz]{standalone} 
+\usepackage{import}
+\subimport{../PlotNeuralNet/layers/}{init}
+\usetikzlibrary{positioning}
+\usetikzlibrary{3d} %for including external image 
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\newcommand{\copymidarrow}{\tikz \draw[-Stealth,line width=0.8mm,draw={rgb:blue,4;red,1;green,1;black,3}] (-0.3,0) -- ++(0.3,0);}
+
+\begin{document}
+\begin{tikzpicture}
+\tikzstyle{connection}=[ultra thick,every node/.style={sloped,allow upside down},draw=\edgecolor,opacity=0.7]
+\tikzstyle{copyconnection}=[ultra thick,every node/.style={sloped,allow upside down},draw={rgb:blue,4;red,1;green,1;black,3},opacity=0.7]
+
+\node[anchor=north west, inner sep=0pt] at (-2.3078, 2.0675) {\includegraphics[width=1.3942cm]{target.png}};
+
+\node[anchor=north, font=\footnotesize\bfseries, inner sep=0pt, yshift=-3pt] at (-1.6107, 0.5000) {Target Shape};
+
+\node[anchor=north west, inner sep=0pt] at (1.2864, 1.8283) {\includegraphics[width=1.0213cm]{reconstruction.png}};
+
+\node[anchor=north, font=\footnotesize\bfseries, inner sep=0pt, yshift=-3pt] at (1.7971, 0.5000) {Initial Reconstruction};
+
+\node[anchor=north west, inner sep=0pt] at (-3.7551, 0.0000) {\includegraphics[width=1.6731cm]{missing.png}};
+
+\draw[densely dotted, line width=1.1pt] (-4.9460, -1.0153) -- node[pos=0.45, above, font=\small] {$d_{missing}$} (-3.6623, -0.8609);
+\fill (-4.9460, -1.0153) circle (1.5pt) node[left, font=\small] {$p$};
+
+\node[anchor=north, font=\footnotesize\bfseries, inner sep=0pt, yshift=-3pt] at (-3.0580, -1.5675) {Missing};
+
+\node[anchor=north west, inner sep=0pt] at (-0.0911, 0.0000) {\includegraphics[width=1.6731cm]{filled.png}};
+
+\draw[densely dotted, line width=1.1pt] (-1.2820, -1.0153) -- node[pos=0.45, above, font=\small] {$d_{filled}$} (0.5981, -0.9287);
+\fill (-1.2820, -1.0153) circle (1.5pt) node[left, font=\small] {$p$};
+
+\node[anchor=north, font=\footnotesize\bfseries, inner sep=0pt, yshift=-3pt] at (0.9261, -1.5675) {Filled};
+
+\node[anchor=north west, inner sep=0pt] at (3.5729, 0.0000) {\includegraphics[width=1.6731cm]{excess.png}};
+
+\draw[densely dotted, line width=1.1pt] (2.3820, -1.0153) -- node[pos=0.45, above, font=\small] {$d_{excess}$} (4.4865, -1.2109);
+\fill (2.3820, -1.0153) circle (1.5pt) node[left, font=\small] {$p$};
+
+\node[anchor=north, font=\footnotesize\bfseries, inner sep=0pt, yshift=-3pt] at (4.8599, -1.5675) {Excess};
+
+\end{tikzpicture}
+\end{document}
