@@ -79,7 +79,7 @@ Similar to prior primitive fitting architectures~\cite{Tulsiani2017,Paschalidou2
 
 CSGNet~\cite{Sharma2018} successfully avoids greedy primitive fitting by running multiple forward passes and generating multiple primitives before optimizing. While this approach can be applied to CSG-CRN, the performance would greatly suffer since the backward step needs to flow through the SDF computations and point sampling logic applied between cascades.
 
-Experiments revealed that the CSG-CRN model would exploit the subtract operation in the later stages of training. Subtracting thin primitives from a reconstruction has little impact on the loss and avoids a potentially increasing the loss by adding a primitive. To prevent this behavior, a maximum number of subtract operations per cascade can be configured in the decoder.
+Experiments revealed that the CSG-CRN would exploit the subtract operation later in training. Subtracting thin primitives from a reconstruction has little impact on the loss but avoids a potentially increasing the loss by adding a primitive. To prevent this behavior, a maximum number of subtract operations per cascade can be configured in the decoder.
 
 \begin{figure}
 	\centering
@@ -88,32 +88,33 @@ Experiments revealed that the CSG-CRN model would exploit the subtract operation
 	\label{fig:network_architecture}
 \end{figure}
 
+\section{Loss~Functions}
+\label{sec:loss_functions}
 
-\section{CSG-To-SDF~Conversion}
-\label{sec:csg_to_sdf_conversion}
+Several reconstruction loss functions were explored for CSG-CRN. The results of our experiments are found in the \nameref{sec:reconstruction_loss_comparison} section. The functions tested are CD, L1, Mean Squared Error (MSE), Logarithmic (LOG), Occupancy (OCC), and Sigmoid (SIG). The CD and OCC losses directly measure the reconstruction accuracy at the cost of additional compute. L1, LOG, MSE, and SIG are much faster approximations because they can be applied to signed distance error. The formulas for these losses are:
+\begin{gather*}
+\Loss_{1} = \epsilon,\\
+\Loss_{\MSE} = \epsilon^2,\\
+\Loss_{\LOG} = \frac{\ln(\epsilon + 0.01)}{5} + 1,\\
+\Loss_{\SIG} = \frac{1}{2} \left( \tanh(25\epsilon) + \epsilon \right).
+\end{gather*}
 
-Each primitive is represented by an SDF function. We can apply boolean operations to the primitive SDF functions to build a complete SDF function. The union of SDF functions $A$ and $B$ is computed as $min(A, B)$. A subtracted from B is computed as $max(-A, B)$. And the intersect of A and B is computed as $max(A, B)$.
+Where $\epsilon$ is the difference in distance from a query sample point to both the target and reconstruction shapes.
 
-To complete the refined CSG reconstruction, we combine the predicted primitive with the initial reconstruction SDF function using the predicted boolean operation. The refined reconstruction SDF can then sampled to compute the loss.
+The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier loss for large errors, training the model to prioritize accuracy across the entirety of the target shape over detailed surface accuracy. With the cascaded refinement architecture, the MSE loss lead to greedy fitting in the first cascade that harmed the performance of later cascades. Both the LOG and SIG losses apply a heavier loss for small errors. The LOG loss gradually plateaus where the SIG loss settles into a linear trajectory. By penalizing small errors more than large errors, the model is trained to prioritize surface accuracy and may leave portions of the target shape for later cascades to reconstruct.
 
+\begin{figure}
+	\centering
+	\includegraphics[width=3in]{Images/Loss Functions Figure.png}
+	\caption{Plots of the four distance based loss metrics as configured in CSG-CRN.}
+	\label{fig:loss_functions}
+\end{figure}
 
-\section{Reconstruction~Loss}
-\label{sec:reconstruction_loss}
-
-We use the DeepSDF loss function to compute the reconstruction error between a target and a reconstruction point cloud. The DeepSDF loss function uses an L1 loss function with clamped SDF values
-\[\Loss_{\surface}=\Loss_1(\clamp(\SDF(X)), \clamp(\SDF(Y))),\]
-where $\clamp(x)$ is defined as $\max(-\delta, \min(\delta, x))$ for a clamping size $\delta$. We choose this loss function because it focuses the network on surface reconstruction quality. With clamping, the network would tend to minimize the average distance to the predicted primitive over all points. Unlike in DeepSDF, we uniformly sample points in a volume around the input shape. This makes it unlikely for points to be on the clamping boundary, which is not differentiable.
-
-Because the loss function is clamped, the gradient is zero for primitives far from the object surface. We use an auxiliary loss from CSGStump to draw primitives to the reconstruction surface
+In addition to a reconstruction loss, we apply the auxiliary loss from CSGStump to draw primitives to the reconstruction surface
 \[\Loss_{\primitive} = \frac{1}{K} \sum_{k}^{K} \min ( \SDF_k^2(x_n) ).\]
 The combined loss function is
-\[\Loss_{\total} = \Loss_{\surface} + \Loss_{\primitive}.\]
+\[\Loss_{\total} = \Loss_{\reconstruction} + \Loss_{\primitive}.\]
 
-
-\section{Cascaded~Refinement}
-\label{sec:cascaded_refinement}
-
-Once we have refined the reconstruction, we can sample another point cloud from the reconstruction and feed it back into the network. We again uniformly sample the SDF function.
 
 
 \section{Training}

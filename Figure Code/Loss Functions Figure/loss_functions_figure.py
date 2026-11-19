@@ -2,6 +2,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+from PIL import Image
 
 
 _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -18,7 +19,7 @@ MAX_LOSS = 1.0
 NUM_POINTS = 2001
 
 FIG_SIZE = 5
-DPI = 200
+DPI = 600
 
 SURFACE_COLOR = "#ffffff"
 INK_PRIMARY = "#0b0b0b"
@@ -33,6 +34,7 @@ TICK_FONT_SIZE = 9
 
 LABEL_X = 0.5
 LABEL_Y_OFFSET = 0.025
+MSE_LABEL_Y_OFFSET = 0.06
 
 
 def l1_loss(error):
@@ -69,7 +71,8 @@ def main():
 
     for name, loss_func, color in LOSSES:
         ax.plot(error, loss_func(error), color=color, linewidth=LINE_WIDTH, solid_joinstyle="round", solid_capstyle="round", label=name)
-        ax.text(LABEL_X, loss_func(LABEL_X) + LABEL_Y_OFFSET, name, ha="center", va="bottom", color=INK_PRIMARY, fontsize=LABEL_FONT_SIZE, fontweight="bold")
+        label_y_offset = MSE_LABEL_Y_OFFSET if name == "MSE" else LABEL_Y_OFFSET
+        ax.text(LABEL_X, loss_func(LABEL_X) + label_y_offset, name, ha="center", va="bottom", color=INK_PRIMARY, fontsize=LABEL_FONT_SIZE, fontweight="bold")
 
     ax.set_xlim(0, MAX_ERROR)
     ax.set_ylim(0, MAX_LOSS)
@@ -87,7 +90,8 @@ def main():
     ax.legend(loc="upper left", frameon=False, fontsize=LABEL_FONT_SIZE, labelcolor=INK_PRIMARY)
 
     out_path = os.path.join(_THIS_DIR, OUTPUT_NAME)
-    fig.savefig(out_path, dpi=DPI, facecolor=SURFACE_COLOR)
+    fig.canvas.draw()
+    Image.fromarray(np.asarray(fig.canvas.buffer_rgba())[:, :, :3]).save(out_path, dpi=(DPI, DPI))
     print("Wrote: {}".format(out_path))
 
 

@@ -66,7 +66,7 @@ CSG-CRN can predict a union operation $min(a,b)$ or a subtraction operation $max
 \section{Marching~Cubes}
 \label{sec:marching_cubes}
 
-The SDF CSG output of CSG-CRN can be exported and directly used by programs such as MagicaCSG. Other use cases, such as computing accuracy metrics, require a discretized mesh output. This can be achieved using the Marching Cubes algorithm~\cite{Lorensen1987}. The signed distance is computed for each vertex of a grid encompassing the output bounds. Using the occupancy value of each grid point, the algorithm can determine which cells the surface passes and generate a mesh face for each of those cells.
+The SDF CSG output of CSG-CRN can be exported and directly used by programs such as MagicaCSG~\cite{Ephtracy2022}. Other use cases, such as computing accuracy metrics, require a discretized mesh output. This can be achieved using the Marching Cubes algorithm~\cite{Lorensen1987}. The signed distance is computed for each vertex of a grid encompassing the output bounds. Using the occupancy value of each grid point, the algorithm can determine which cells the surface passes and generate a mesh face for each of those cells.
 
 \section{Accuracy~Metrics}
 \label{sec:accuracy_metrics}
