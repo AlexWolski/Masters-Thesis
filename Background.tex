@@ -53,7 +53,7 @@ where $s_x$ and $s_y$ are the radii of the elliptical cross section and $s_z$ is
 \subsection{Boolean~Operations}
 \label{subsec:boolean_operations}
 
-CSG-CRN can predict a union operation $min(a,b)$ or a subtraction operation $max(a,-b)$. In addition, the command includes a blending factor $\alpha$ to smooth out the result of the operation. We achieve this by implementing the smooth minimum $smin$ and smooth maximum $smax$ from~\cite{Quilez2013}.
+CSG-CRN can predict a union operation $min(a,b)$ or a subtraction operation $max(a,-b)$. In addition, the command includes a blending factor $\alpha > 0$ to smooth out the result of the operation. We achieve this by implementing the smooth minimum $smin$ and smooth maximum $smax$ from~\cite{Quilez2013}.
 
 \begin{align}
 	\smin_\alpha(a, b) &= \min(a, b) - \frac{\alpha}{4} h^2, \qquad
@@ -66,7 +66,7 @@ CSG-CRN can predict a union operation $min(a,b)$ or a subtraction operation $max
 \section{Marching~Cubes}
 \label{sec:marching_cubes}
 
-The SDF CSG output of CSG-CRN can be exported and directly used by programs such as MagicaCSG~\cite{Ephtracy2022}. Other use cases, such as computing accuracy metrics, require a discretized mesh output. This can be achieved using the Marching Cubes algorithm~\cite{Lorensen1987}. The signed distance is computed for each vertex of a grid encompassing the output bounds. Using the occupancy value of each grid point, the algorithm can determine which cells the surface passes and generate a mesh face for each of those cells.
+The SDF CSG output of CSG-CRN can be exported and directly used by programs such as MagicaCSG. Other use cases, such as computing accuracy metrics, require a discretized mesh output. This can be achieved using the Marching Cubes algorithm~\cite{Lorensen1987}. The signed distance is computed for each vertex of a grid encompassing the output bounds. Using the occupancy value of each grid point, the algorithm can determine which cells the surface passes and generate a mesh face for each of those cells.
 
 \section{Accuracy~Metrics}
 \label{sec:accuracy_metrics}
