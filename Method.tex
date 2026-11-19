@@ -102,7 +102,31 @@ The combined loss function is
 \section{Training}
 \label{sec:training}
 
-We use a progressive training method inspired by Curriculum DeepSDF. In the first phase, all the initial reconstructions are empty. We represent this by representing the initial reconstruction as a single point at the origin. After training for a set number of epochs, we synthesize refined reconstructions and add them to the dataset. The second phase will randomly select samples from the initial and synthesized datasets. This process continues until the reconstructions reach a threshold accuracy. With this scheme, we train the model to refine partial reconstruction. And model can learn more efficiently by starting with easier samples and progressing to harder ones.
+This paper explores two training modes for cascaded refinement. Both use the same network architecture but have fundamentally different training approaches.
+
+\subsection{Separate~Parameter~Training}
+\label{subsec:separate_parameters}
+
+One approach is to optimize the network weights for each cascade separately. A copy of the CSG-CRN network is appended to the model for each new cascade. The cascades are disjointed since the network layers of one cascade are not connected to the next. We are in essence training the same network multiple times with different input datasets. The first cascade is fully trained on the input dataset. Once complete, the network weights are cloned to form the second cascade which is then trained on the outputs of the first cascade. This process is repeated until the desired number of cascades have been trained.
+
+This training approach has many downsides. The model size and training time increase linearly with the number of cascades. Network weights are carried over between cascades, but the learning rate is reset and progress is lost. The only advantages are the injection of reconstruction information between cascades and the ability to train the model in sections.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.65]{Images/separate_training_figure.pdf}
+	\caption{Separate Parameter Training. Each cascade is trained and run separately, forming an end-to-end network that is trained in sections.}
+	\label{fig:separate_training}
+\end{figure}
+
+\subsection{Shared~Parameter~Training}
+\label{subsec:shared_parameters}
+
+The alternative approach is to use the same network parameters for all cascades. The one network must generalize and fulfill the role of all cascades. This method is much less wasteful in terms of network size and training time. However, training one set of weights on all cascades requires more nuance.
+
+Training begins with only one cascade. We want the model to learn approximate reconstruction of the input first to avoid training on random noise. A scheduler adds another cascade every 10 epochs until the configured number of cascades is reached.
+
+We train for multiple cascades by accumulating the gradient. The forward pass for each cascade is run first before optimizing. The computational graph is detached between each cascade to separate the gradients. Then the backward step is run to optimize on all gradients simultaneously.
+
 
 \begin{figure}
 	\centering
@@ -111,9 +135,9 @@ We use a progressive training method inspired by Curriculum DeepSDF. In the firs
 	\label{fig:shared_training}
 \end{figure}
 
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.65]{Images/separate_training_figure.pdf}
-	\caption{Separate Parameter Training. Each cascade is trained and run separately, forming an end-to-end network with recurrence that is trained in sections.}
-	\label{fig:separate_training}
-\end{figure}
+\subsection{Training~Scheduling}
+\label{subsec:training_scheduling}
+
+We use a plateau scheduler to control the learning rate and halt training. After a specified number of epochs without improvement, the scheduler reduces the learning rate by a factor of 10. Similarly if performance continues to stagnate for a specified number of epochs, the early stop condition is triggered and training is halted. The learning rate scheduler and early stopping counter are reset when performance increases by 1\% or more.
+
+The performance metric is computed on a validation set separate from the training and testing set. We reserve 10\% of the training dataset for computing the average IoU metric after each epoch and update the scheduler.
