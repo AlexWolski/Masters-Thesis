@@ -44,7 +44,7 @@ Cylinder SDF with rounding:
 	v &= \left( \frac{k_0 (k_0 - 1)}{k_1} + r, \; |p_z| - (s_z - r) \right), \qquad r = \rho s_z
 	\nonumber \\
 	k_0 &= \left\lVert \frac{(p_x, p_y)}{(s_x, s_y)} \right\rVert_2, \qquad
-	k_1 = \left\lVert \frac{(p_x, p_y)}{(s_x^2, s_y^2)} \right\rVert_2.
+	k_1 = \left\lVert \frac{(p_x, p_y)}{(s_x^2, s_y^2)} \right\rVert_2,
 	\nonumber
 \end{align}
 
@@ -66,7 +66,7 @@ CSG-CRN can predict a union operation $min(a,b)$ or a subtraction operation $max
 \section{Marching~Cubes}
 \label{sec:marching_cubes}
 
-The SDF CSG output of CSG-CRN can be exported and directly used by programs such as MagicaCSG~\cite{Ephtracy2022}. Other use cases, such as computing accuracy metrics, require a discretized mesh output. This can be achieved using the Marching Cubes algorithm~\cite{Lorensen1987}. The signed distance is computed for each vertex of a grid encompassing the output bounds. Using the occupancy value of each grid point, the algorithm can determine which cells the surface passes and generate a mesh face for each of those cells.
+The SDF CSG output of CSG-CRN can be exported and directly used by programs such as MagicaCSG~\cite{Ephtracy2022}. Other use cases, such as computing accuracy metrics, require a discretized mesh output. This can be achieved using the Marching Cubes algorithm~\cite{Lorensen1987}. The signed distance is computed for each vertex of a grid encompassing the output bounds. Using the occupancy value of each grid point, the algorithm can determine which cells the surface passes through and generate a mesh face for each of those cells.
 
 \section{Accuracy~Metrics}
 \label{sec:accuracy_metrics}
@@ -74,17 +74,17 @@ The SDF CSG output of CSG-CRN can be exported and directly used by programs such
 \subsection{Chamfer~Distance}
 \label{subsec:chamfer_distance}
 
-Chamfer Distance (CD) is a metric measuring the average distance error between two surfaces. A uniformly distributed set of surface samples $S_1$ and $S_2$ are gathered for each of the two surfaces. The more surface samples used, the more accurate the metric becomes. The one-direction CD is computed by finding the closest sample in $S_2$ for sample in $S_1$ and measuring the distance. This paper uses the bi-directional CD, which doubles the process by also finding the closest sample in $S_1$ for each sample in $S_2$~\cite{Fan2017}.
+Chamfer Distance (CD) is a metric measuring the average distance error between two surfaces. A uniformly distributed set of surface samples $S_1$ and $S_2$ are gathered for each of the two surfaces. The more surface samples used, the more accurate the metric becomes. The one-direction CD is computed by finding the closest sample in $S_2$ for each sample in $S_1$ and measuring the distance. This paper uses the bi-directional CD, which doubles the process by also finding the closest sample in $S_1$ for each sample in $S_2$~\cite{Fan2017}.
 
 \begin{equation}
 	d_{CD}(S_1, S_2) = \sum_{p \in S_1} \min_{q \in S_2} \lVert p - q \rVert_2^2 + \sum_{q \in S_2} \min_{p \in S_1} \lVert p - q \rVert_2^2, \qquad S_1, S_2 \subset \mathbb{R}^3.
 	\label{eq:chamfer_distance}
 \end{equation}
 
-\subsection{Earth~Movers~Distance}
+\subsection{Earth~Mover's~Distance}
 \label{subsec:earth_movers_distance}
 
-Earth Mover's Distance (EMD) approximates the total distance samples on one surface need to me moved to reach the second surface. Similar to CD, a uniform set of surface samples $S_1$ and $S_2$ are needed for the surfaces being compared. Where CD allows multiple samples in $S_1$ to be mapped to the same sample in $S_2$, EMD requires a one-to-one bijection $\phi$~\cite{Fan2017, Achlioptas2018}
+Earth Mover's Distance (EMD) approximates the total distance samples on one surface need to be moved to reach the second surface. Similar to CD, a uniform set of surface samples $S_1$ and $S_2$ are needed for the surfaces being compared. Where CD allows multiple samples in $S_1$ to be mapped to the same sample in $S_2$, EMD requires a one-to-one bijection $\phi$~\cite{Fan2017, Achlioptas2018}.
 \begin{equation}
 	d_{EMD}(S_1, S_2) = \min_{\phi : S_1 \to S_2} \sum_{p \in S_1} \lVert p - \phi(p) \rVert_2, \qquad S_1, S_2 \subset \mathbb{R}^3.
 	\label{eq:earth_movers_distance}
@@ -95,6 +95,6 @@ Earth Mover's Distance (EMD) approximates the total distance samples on one surf
 
 The Intersection Over Union (IoU) metric is the intersection of two volumes $A$ and $B$ divided by their union. We approximate the intersection and union volumes using a set of uniformly sampled points $U$. The IoU score decreases for each sample where the occupancy values of $A$ and $B$ disagree, and increases for each sample where the occupancy values agree~\cite{Mescheder2019}.
 \begin{equation}
-	\IoU(A, B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \wedge SDF_B(U_i) \le 0]}{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \vee SDF_B(U_i) \le 0]},
+	\IoU(A, B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \wedge SDF_B(U_i) \le 0]}{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \vee SDF_B(U_i) \le 0]}.
 	\label{eq:intersection_over_union}
 \end{equation}

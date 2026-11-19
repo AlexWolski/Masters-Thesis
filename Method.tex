@@ -7,13 +7,13 @@
 \section{Input~Shape~Representation}
 \label{sec:input_shape_representation}
 
-CSG-CRN predicts a list of implicit SDF primitives and boolean commands to refine an initial CSG model reconstruction. The resultant refined CSG model is then discretized and fed back into the CSG-CRN network for further cascaded refinement. The discretization method must be differential to enable loss computation and efficient to reduce training time. Given these restrictions, an SDF sample point cloud was chosen as the input shape format. SDF values can be quickly computed in a differentiable manner. And the flexibility of a point cloud allows for a fixed encoder size regardless of how many cascades have been run.
+CSG-CRN predicts a list of implicit SDF primitives and boolean commands to refine an initial CSG model reconstruction. The resultant refined CSG model is then discretized and fed back into the CSG-CRN network for further cascaded refinement. The discretization method must be differentiable to enable loss computation and efficient to reduce training time. Given these restrictions, an SDF sample point cloud was chosen as the input shape format. SDF values can be quickly computed in a differentiable manner. And the flexibility of a point cloud allows for a fixed encoder size regardless of how many cascades have been run.
 
 Before training begins, each mesh shape sample in the dataset is preprocessed to produce an SDF sample point cloud. A fixed number of query points $p \in \mathbb{R}^3$ are randomly generated in a unit sphere. Then the signed distance is computed from each query point to the mesh surface. The result is a list of four-dimensional vectors containing point samples and signed distance values that represent the target mesh. Calculating signed distances for meshes is expensive, so the computation is performed once and saved as an SDF dataset.
 
 The same process is used to generate an SDF point cloud for the CSG model output of CSG-CRN. Computing signed distances for an SDF CSG model is trivial since the primitives themselves are SDFs. For each CSG command, the primitive SDF is applied to a query point to produce a signed distance. Then the boolean operation is applied to combine the signed distance with the previous command. This computation is both differentiable and efficient.
 
-The query points in the the target shape dataset can also be used as the query points for the CSG model output of CSG-CRN. The naive approach for encoding the target and reconstruction shapes separately results in two four-dimensional vectors. By using the same query points for both shapes, a single five-dimensional vector can represent both the input and initial reconstruction. The combined format is $[p_x, p_y, p_z, d_{target}, d_{recon}]$, where $q$ is the query point, $d_{target}$, is the signed distance to the target volume, and $d_{recon}$ is the signed distance to the initial reconstruction.
+The query points in the target shape dataset can also be used as the query points for the CSG model output of CSG-CRN. The naive approach for encoding the target and reconstruction shapes separately results in two four-dimensional vectors. By using the same query points for both shapes, a single five-dimensional vector can represent both the input and initial reconstruction. The combined format is $[p_x, p_y, p_z, d_{target}, d_{recon}]$, where $p$ is the query point, $d_{target}$ is the signed distance to the target volume, and $d_{recon}$ is the signed distance to the initial reconstruction.
 
 Early versions of the CSG-CRN network used only the combined five-dimensional vector as the input shape representation. However, we found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction distances to compute the missing, filled, and excess volumes.
 \begin{gather*}
@@ -37,7 +37,7 @@ The query point and three distance values comprise the six-dimensional input vec
 \section{Point~Sampling}
 \label{sec:point_sampling}
 
-Previous work~\cite{Genova2019} demonstrates that the method used to collect point samples for a loss function impacts the reconstruction accuracy of the model. A uniformly sampled point cloud evenly encompassing the operational bounds leads the model to omit thin structures and fine details. A point cloud containing only samples near to the target surface will result in better surface detail but worse volumetric accuracy further away from the surface. \cite{Genova2019} takes a hybrid approach by computing the loss function twice; once using uniformly sampled points and once using points sampled near the surface of the target volume. The two loss values are weighted and summed to create a loss function that achieves both good volumetric and surface accuracy.
+Previous work~\cite{Genova2019} demonstrates that the method used to collect point samples for a loss function impacts the reconstruction accuracy of the model. A uniformly sampled point cloud evenly encompassing the operational bounds leads the model to omit thin structures and fine details. A point cloud containing only samples near to the target surface will result in better surface detail but worse volumetric accuracy further away from the surface. \cite{Genova2019} takes a hybrid approach by computing the loss function twice: once using uniformly sampled points and once using points sampled near the surface of the target volume. The two loss values are weighted and summed to create a loss function that achieves both good volumetric and surface accuracy.
 
 We apply a similar approach when sampling query points for both our model input and loss function. The dataset contains a large number of uniformly sampled query points and distance values for each input shape sample. Using a heuristic algorithm, a subset of the uniform samples are filtered based on their distance to either the target or reconstruction surfaces to produce a near-surface point cloud. The near-surface and uniform samples are then combined and shuffled at a configured ratio to form a mixed point cloud that focuses on surface quality while penalizing large volumetric inaccuracies. We call this the Surface-Uniform ratio, where 0 is near-surface samples only and 1 is uniform samples only.
 
@@ -50,18 +50,18 @@ We apply a similar approach when sampling query points for both our model input 
 
 Early designs for the CSG-CRN architecture included a self-supervised Siamese network to encode the difference in features between the target input and initial reconstruction input. The shape samples are encoded separately by identical networks that share weights. The resultant latent vectors are processed by an intermediary fully-connected layer to find differences in the two inputs and encode for the next shape prediction. This architecture has been successfully employed by previous work~\cite{Cui2020, Sarode2019} to track objects using point-cloud inputs. However, our testing showed that the architecture was a poor fit for our application. Siamese networks work best when the two input samples are largely identical with minor variations. Large differences in the two inputs make it difficult for a Siamese network to converge. This is seen in prior work where Siamese object tracking encoder networks fail to track fast-deforming objects~\cite{Cui2020}. The shape inputs to CSG-CRN can change drastically between cascades and results in the Siamese encoder failing to converge.
 
-Later iterations of CSG-CRN concatenate the target and initial reconstruction shapes and process them using a single encoder network. Each input sample is a six-dimensional vector comprising a query point and distances representing missing, filled, and excess volumes (See \nameref{sec:input_shape_representation}). The six-dimensional input vector is encoded by a modified version of PointNet that is capable of ingesting multiple distance values in addition to the standard $R^3$ point inputs.
+Later iterations of CSG-CRN concatenate the target and initial reconstruction shapes and process them using a single encoder network. Each input sample is a six-dimensional vector comprising a query point and distances representing missing, filled, and excess volumes (see \nameref{sec:input_shape_representation}). The six-dimensional input vector is encoded by a modified version of PointNet that is capable of ingesting multiple distance values in addition to the standard $\mathbb{R}^3$ point inputs.
 
 \subsection{Decoder~Network}
 \label{subsec:decoder_network_method}
 
-The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command. The 6 parameters are primitive shape, scale, translation, quaternion rotation, blending factor, and boolean operation.
+The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command. The six parameters are primitive shape, scale, translation, quaternion rotation, blending factor, and roundness.
 
-Similar to prior primitive fitting architectures~\cite{Tulsiani2017,Paschalidou2019}, the regressor network is duplicated for each output primitive. Producing multiple primitive shapes before computing the loss prevents the model from fitting greedily. Optimizing on too few primitive results in a broad output shape that tries to represent the entire target volume. Although further cascades can subtract from the broad initial reconstruction to refine it, this approach requires more output primitives and produces a worse final result.
+Similar to prior primitive fitting architectures~\cite{Tulsiani2017,Paschalidou2019}, the regressor network is duplicated for each output primitive. Producing multiple primitive shapes before computing the loss prevents the model from fitting greedily. Optimizing on too few primitives results in a broad output shape that tries to represent the entire target volume. Although further cascades can subtract from the broad initial reconstruction to refine it, this approach requires more output primitives and produces a worse final result.
 
 CSGNet~\cite{Sharma2018} successfully avoids greedy primitive fitting by running multiple forward passes and generating multiple primitives before optimizing. While this approach can be applied to CSG-CRN, the performance would greatly suffer since the backward step needs to flow through the SDF computations and point sampling logic applied between cascades.
 
-Experiments revealed that the CSG-CRN would exploit the subtract operation later in training. Subtracting thin primitives from a reconstruction has little impact on the loss but avoids a potentially increasing the loss by adding a primitive. To prevent this behavior, a maximum number of subtract operations per cascade can be configured in the decoder.
+Experiments revealed that CSG-CRN would exploit the subtract operation later in training. Subtracting thin primitives from a reconstruction has little impact on the loss but avoids potentially increasing the loss by adding a primitive. To prevent this behavior, a maximum number of subtract operations per cascade can be configured in the decoder.
 
 \begin{figure}
 	\centering
@@ -78,21 +78,20 @@ Several reconstruction loss functions were explored for CSG-CRN. The results of 
 \Loss_{1} = \epsilon,\\
 \Loss_{\MSE} = \epsilon^2,\\
 \Loss_{\LOG} = \frac{\ln(\epsilon + 0.01)}{5} + 1,\\
-\Loss_{\SIG} = \frac{1}{2} \left( \tanh(25\epsilon) + \epsilon \right).
+\Loss_{\SIG} = \frac{1}{2} \left( \tanh(25\epsilon) + \epsilon \right),
 \end{gather*}
+where $\epsilon$ is the difference in distance from a query sample point to both the target and reconstruction shapes.
 
-Where $\epsilon$ is the difference in distance from a query sample point to both the target and reconstruction shapes.
-
-The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier loss for large errors, training the model to prioritize accuracy across the entirety of the target shape over detailed surface accuracy. With the cascaded refinement architecture, the MSE loss lead to greedy fitting in the first cascade that harmed the performance of later cascades. Both the LOG and SIG losses apply a heavier loss for small errors. The LOG loss gradually plateaus where the SIG loss settles into a linear trajectory. By penalizing small errors more than large errors, the model is trained to prioritize surface accuracy and may leave portions of the target shape for later cascades to reconstruct.
+The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier loss for large errors, training the model to prioritize accuracy across the entirety of the target shape over detailed surface accuracy. With the cascaded refinement architecture, the MSE loss led to greedy fitting in the first cascade that harmed the performance of later cascades. Both the LOG and SIG losses apply a heavier loss for small errors. The LOG loss gradually plateaus where the SIG loss settles into a linear trajectory. By penalizing small errors more than large errors, the model is trained to prioritize surface accuracy and may leave portions of the target shape for later cascades to reconstruct.
 
 \begin{figure}
 	\centering
 	\includegraphics[width=3in]{Images/Loss Functions Figure.png}
-	\caption{Plots of the four distance based loss metrics as configured in CSG-CRN.}
+	\caption{Plots of the four distance-based loss metrics as configured in CSG-CRN.}
 	\label{fig:loss_functions}
 \end{figure}
 
-In addition to a reconstruction loss, we apply the auxiliary loss from CSGStump to draw primitives to the reconstruction surface
+In addition to a reconstruction loss, we apply the auxiliary loss from CSG-Stump~\cite{Ren2021} to draw primitives to the reconstruction surface
 \[\Loss_{\primitive} = \frac{1}{K} \sum_{k}^{K} \min ( \SDF_k^2(x_n) ).\]
 The combined loss function is
 \[\Loss_{\total} = \Loss_{\reconstruction} + \Loss_{\primitive}.\]
@@ -123,7 +122,7 @@ This training approach has many downsides. The model size and training time incr
 
 The alternative approach is to use the same network parameters for all cascades. The one network must generalize and fulfill the role of all cascades. This method is much less wasteful in terms of network size and training time. However, training one set of weights on all cascades requires more nuance.
 
-Training begins with only one cascade. We want the model to learn approximate reconstruction of the input first to avoid training on random noise. A scheduler adds another cascade every 10 epochs until the configured number of cascades is reached.
+Training begins with only one cascade. We want the model to learn an approximate reconstruction of the input first to avoid training on random noise. A scheduler adds another cascade every 10 epochs until the configured number of cascades is reached.
 
 We train for multiple cascades by accumulating the gradient. The forward pass for each cascade is run first before optimizing. The computational graph is detached between each cascade to separate the gradients. Then the backward step is run to optimize on all gradients simultaneously.
 
@@ -140,4 +139,4 @@ We train for multiple cascades by accumulating the gradient. The forward pass fo
 
 We use a plateau scheduler to control the learning rate and halt training. After a specified number of epochs without improvement, the scheduler reduces the learning rate by a factor of 10. Similarly if performance continues to stagnate for a specified number of epochs, the early stop condition is triggered and training is halted. The learning rate scheduler and early stopping counter are reset when performance increases by 1\% or more.
 
-The performance metric is computed on a validation set separate from the training and testing set. We reserve 10\% of the training dataset for computing the average IoU metric after each epoch and update the scheduler.
+The performance metric is computed on a validation set separate from the training and testing set. We reserve 10\% of the training dataset for computing the average IoU metric after each epoch and updating the scheduler.
