@@ -500,7 +500,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Occluded.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Occluded.png}
-		\caption{Occluded Input}
+		\caption{Partially Complete Input}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -573,98 +573,106 @@ This experiment demonstrates that the cascades are not structured. If each casca
 \section{Comparison~to~Prior~Work}
 \label{sec:prior_work_comparison}
 
-We run performance tests to compare CSG-CRN to prior works in primitive 3D reconstruction. The current state of the art models applying CSG to generalized reconstruction are SuperDec~\cite{Fedele2025}, UCSG-Net~\cite{Kania2020}, BSP-Net~\cite{Chen2020}, and the pretrained CAPRI-Net~\cite{Yu2022} model. Works such as D\textsuperscript{2}CSG~\cite{Yu2023} and CSG-Stump~\cite{Ren2021} have better reconstruction accuracy but are not trained on multiple shape categories.
+We run performance tests to compare CSG-CRN to prior works in the same domain. We benchmark against the state of the art models in unsupervised and generalized primitive prediction networks for 3D shape reconstruction. The selected works for comparison are SuperDec~\cite{Fedele2025}, the pretrained model of CAPRI-Net~\cite{Yu2022}, BSP-Net~\cite{Chen2020}, and UCSG-Net~\cite{Kania2020}. Although the authors only published per-category models, we also compare results against CSG-Stump~\cite{Ren2021}. Other strong works in primitive and CSG reconstruction have been published but were omitted from the study due to differences in problem scope. D\textsuperscript{2}CSG~\cite{Yu2023} is not generalizable and optimizes single shapes. PrimitiveAnything~\cite{Ye2025} requires a dataset supervised with part semantics. And ANF-CSG~\cite{Liu2026} requires test-time optimization.
 
-The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). For the ShapeNet dataset, we use all 784 shape samples that are in the test set of all five models being compared. For the unseen dataset, we use the same 56 shape samples in the Person, Sink, and Stairs categories that was used in the \nameref{sec:unseen_class_experiment} experiment.
+The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same 13 shape categories and test set as the related works to be consistent. For the ShapeNet dataset, performance is measured on the 784 shape samples in test set of all five models being compared. For the unseen dataset, we use the same 56 shape samples in the Person, Sink, and Stairs categories that was used in the \nameref{sec:unseen_class_experiment} experiment.
+
+Special care is required when reproducing results for SuperDec. The model was trained with a different canonical frame, being rotated about the vertical axis by 90$^\circ$ compared to the ShapeNet dataset. We found the results for SuperDec improved when applying an opposite rotation to the sample points before running inference. Our results present the improved metrics.
 
 The CD metrics presented in this section are not comparable to the earlier experiments. All other testing on CSG-CRN used the ChamferDistance library~\cite{Jatavallabhula2024, Ravi2020} with 10,000 samples, Marching Cubes resolution of 512, unit sphere bounds, Sum reduction and no scaling. To align with the testing methods of the previous work, the CD metrics are computed with 4,096 samples, Marching Cubes resolution of 128, box bounds, mean reduction and a final scaling of 1,000.
 
-\begin{figure}[ht]
+For the 13 seen ShapeNet categories, CSG-CRN has the highest average accuracy metrics by a healthy margin. CSG-CRN ranked best on all three accuracy metrics for 9 out of the 13 shape categories. For the Chair, Lamp, and Table categories, SuperDec ranked first in CD while CSG-CRN ranked second in CD and first in EMD and IoU. For the Car category, CSG-Net, CAPRI-Net and BSP-Net ranked first in the CD, EMD, and IoU categories respectively with CS-Net ranking second in EMD and IoU.
+
+Unlike the other related works, CSG-Stump has no published weights for a model trained on multiple shape categories. We use the five CSG-CRN models trained in the \nameref{sec:shapenet_experiment} section and compare them against five of the twelve published models for CSG-Stump. Testing was performed on 187 samples that appear in the test sets for both methods being compared. The results show that CSG-CRN outperforms CSG-Stump in all metrics across all five categories.
+
+Tests were also run for unseen shape categories using the three ModelNet40 categories used in the \nameref{sec:partial_recon_experiment} section. The results are a toss-up between SuperDec and CSG-CRN. The performance of these two methods are similar across the board, with both performing significantly above the other three methods. SuperDec ranks first in the average CD and EMD metrics but CSG-CRN ranks first in average IoU. Analyzing the results visually, CSG-CRN seems to represent key features more clearly. For example, the CSG-CRN Person reconstruction has primitives to the sides representing arms while SuperDec does not.
+
+\begin{figure}[p]
 	\centering
 	\captionsetup[subfigure]{justification=centering,font=footnotesize}
 	\begin{subfigure}[t]{0.165\textwidth}
 		\centering
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet TARGET.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet TARGET.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Display TARGET.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Display TARGET.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Table TARGET.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Table TARGET.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Telephone TARGET.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Telephone TARGET.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft TARGET.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft TARGET.png}
 		\caption{Target}
 	\end{subfigure}%
 	\begin{subfigure}[t]{0.165\textwidth}
 		\centering
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet CSG-CRN.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet CSG-CRN.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Display CSG-CRN.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Display CSG-CRN.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Table CSG-CRN.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Table CSG-CRN.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Telephone CSG-CRN.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Telephone CSG-CRN.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft CSG-CRN.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft CSG-CRN.png}
 		\caption{CSG-CRN}
 	\end{subfigure}%
 	\begin{subfigure}[t]{0.165\textwidth}
 		\centering
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet SuperDec.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet SuperDec.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Display SuperDec.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Display SuperDec.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Table SuperDec.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Table SuperDec.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Telephone SuperDec.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Telephone SuperDec.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft SuperDec.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft SuperDec.png}
 		\caption{SuperDec}
 	\end{subfigure}%
 	\begin{subfigure}[t]{0.165\textwidth}
 		\centering
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet CAPRI-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet CAPRI-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Display CAPRI-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Display CAPRI-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Table CAPRI-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Table CAPRI-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Telephone CAPRI-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Telephone CAPRI-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft CAPRI-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft CAPRI-Net.png}
 		\caption{CAPRI-Net}
 	\end{subfigure}%
 	\begin{subfigure}[t]{0.165\textwidth}
 		\centering
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet BSP-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet BSP-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Display BSP-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Display BSP-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Table BSP-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Table BSP-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Telephone BSP-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Telephone BSP-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft BSP-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft BSP-Net.png}
 		\caption{BSP-Net}
 	\end{subfigure}%
 	\begin{subfigure}[t]{0.165\textwidth}
 		\centering
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet UCSG-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Cabinet UCSG-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Display UCSG-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Display UCSG-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Table UCSG-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Table UCSG-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Telephone UCSG-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Telephone UCSG-Net.png}
 
-		\includegraphics[width=0.79\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft UCSG-Net.png}
+		\includegraphics[width=0.72\linewidth]{Images/Prior Work ShapeNet Renders/Watercraft UCSG-Net.png}
 		\caption{UCSG-Net}
 	\end{subfigure}
-	\caption{}
+	\caption{Comparison of models output renders on the seen 13 ShapeNet categories.}
 	\label{fig:prior_work_seen_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[p]
 	\centering
 	\singlespace
 	\footnotesize
@@ -672,26 +680,52 @@ The CD metrics presented in this section are not comparable to the earlier exper
 	\setcellgapes{4pt}
 	\makegapedcells
 	\renewcommand{\bfdefault}{b}
-	\begin{tabular}{|l|r|r|r|r|}
+	\begin{tabular}{|l|r|r|r|}
 		\hline
-		\makecell{Model} & \makecell{Training\\Categories} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} \\
+		\makecell{Model} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} \\
 		\Xhline{1pt}
-		CSG-CRN   & 13 & \textbf{0.584}  & \textbf{27.62}  & \textbf{0.6502} \\
+		CSG-CRN   & \textbf{0.584}  & \textbf{27.62}  & \textbf{0.6502} \\
 		\hline
-		SuperDec  & 13 & 0.622           & 31.84           & 0.5561          \\
+		SuperDec  & 0.622           & 31.84           & 0.5561          \\
 		\hline
-		CAPRI-Net & 13 & 0.724           & 31.40           & 0.5993          \\
+		CAPRI-Net & 0.724           & 31.40           & 0.5993          \\
 		\hline
-		BSP-Net   & 13 & 0.761           & 32.77           & 0.5913          \\
+		BSP-Net   & 0.761           & 32.77           & 0.5913          \\
 		\hline
-		UCSG-Net  & 13 & 2.177           & 46.55           & 0.5217          \\
+		UCSG-Net  & 2.177           & 46.55           & 0.5217          \\
 		\hline
 	\end{tabular}
-	\caption{Comparison of models on ShapeNet dataset.}
+	\caption{Performance comparison of models on the seen 13 ShapeNet categories.}
 	\label{tab:prior_work_seen_comparison}
 \end{table}
 
-\begin{figure}[ht]
+\begin{table}[p]
+	\centering
+	\singlespace
+	\footnotesize
+	\setlength{\tabcolsep}{3pt}
+	\setcellgapes{4pt}
+	\makegapedcells
+	\renewcommand{\bfdefault}{b}
+	\begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|r|r|}
+		\hline
+		\multicolumn{1}{|c|}{\multirowcell{2}{Model}} & \multicolumn{2}{c|}{Airplane} & \multicolumn{2}{c|}{Bench} & \multicolumn{2}{c|}{Car} & \multicolumn{2}{c|}{Chair} & \multicolumn{2}{c|}{Sofa} & \multicolumn{2}{c|}{All} \\
+		\cline{2-13}
+		& \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} \\
+		\Xhline{1pt}
+		CSG-CRN   & \textbf{0.163} & \textbf{0.6817} & \textbf{0.614} & \textbf{0.5149} & \textbf{0.515} & \textbf{0.6642} & \textbf{0.478} & \textbf{0.6660} & \textbf{0.514} & \textbf{0.7797} & \textbf{0.446} & \textbf{0.6715} \\
+		\hline
+		CSG-Stump & 0.499 & 0.4465 & 1.008 & 0.4623 & 0.627 & 0.6503 & 1.201 & 0.5217 & 0.760 & 0.7474 & 0.806 & 0.5728 \\
+		\hline
+	\end{tabular}
+	\caption{Performance comparison of CSG-CRN versus CSG-Stump on 5 ShapeNet categories. Both methods are tested with single-category trained models.}
+	\label{tab:prior_work_single_category_comparison}
+\end{table}
+
+\clearpage
+
+
+\begin{figure}[p]
 	\centering
 	\captionsetup[subfigure]{justification=centering,font=footnotesize}
 	\begin{subfigure}[t]{0.165\textwidth}
@@ -748,11 +782,11 @@ The CD metrics presented in this section are not comparable to the earlier exper
 		\includegraphics[width=0.79\linewidth]{Images/Prior Work ModelNet40 Renders/Stairs UCSG-Net.png}
 		\caption{UCSG-Net}
 	\end{subfigure}
-	\caption{}
+	\caption{Comparison of models output renders on the unseen ModelNet40 categories.}
 	\label{fig:prior_work_unseen_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[p]
 	\centering
 	\singlespace
 	\footnotesize
@@ -777,32 +811,11 @@ The CD metrics presented in this section are not comparable to the earlier exper
 		UCSG-Net  & 3.180           & 66.72           & 0.2856          & 3.383           & 60.97           & 0.2568          & 8.354           & 91.42           & 0.1726          & 5.101           & 73.49           & 0.2350          \\
 		\hline
 	\end{tabular}
-	\caption{Comparison of models on ModelNet40 dataset.}
+	\caption{Performance comparison of models on the ModelNet40 categories.}
 	\label{tab:prior_work_unseen_comparison}
 \end{table}
 
-\begin{table}[ht]
-	\centering
-	\singlespace
-	\footnotesize
-	\setlength{\tabcolsep}{3pt}
-	\setcellgapes{4pt}
-	\makegapedcells
-	\renewcommand{\bfdefault}{b}
-	\begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|r|r|}
-		\hline
-		\multicolumn{1}{|c|}{\multirowcell{2}{Model}} & \multicolumn{2}{c|}{Airplane} & \multicolumn{2}{c|}{Bench} & \multicolumn{2}{c|}{Car} & \multicolumn{2}{c|}{Chair} & \multicolumn{2}{c|}{Sofa} & \multicolumn{2}{c|}{All} \\
-		\cline{2-13}
-		                       & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} & \makecell{CD} & \makecell{IoU} \\
-		\Xhline{1pt}
-		CSG-CRN   & \textbf{0.163} & \textbf{0.6817} & \textbf{0.614} & \textbf{0.5149} & \textbf{0.515} & \textbf{0.6642} & \textbf{0.478} & \textbf{0.6660} & \textbf{0.514} & \textbf{0.7797} & \textbf{0.446} & \textbf{0.6715} \\
-		\hline
-		CSG-Stump & 0.499 & 0.4465 & 1.008 & 0.4623 & 0.627 & 0.6503 & 1.201 & 0.5217 & 0.760 & 0.7474 & 0.806 & 0.5728 \\
-		\hline
-	\end{tabular}
-	\caption{}
-	\label{tab:prior_work_single_category_comparison}
-\end{table}
+\clearpage
 
 
 \section{Photogrammetry~Reconstruction}
