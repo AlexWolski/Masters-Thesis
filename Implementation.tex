@@ -26,3 +26,9 @@ As PointNet was originally implemented in TensorFlow, we based our implementatio
 The decoder network implementation is inspired by~\cite{Paschalidou2019}. A fully-connected MLP network with layers of size 1024 and 512 is used to encode a primitive feature vector. Each of the seven decoder heads have fully-connected networks with layer sizes 128 and 64. All intermediary activation functions are Leaky ReLu with a negative slope of 0.2.
 
 The Shape and Operation heads use a Gumbel-Softmax~\cite{Jang2017} activation function. These heads need to produce a one-hot vector since our output does not support fractional amounts of a shape or operation. We set $\tau = 0.5$ to force a one-hot output without killing the gradient. The Translation head uses Tanh activation to allow for values in the range $[-1, 1]$. The Rotation head does not need an activation function because the linear output is normalized to produce a valid quaternion. Lastly, the Scale, Blending, and Roundness heads use the Sigmoid activation function to produce values in the range $[0, 1]$. The minimum scale along each axis is clamped to 0.005 so the model does not produce no-op primitives. And the minimum blending value is clamped to 0.001 since the SDF blending formula breaks near 0.
+
+
+\section{CSG~and~SDF~Processing}
+\label{sec:csg_and_sdf_processing}
+
+A custom library was written for efficiently processing SDFs and CSG operations. We provide a pytorch implementation of batched point transforms, batched CSG model sampling, CSG reconstruction viewer GUI, and export utility to convert the CSG-CRN output to a format for MagicaCSG.
