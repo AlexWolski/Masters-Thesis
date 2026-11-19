@@ -95,6 +95,7 @@ Earth Mover's Distance (EMD) approximates the total distance samples on one surf
 
 The Intersection Over Union (IoU) metric is the intersection of two volumes $A$ and $B$ divided by their union. We approximate the intersection and union volumes using a set of uniformly sampled points $U$. The IoU score decreases for each sample where the occupancy values of $A$ and $B$ disagree, and increases for each sample where the occupancy values agree~\cite{Mescheder2019}.
 \begin{equation}
-	\IoU(A, B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \wedge SDF_B(U_i) \le 0]}{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \vee SDF_B(U_i) \le 0]}.
+	\IoU(A, B) = \frac{|A \cap B|}{|A \cup B|} \approx \frac{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \wedge SDF_B(U_i) \le 0]}{\sum_{i=1}^{N} \mathbf{1}[SDF_A(U_i) \le 0 \vee SDF_B(U_i) \le 0]},
 	\label{eq:intersection_over_union}
 \end{equation}
+where $N$ is the number of sample points in $U$.

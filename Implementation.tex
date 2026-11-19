@@ -7,7 +7,7 @@
 \section{Dataset~Processing}
 \label{sec:dataset_processing}
 
-We use the ShapeNetCore v2 dataset~\cite{Chang2015} for training and performance testing. This is a collection of 51,641 3D meshes sorted into 54 categories. ShapeNet is commonly used by related work and makes for easy performance comparison.
+We use the ShapeNetCore v2 dataset~\cite{Chang2015} for training and performance testing. After preprocessing, it contains 51,641 3D meshes in 54 of the original 55 categories. ShapeNet is commonly used by related work and makes for easy performance comparison.
 
 The dataset needs to be preprocessed to fix or remove bad meshes. A signed distance value can only be computed for watertight manifolds where an interior and exterior volume are clearly defined. We apply the Manifold remeshing algorithm provided by Point Cloud Utils~\cite{Williams2022} to seal any holes and remove loose geometry. Then we normalize the mesh by centering it on the origin and scaling it to fit a unit sphere using the Mesh to SDF~\cite{Kleineberg2024} tools.
 
