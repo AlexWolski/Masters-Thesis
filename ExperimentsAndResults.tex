@@ -573,7 +573,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 \section{Comparison~to~Prior~Work}
 \label{sec:prior_work_comparison}
 
-We run performance tests to compare CSG-CRN to prior works in the same domain. We benchmark against the state of the art models in unsupervised and generalized primitive prediction networks for 3D shape reconstruction. The selected works for comparison are SuperDec~\cite{Fedele2025}, the pretrained model of CAPRI-Net~\cite{Yu2022}, BSP-Net~\cite{Chen2020}, and UCSG-Net~\cite{Kania2020}. Although the authors only published per-category models, we also compare results against CSG-Stump~\cite{Ren2021}. Other strong works in primitive and CSG reconstruction have been published but were omitted from the study due to differences in problem scope. D\textsuperscript{2}CSG~\cite{Yu2023} is not generalizable and optimizes single shapes. PrimitiveAnything~\cite{Ye2025} requires a dataset supervised with part semantics. And ANF-CSG~\cite{Liu2026} requires test-time optimization.
+We run performance tests to compare CSG-CRN to prior works in the same domain. We benchmark against the state of the art models in unsupervised and generalized primitive prediction networks for 3D shape reconstruction. The selected works for comparison are SuperDec~\cite{Fedele2025}, the pretrained model of CAPRI-Net~\cite{Yu2022}, BSP-Net~\cite{Chen2020}, and UCSG-Net~\cite{Kania2020}. Although the authors only published per-category models, we also compare results against CSG-Stump~\cite{Ren2021}. Other strong works in primitive and CSG reconstruction have been published but were omitted from the study due to differences in problem scope. D\textsuperscript{2}CSG~\cite{Yu2023} is not generalizable and optimizes single shapes. PrimitiveAnything~\cite{Ye2025} requires a supervised dataset of primitive assemblies. And ANF-CSG~\cite{Liu2026} requires test-time optimization.
 
 The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same 13 shape categories and test set as the related works to be consistent. For the ShapeNet dataset, performance is measured on the 784 shape samples in test set of all five models being compared. For the unseen dataset, we use the same 56 shape samples in the Person, Sink, and Stairs categories that was used in the \nameref{sec:unseen_class_experiment} experiment.
 
@@ -818,7 +818,10 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 \clearpage
 
 
-\section{Photogrammetry~Reconstruction}
+\section{Real~World~Use}
+\label{sec:real_world_use}
+
+\subsection{Photogrammetry~Reconstruction}
 \label{sec:photogrammetry_reconstruction}
 
 A unique benefit of the point cloud input format for CSG-CRN is the flexibility in acquiring input data. Surface point clouds can be easily generated using photogrammetry techniques. And a surface point cloud can be augment into an SDF point cloud input suitable for CSG-CRN.
@@ -880,6 +883,44 @@ As expected, the single-category model produced the best reconstruction of the f
 	\end{subfigure}
 	\caption{Reconstructing CSG Models from scans of real-world objects. The first row depicts frames from the video scan. The second row shows the surface point clouds extracted through photogrammetry. And the last two rows show CSG-CRN reconstructions.}
 	\label{fig:photogrammetry_renders}
+\end{figure}
+
+
+\subsection{Test~Time~Optimization}
+\label{sec:test_time_optimization}
+
+The reconstruction results for the unseen shape categories Rabbit and Bear where significantly worse than for the seen shape category Car. The accuracy for these shapes can be increased using Test Time Optimization (TTO.) Before producing a reconstruction, the pre-trained model is further trained on the target shape. We create a dataset of one shape and optimize for 300 iterations before producing the reconstruction. The results are much cleaner for the Rabbit and Bear reconstructions which now have correct heads and ears. The car model did not improve much since the reconstruction without TTO was already good.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Test Time Optimization.png}
+	\hspace{0.03\textwidth}
+	\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Rabbit Bell Test Time Optimization.png}
+	\hspace{0.03\textwidth}
+	\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Teddy Bear Test Time Optimization.png}
+
+	{\footnotesize
+	\makebox[0.13\textwidth]{IoU 0.9257}
+	\hspace{0.03\textwidth}
+	\makebox[0.13\textwidth]{IoU 0.8781}
+	\hspace{0.03\textwidth}
+	\makebox[0.13\textwidth]{IoU 0.8985}
+
+	}
+	\caption{All-Category ShapeNet Model with TTO Reconstruction}
+	\label{fig:photogrammetry_test_time_optimization}
+\end{figure}
+
+\subsection{CSG~Export}
+\label{sec:csg_export}
+
+Lastly, the optimized reconstructions can be exported directly as a CSG model file without needing to remesh. The MagicaCSG CSG editor supports the roundness and blending parameters outputted by CSG-CRN. We provide an export utility to export a reconstruction in the .mcsg format so it can be imported and edited in MagicaCSG.
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{Images/Photogrammetry Renders/MagicaCSG Teddy Bear.png}
+	\caption{Photogrammetry scan reconstruction imported into MagicaCSG as CSG Model.}
+	\label{fig:magicacsg_teddy_bear}
 \end{figure}
 
 
