@@ -465,7 +465,7 @@ The reconstruction quality of the unseen shape categories is much lower than on 
 
 A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. 10 mesh samples were randomly selected from each of the Airplane, Bench, Car, Chair, and Sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a 50 sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes.
 
-Both the single-category models and the general whole-dataset model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the correct region and not added over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the whole-dataset model. However, the accuracy metrics show that both perform about the same.
+Both the single-category models and the general whole-dataset model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the correct region and not added over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the whole-dataset model. However, the accuracy metrics show that the whole-dataset model performs better on average.
 
 This experiment demonstrates that the cascades are not structured. If each cascade was designated a specific portion of a shape template to predict, the model would fail to consistently restore randomized parts of the target shape. The ability to do so indicates that the encoder can compare the target input against the initial reconstruction input to determine what volume is missing.
 
@@ -519,6 +519,20 @@ This experiment demonstrates that the cascades are not structured. If each casca
 
 	\begin{subfigure}{\textwidth}
 		\centering
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Airplane Single Category Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Bench Single Category Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Car Single Category Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Single Category Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Single Category Pruned.png}
+		\caption{Single-Category ShapeNet Model, Pruned}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Airplane Whole Dataset.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Bench Whole Dataset.png}
@@ -529,6 +543,20 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Whole Dataset.png}
 		\caption{All-Category ShapeNet Model}
+	\end{subfigure}
+
+	\begin{subfigure}{\textwidth}
+		\centering
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Airplane Whole Dataset Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Bench Whole Dataset Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Car Whole Dataset Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Whole Dataset Pruned.png}
+		\hspace{0.03\textwidth}
+		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Whole Dataset Pruned.png}
+		\caption{All-Category ShapeNet Model, Pruned}
 	\end{subfigure}
 	\caption{Refinement of partially complete shapes by single and all trained ShapeNet models.}
 	\label{fig:partial_recon_renders}
@@ -542,27 +570,29 @@ This experiment demonstrates that the cascades are not structured. If each casca
 	\setcellgapes{4pt}
 	\makegapedcells
 	\renewcommand{\bfdefault}{b}
-	\begin{tabular}{|l|l|r|r|r|}
+	\begin{tabular}{|l|l|r|r|r|r|r|r|}
 		\hline
-		\makecell{Shape Category} & \makecell{Training Set} & \makecell{Refined CD} & \makecell{Refined EMD} & \makecell{Refined IoU} \\
+		\multicolumn{1}{|c|}{\multirowcell{2}{Shape Category}} & \multicolumn{1}{c|}{\multirowcell{2}{Training Set}} & \multicolumn{3}{c|}{Unpruned} & \multicolumn{3}{c|}{Pruned} \\
+		\cline{3-8}
+		 & & \makecell{CD} & \makecell{EMD} & \makecell{IoU} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} \\
 		\Xhline{1pt}
-		\multirow{2}{*}{Airplane} & \smash[b]{Single Category} & 27.04          & 587.8          & 0.7473          \\
-		                          & Whole Dataset              & \textbf{15.40} & \textbf{428.3} & \textbf{0.8146} \\
+		\multirow{2}{*}{Airplane} & \smash[b]{Single Category} & 24.75          & 567.2          & 0.7497         & 11.20          & \textbf{285.7} & \textbf{0.9146} \\
+		                          & Whole Dataset              & \textbf{14.06} & \textbf{414.5} & \textbf{0.8189} & \textbf{7.17}  & 286.3          & 0.9101         \\
 		\hline
-		\multirow{2}{*}{Bench}    & \smash[b]{Single Category} & 19.52          & \textbf{463.0} & \textbf{0.7000} \\
-		                          & Whole Dataset              & \textbf{12.02} & 486.4          & 0.6752          \\
+		\multirow{2}{*}{Bench}    & \smash[b]{Single Category} & 19.72          & \textbf{484.7} & \textbf{0.7007} & 17.26          & \textbf{315.7} & 0.7553         \\
+		                          & Whole Dataset              & \textbf{12.07} & 500.2          & 0.6661         & \textbf{6.40}  & 333.8          & \textbf{0.8256} \\
 		\hline
-		\multirow{2}{*}{Car}      & \smash[b]{Single Category} & 33.70          & 545.4          & 0.7590          \\
-		                          & Whole Dataset              & \textbf{16.88} & \textbf{490.9} & \textbf{0.7976} \\
+		\multirow{2}{*}{Car}      & \smash[b]{Single Category} & 31.49          & 532.1          & 0.7666         & 25.91          & 442.0          & 0.8420         \\
+		                          & Whole Dataset              & \textbf{16.79} & \textbf{491.2} & \textbf{0.7958} & \textbf{12.55} & \textbf{367.3} & \textbf{0.8690} \\
 		\hline
-		\multirow{2}{*}{Chair}    & \smash[b]{Single Category} & \textbf{47.36} & \textbf{306.2} & \textbf{0.8558} \\
-		                          & Whole Dataset              & 52.62          & 701.9          & 0.7109          \\
+		\multirow{2}{*}{Chair}    & \smash[b]{Single Category} & \textbf{45.30} & \textbf{307.5} & \textbf{0.8599} & 46.71          & \textbf{293.2} & \textbf{0.8751} \\
+		                          & Whole Dataset              & 53.60          & 705.5          & 0.7109         & \textbf{12.56} & 379.1          & 0.8580         \\
 		\hline
-		\multirow{2}{*}{Sofa}     & \smash[b]{Single Category} & 48.73          & 831.9          & 0.7248          \\
-		                          & Whole Dataset              & \textbf{20.98} & \textbf{563.6} & \textbf{0.7724} \\
+		\multirow{2}{*}{Sofa}     & \smash[b]{Single Category} & 49.20          & 833.2          & 0.7265         & 38.54          & 695.3          & 0.7870         \\
+		                          & Whole Dataset              & \textbf{20.81} & \textbf{572.7} & \textbf{0.7809} & \textbf{12.07} & \textbf{412.4} & \textbf{0.8629} \\
 		\hline
-		\multirow{2}{*}{All}      & \smash[b]{Single Category} & 35.27          & 546.9          & \textbf{0.7574} \\
-		                          & Whole Dataset              & \textbf{23.58} & \textbf{534.2} & 0.7542          \\
+		\multirow{2}{*}{All}      & \smash[b]{Single Category} & 34.09          & 545.0          & \textbf{0.7607} & 27.92          & 406.4          & 0.8348         \\
+		                          & Whole Dataset              & \textbf{23.47} & \textbf{536.8} & 0.7545         & \textbf{10.15} & \textbf{355.8} & \textbf{0.8651} \\
 		\hline
 	\end{tabular}
 	\caption{Partial shape refinement metrics for single and all category trained models.}
@@ -575,17 +605,17 @@ This experiment demonstrates that the cascades are not structured. If each casca
 
 We run performance tests to compare CSG-CRN to prior works in the same domain. We benchmark against the state-of-the-art models in unsupervised and generalized primitive prediction networks for 3D shape reconstruction. The selected works for comparison are SuperDec~\cite{Fedele2025}, the pretrained model of CAPRI-Net~\cite{Yu2022}, BSP-Net~\cite{Chen2020}, and UCSG-Net~\cite{Kania2020}. Although the authors only published per-category models, we also compare results against CSG-Stump~\cite{Ren2021}. Other strong works in primitive and CSG reconstruction have been published but were omitted from the study due to differences in problem scope. D\textsuperscript{2}CSG~\cite{Yu2023} is not generalizable and optimizes single shapes. PrimitiveAnything~\cite{Ye2025} requires a supervised dataset of primitive assemblies. And ANF-CSG~\cite{Liu2026} requires test-time optimization.
 
-The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same 13 shape categories and test set as the related works to be consistent. For the ShapeNet dataset, performance is measured on the 785 shape samples in the test set of all five models being compared. For the unseen dataset, we use the same 56 shape samples in the Person, Sink, and Stairs categories that were used in the \nameref{sec:unseen_class_experiment} experiment.
+The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same 13 shape categories and test set as the related works to be consistent. The model is trained with a batch size of 128. For the ShapeNet dataset, performance is measured on the 785 shape samples in the test set of all five models being compared. For the unseen dataset, we use the same 56 shape samples in the Person, Sink, and Stairs categories that were used in the \nameref{sec:unseen_class_experiment} experiment.
 
 Special care is required when reproducing results for SuperDec. The model was trained with a different canonical frame, being rotated about the vertical axis by 90$^\circ$ compared to the ShapeNet dataset. We found the results for SuperDec improved when applying an opposite rotation to the sample points before running inference. Our results present the improved metrics.
 
 The CD metrics presented in this section are not comparable to the earlier experiments. All other testing on CSG-CRN used the ChamferDistance library~\cite{Jatavallabhula2024, Ravi2020} with 10,000 samples, Marching Cubes resolution of 512, unit sphere bounds, sum reduction and no scaling. To align with the testing methods of the previous work, the CD metrics are computed with 4,096 samples, Marching Cubes resolution of 128, box bounds, mean reduction and a final scaling of 1,000.
 
-For the 13 seen ShapeNet categories, CSG-CRN has the highest average accuracy metrics by a healthy margin. CSG-CRN ranked best on all three accuracy metrics for 9 out of the 13 shape categories. For the Chair, Lamp, and Table categories, SuperDec ranked first in CD while CSG-CRN ranked second in CD and first in EMD and IoU. For the Car category, CSG-CRN, CAPRI-Net and BSP-Net ranked first in the CD, EMD, and IoU categories respectively with CSG-CRN ranking second in EMD and IoU.
+For the 13 seen ShapeNet categories, CSG-CRN has the highest average accuracy metrics by a healthy margin. CSG-CRN ranked best on all three accuracy metrics for 11 out of the 13 shape categories. For the Lamp and Table categories, SuperDec ranked first in CD while CSG-CRN ranked first in EMD and IoU.
 
 Unlike the other related works, CSG-Stump has no published weights for a model trained on multiple shape categories. We use the five CSG-CRN models trained in the \nameref{sec:shapenet_experiment} section and compare them against five of the twelve published models for CSG-Stump. Testing was performed on 187 samples that appear in the test sets for both methods being compared. The results show that CSG-CRN outperforms CSG-Stump in all metrics across all five categories.
 
-Tests were also run for unseen shape categories using the three ModelNet40 categories used in the \nameref{sec:unseen_class_experiment} section. The results are a toss-up between SuperDec and CSG-CRN. The performance of these two methods is similar across the board, with both performing significantly above the other three methods. SuperDec ranks first in the average CD and EMD metrics but CSG-CRN ranks first in average IoU. Analyzing the results visually, CSG-CRN seems to represent key features more clearly. For example, the CSG-CRN Person reconstruction has primitives to the sides representing arms while SuperDec does not.
+Tests were also run for unseen shape categories using the three ModelNet40 categories used in the \nameref{sec:unseen_class_experiment} section. The results are a toss-up between SuperDec and CSG-CRN. The performance of these two methods is similar across the board, with both performing significantly above the other three methods. SuperDec ranks first in the average CD metric but CSG-CRN ranks first in average EMD and IoU. Analyzing the results visually, CSG-CRN seems to represent key features more clearly. For example, the CSG-CRN Person reconstruction has primitives to the sides representing arms while SuperDec does not.
 
 \begin{figure}[p]
 	\centering
@@ -684,7 +714,7 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 		\hline
 		\makecell{Model} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} \\
 		\Xhline{1pt}
-		CSG-CRN   & \textbf{0.584}  & \textbf{27.62}  & \textbf{0.6502} \\
+		CSG-CRN   & \textbf{0.534}  & \textbf{26.27}  & \textbf{0.6687} \\
 		\hline
 		SuperDec  & 0.622           & 31.84           & 0.5561          \\
 		\hline
@@ -800,9 +830,9 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 		\cline{2-13}
 		                       & \makecell{CD} & \makecell{EMD} & \makecell{IoU} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} \\
 		\Xhline{1pt}
-		CSG-CRN   & 1.116           & \textbf{40.71}  & 0.4081          & 1.416           & \textbf{37.85}  & \textbf{0.3651} & 1.930           & 50.78           & 0.2474          & 1.514           & 43.28           & \textbf{0.3353} \\
+		CSG-CRN   & \textbf{0.910}  & \textbf{36.50}  & \textbf{0.4325} & 1.406           & \textbf{37.68}  & \textbf{0.3521} & 1.767           & 50.81           & 0.2637          & 1.393           & \textbf{42.03}  & \textbf{0.3435} \\
 		\hline
-		SuperDec  & \textbf{0.958}  & 41.89           & \textbf{0.4211} & \textbf{1.190}  & 37.89           & 0.3085          & \textbf{1.435}  & \textbf{46.83}  & \textbf{0.2834} & \textbf{1.211}  & \textbf{42.23}  & 0.3317          \\
+		SuperDec  & 0.958           & 41.89           & 0.4211          & \textbf{1.190}  & 37.89           & 0.3085          & \textbf{1.435}  & \textbf{46.83}  & \textbf{0.2834} & \textbf{1.211}  & 42.23           & 0.3317          \\
 		\hline
 		CAPRI-Net & 1.973           & 56.42           & 0.3670          & 1.639           & 41.09           & 0.3316          & 4.306           & 67.47           & 0.2250          & 2.687           & 54.89           & 0.3036          \\
 		\hline
