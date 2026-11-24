@@ -68,19 +68,6 @@ Prior work~\cite{Sharma2018, Kania2020, Ren2021} successfully implements CSG-bas
 	\label{fig:primitive_blending}
 \end{figure}
 
-To address these shortcomings, we propose the Constructive Solid Geometry Cascaded Refinement Network (CSG-CRN): a novel architecture for iteratively generating CSG reconstructions of unlimited size. This is achieved using cascaded refinement, wherein a refinement network recursively improves upon its own output to achieve high reconstruction quality with a small architecture. CSG-CRN is an autoencoder network that takes point cloud inputs and predicts SDF primitives. The contrastive encoder network generates a feature vector for the difference in target geometry and the current reconstruction. Then the Multi-Layer Perceptron (MLP) decoder network generates SDF primitives to refine the reconstruction. The output parameters include a blending factor to better represent smooth, organic surfaces. The reconstruction can be fed back into the CSG-CRN network for an unlimited number of iterations to continue refining the reconstruction. Unlike previous work, the reconstruction time of CSG-CRN scales linearly with the level of detail. To our knowledge, this is the first approach that applies cascaded refinement to the synthesis of CSG models.
-
-We make two main contributions in this work. First, we propose CSG-CRN, a novel architecture for generating CSG reconstructions through cascaded refinement. Second, we conduct experiments to demonstrate CSG-CRN can do the following:
-
-\begin{itemize}
-	\item Reconstruct shapes more accurately using cascaded refinement than using a single pass with the same number of primitives.
-	\item Generalize to reconstruct a variety of known shape classes.
-	\item Reconstruct unknown shape classes.
-	\item Produce reconstructions superior to prior work.
-	\item Refine an existing, partially complete reconstruction.
-	\item Reconstruct scans of real-world objects.
-\end{itemize}
-
-\vspace{1em}
+To address these shortcomings, we propose the Constructive Solid Geometry Cascaded Refinement Network (CSG-CRN): a novel architecture for iteratively generating CSG reconstructions. This is achieved using cascaded refinement, wherein a network recursively improves upon its own output to achieve high reconstruction quality with a small architecture. CSG-CRN is an autoencoder network that takes point clouds as input and predicts SDF primitives. The contrastive encoder network generates a feature vector for the difference in target geometry and the current reconstruction. Then the Multi-Layer Perceptron (MLP) decoder network generates SDF primitives to refine the reconstruction. The output parameters include a blending factor to better represent smooth, organic surfaces. The reconstruction can be fed back into the CSG-CRN network for an arbitrary number of iterations to continue refining the reconstruction. We show that our cascaded refinement model achieves higher accuracy metrics than previous work in unsupervised, general, structured 3D reconstruction. To our knowledge, this is the first approach that applies cascaded refinement to the synthesis of CSG models.
 
 The outline of this paper is as follows. The next chapter, \nameref{chap:related_work}, reviews the 3D representations and neural architectures used in prior work. The \nameref{chap:background} chapter explains the mathematics of SDFs and the algorithms and accuracy metrics used in our method. In the \nameref{chap:method} chapter, we provide a high-level view of the CSG-CRN architecture. The technical details of our implementation are provided in the \nameref{chap:implementation} chapter. The \nameref{chap:experiments_and_results} chapter contains the procedures and results for each experiment. Lastly, the \nameref{chap:conclusion} chapter summarizes our findings and discusses potential future work.
