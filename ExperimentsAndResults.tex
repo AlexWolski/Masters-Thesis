@@ -83,7 +83,6 @@ The results in table~\ref{tab:loss_function_comparison} show the sigmoid loss pe
 	\label{tab:loss_function_comparison}
 \end{table}
 
-\newpage
 
 \section{Surface-Uniform~Ratio}
 \label{sec:surface_uniform_ratio_experiment}
@@ -315,8 +314,6 @@ Results of the experiment are shown in table~\ref{tab:shapenet_benchmark_compari
 
 The visual comparison seen in figure~\ref{fig:shapenet_benchmark_renders} reveals that the models trained on single shape categories have better blending and continuity. This is especially apparent in the car reconstructions where the primitives are blended to the point they cannot be distinguished as separate shapes. The whole-dataset model has good volumetric accuracy but misses smaller details. The generalized model produces results with holes, gaps, and lumpy surfaces.
 
-\newpage
-
 
 \begin{figure}[!htb]
 	\centering
@@ -468,8 +465,6 @@ A unique benefit of the cascaded refinement architecture is the ability to compl
 The accuracy metrics in table~\ref{tab:partial_recon_comparison} and the visual comparison in~\ref{fig:partial_recon_renders} show that both the single-category models and the whole-dataset model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the missing region and not over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the whole-dataset model. However, the accuracy metrics show that the whole-dataset model performs better on average.
 
 This experiment demonstrates that the cascades are not structured. If each cascade was designated a specific portion of a shape template to predict, the model would fail to consistently restore randomized parts of the target shape. The ability to do so indicates that the encoder can compare the target input against the initial reconstruction input to determine what volume is missing.
-
-\newpage
 
 
 \begin{figure}[!htb]
@@ -752,8 +747,6 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 	\label{tab:prior_work_single_category_comparison}
 \end{table}
 
-\clearpage
-
 
 \begin{figure}[!htb]
 	\centering
@@ -844,8 +837,6 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 	\caption{Performance comparison of models on the ModelNet40 categories.}
 	\label{tab:prior_work_unseen_comparison}
 \end{table}
-
-\clearpage
 
 
 \section{Real~World~Use}
