@@ -11,7 +11,7 @@ One of the primary challenges in applying deep learning to 3D reconstruction is 
 
 Recent work~\cite{Sharma2018, Kania2020, Ren2021} has explored the use of Constructive Solid Geometry (CSG) in deep learning. A CSG model defines a volume as a composition of simple shape primitives. Primitives are combined using boolean operations such as union, difference, and intersection. Each primitive is transformed using translation, rotation, and scaling operations. The available primitive shapes are restricted to a predefined set of manifold surfaces. CSG models are more compact than other 3D representations. And by virtue of their construction, all CSG models are continuous and manifold surfaces bounding an interior volume. Additionally, editing a CSG model is convenient since each constituent primitive can be independently modified~\cite{Hughes2013}.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\centering
 	\begin{subfigure}[t]{0.3\textwidth}
 		\centering
@@ -38,7 +38,7 @@ CSG and related primitive fitting techniques are topics of interest as they rese
 
 Prior work~\cite{Sharma2018, Kania2020, Ren2021} represents CSG primitives as Signed Distance Fields (SDFs). An SDF is a mathematical function that implicitly defines the surface of a volume. Given a query point, an SDF returns the shortest distance from the query point to the represented surface. This distance is positive ($+$) when the query point is outside of the volume and negative ($-$) when the query point is inside. We define the surface as the set of all input points for which the SDF returns 0 (i.e. the zero-level set). The implicit nature of SDFs results in smooth, detailed, and continuous surfaces~\cite{Park2019}. And the boolean operations required for CSG construction can be easily applied to SDFs.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.2]{Images/SDF Box}
 	\caption{Visualization of the SDF of a 2D box. The surface of the box is depicted in black, the exterior in green, and the interior in red. Points farther from the surface are colored darker. Each of the white isolines consists of points that are equidistant from the surface.}
@@ -51,7 +51,7 @@ However, there are also several challenges in using CSG models. The first diffic
 
 Prior work~\cite{Sharma2018, Kania2020, Ren2021} successfully implements CSG-based reconstruction algorithms using unsupervised learning. While succeeding in representing simple geometry, these works fail to incorporate primitive blending to address the poor reconstruction quality of smooth surfaces. Furthermore, these models generate a small number of primitives. The CSG-Stump architecture~\cite{Ren2021} supports a maximum output of 256 total primitives in the paper, of which a subset is selected for use in reconstruction. This number is sufficient to represent simple 3D shapes but fails to capture the details in more complex geometry. Although the architecture can be scaled up, the network complexity, memory requirements, and training time increase non-linearly with the output size~\cite{Ren2021}.
 
-\begin{figure}[!b]
+\begin{figure}[!htb]
 	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
 		\centering

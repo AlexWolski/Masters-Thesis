@@ -18,7 +18,7 @@ The sigmoid loss performed best in the CD and EMD testing metrics while LOG loss
 
 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\begin{subfigure}{0.13\textwidth}
 		\includegraphics[width=\linewidth]{Images/Loss Function Renders/TARGET.png}
@@ -58,7 +58,7 @@ The sigmoid loss performed best in the CD and EMD testing metrics while LOG loss
 	\label{fig:loss_function_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -93,7 +93,7 @@ We experiment with different ratios of near-surface samples to uniformly distrib
 The trend lines for the CD and EMD metrics are inconclusive due to high variance. But the IoU metric shows a statistically significant result with $p < 0.001$ for both loss functions. The results indicate that a Surface-Uniform ratio of 0.0 produces marginally better results, so we used this configuration for all subsequent experiments.
 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\begin{subfigure}{0.32\textwidth}
 		\includegraphics[width=\linewidth]{Images/Surface Uniform Ratio Figures/Surface Uniform Ratio Chamfer.png}
@@ -123,7 +123,7 @@ Predictably, the training time trends upward as we increase the encoder size. Th
 
 The 512 input size model has the best results in CD and EMD while the 8192 input size model had the best result in IoU. The 512 input size model has qualitatively worse reconstructions than the larger models, further showing the CD and EMD metrics are not good measures of visual quality. The 16384 input size model produces warped outputs and ranks only fourth best in IoU score despite being the largest. This is due to the low batch size.
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\begin{subfigure}{0.13\textwidth}
 		\includegraphics[width=\linewidth]{Images/Input Size Renders/TARGET.png}
@@ -173,7 +173,7 @@ The 512 input size model has the best results in CD and EMD while the 8192 input
 	\label{fig:input_size_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -210,7 +210,7 @@ The results show that the shared parameter models overall outperform the separat
 An additional result of interest is the total network size. All separate parameter models are larger than the baseline single-pass model since the network weights are duplicated for each cascade. In contrast, all shared parameter models are smaller than the baseline since the same network weights are running inference multiple times. The 4 primitive $\times$ 4 pass shared model performed better than baseline at less than 30\% of the network size. Despite the smaller size, the shared model took 20\% longer to train since it trains on both the initial pass and the refinement pass.
 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\captionsetup[subfigure]{justification=centering}
 	\begin{subfigure}[t]{0.17\textwidth}
@@ -276,7 +276,7 @@ An additional result of interest is the total network size. All separate paramet
 	\label{fig:prims_per_cascade_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -318,7 +318,7 @@ A visual inspection reveals that the models trained on single shape categories h
 \newpage
 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\captionsetup[subfigure]{justification=centering}
 	\begin{subfigure}{\textwidth}
@@ -366,7 +366,7 @@ A visual inspection reveals that the models trained on single shape categories h
 	\label{fig:shapenet_benchmark_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -408,7 +408,7 @@ The model trained on the ShapeNet dataset can be used to reconstruct unseen shap
 
 The reconstruction quality of the unseen shape categories is much lower than on the ShapeNet dataset. The best category is Person at 0.41 IoU and the worst is Stairs at 0.24 IoU. This is compared to the average IoU metric of 0.64 on the ShapeNet dataset. However, the model succeeds in creating a rough block-out of the target shape and demonstrates a level of generalization. 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\captionsetup[subfigure]{justification=centering}
 	\begin{subfigure}{\textwidth}
@@ -434,7 +434,7 @@ The reconstruction quality of the unseen shape categories is much lower than on 
 	\label{fig:unseen_class_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -472,7 +472,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 \newpage
 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\captionsetup[subfigure]{justification=centering}
 	\begin{subfigure}{\textwidth}
@@ -562,7 +562,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 	\label{fig:partial_recon_renders}
 \end{figure}
 
-\begin{table}[ht]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -617,7 +617,7 @@ Unlike the other related works, CSG-Stump has no published weights for a model t
 
 Tests were also run for unseen shape categories using the three ModelNet40 categories used in the \nameref{sec:unseen_class_experiment} section. The results are a toss-up between SuperDec and CSG-CRN. The performance of these two methods is similar across the board, with both performing significantly above the other three methods. SuperDec ranks first in the average CD metric but CSG-CRN ranks first in average EMD and IoU. Analyzing the results visually, CSG-CRN seems to represent key features more clearly. For example, the CSG-CRN Person reconstruction has primitives to the sides representing arms while SuperDec does not.
 
-\begin{figure}[p]
+\begin{figure}[!htb]
 	\centering
 	\captionsetup[subfigure]{justification=centering,font=footnotesize}
 	\begin{subfigure}[t]{0.165\textwidth}
@@ -702,7 +702,7 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 	\label{fig:prior_work_seen_renders}
 \end{figure}
 
-\begin{table}[p]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -729,7 +729,7 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 	\label{tab:prior_work_seen_comparison}
 \end{table}
 
-\begin{table}[p]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -755,7 +755,7 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 \clearpage
 
 
-\begin{figure}[p]
+\begin{figure}[!htb]
 	\centering
 	\captionsetup[subfigure]{justification=centering,font=footnotesize}
 	\begin{subfigure}[t]{0.165\textwidth}
@@ -816,7 +816,7 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 	\label{fig:prior_work_unseen_renders}
 \end{figure}
 
-\begin{table}[p]
+\begin{table}[!htb]
 	\centering
 	\singlespace
 	\footnotesize
@@ -863,7 +863,7 @@ We apply this process to produce three SDF shape samples to run inference on. We
 As expected, the single-category model produced the best reconstruction of the four. It produces a smooth surface and a more defined windshield than the all-categories model does. Both models were able to reconstruct the windows missing from the photogrammetry scan due to glare. The all-category model produced a decent approximation of the rabbit. The general shape is correct and contains a head and ears, but it lacks much detail. The reconstruction of the teddy bear sample is the worst result with the model failing to reconstruct the arms and legs.
 
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\captionsetup[subfigure]{justification=centering}
 	\begin{subfigure}{\textwidth}
@@ -921,7 +921,7 @@ As expected, the single-category model produced the best reconstruction of the f
 
 The reconstruction results for the unseen shape categories Rabbit and Bear were significantly worse than for the seen shape category Car. The accuracy for these shapes can be increased using Test Time Optimization (TTO)~\cite{Sun2020}. Before producing a reconstruction, the pre-trained model is further trained on the target shape. We create a dataset of one shape and optimize for 300 iterations before producing the reconstruction. The results are much cleaner for the Rabbit and Bear reconstructions which now have correct heads and ears. The car model did not improve much since the reconstruction without TTO was already good. The tradeoff for using this technique is the time to reconstruct a shape grows from several milliseconds to several minutes.
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Car Test Time Optimization.png}
 	\hspace{0.03\textwidth}
@@ -946,7 +946,7 @@ The reconstruction results for the unseen shape categories Rabbit and Bear were 
 
 Lastly, the optimized reconstructions can be exported directly as a CSG model file without needing to remesh. The MagicaCSG CSG editor supports the roundness and blending parameters outputted by CSG-CRN. We provide an export utility to export a reconstruction in the .mcsg format so it can be imported and edited in MagicaCSG.
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{Images/Photogrammetry Renders/MagicaCSG Teddy Bear.png}
 	\caption{Photogrammetry reconstruction imported into MagicaCSG as a CSG model.}

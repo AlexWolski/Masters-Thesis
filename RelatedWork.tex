@@ -9,7 +9,7 @@ In this chapter, we review prior work in 3D shape learning. The sections are org
 \section{Point~Cloud}
 \label{sec:point_cloud}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.2]{Images/Point Cloud Cup}
 	\caption{Point cloud representation of a coffee cup.}
@@ -30,7 +30,7 @@ Although point clouds only offer a sparse approximation of a surface, the low-di
 \section{Polygon~Mesh}
 \label{sec:polygon_mesh}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.2]{Images/Mesh Cup}
 	\caption{Triangle mesh representation of a coffee cup. The black lines depict the connecting edges between vertices.}
@@ -55,7 +55,7 @@ The polygon mesh is one of the most convenient 3D formats. However, deep learnin
 \section{Occupancy~Grid}
 \label{sec:occupancy_grid}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.2]{Images/Voxel Cup}
 	\caption{Voxel grid representation of a coffee cup.}
@@ -82,7 +82,7 @@ Occupancy grids provide rich volumetric data for object classification and recon
 \section{2D Projection}
 \label{sec:2d_projection}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.2]{Images/Depth Map Cup}
 	\caption{Depth map representation of a coffee cup. Points closer to the camera are colored green and points further from the camera are colored blue.}
@@ -103,7 +103,7 @@ A 2D projection provides a simple yet powerful representation for real-time appl
 \section{Implicit~Surface}
 \label{sec:implicit_surface}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.2]{Images/SDF Cup}
 	\caption{Visualization of an SDF representing a coffee cup. Points closer to the surface are colored green and points farther from the surface are colored blue. Each isoline consists of points that are equidistant from the surface.}
@@ -128,7 +128,7 @@ Implicit surfaces are memory efficient, detailed, and have no resolution limit. 
 \section{Structured~Representation}
 \label{sec:structured_representation}
 
-\begin{figure}[ht]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.5]{Images/CSG Cup}
 	\caption{The CSG tree of a coffee cup. The leaves of the tree are SDF primitives which are combined through union (+) and subtract (-) operations. The primitives being subtracted are colored red.}

@@ -26,7 +26,7 @@ The query point and three distance values comprise the six-dimensional input vec
 
 \[input = [p, d_{missing}, d_{filled}, d_{excess}].\]
 
-\begin{figure}[h]
+\begin{figure}[!htb]
 	\centering
 	\includegraphics{Images/input_preprocessing_figure.pdf}
 	\caption{Visualization of information fed to the encoder network. Distances to the missing, filled, and excess volumes are encoded in each input point sample.}
@@ -63,7 +63,7 @@ CSGNet~\cite{Sharma2018} successfully avoids greedy primitive fitting by running
 
 Experiments revealed that CSG-CRN would exploit the subtract operation later in training. Subtracting thin primitives from a reconstruction has little impact on the loss but avoids potentially increasing the loss by adding a primitive. To prevent this behavior, a maximum number of subtract operations per cascade can be configured in the decoder.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.67]{Images/csg_crn_figure.pdf}
 	\caption{CSG-CRN Network Architecture. The encoder is derived from PointNet and the decoder is a multi-headed regressor.}
@@ -84,7 +84,7 @@ where $\epsilon$ is the difference in distance from a query sample point to both
 
 The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier loss for large errors, training the model to prioritize accuracy across the entirety of the target shape over detailed surface accuracy. With the cascaded refinement architecture, the MSE loss led to greedy fitting in the first cascade that harmed the performance of later cascades. Both the LOG and SIG losses apply a heavier loss for small errors. The LOG loss gradually plateaus where the SIG loss settles into a linear trajectory. By penalizing small errors more than large errors, the model is trained to prioritize surface accuracy and may leave portions of the target shape for later cascades to reconstruct.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[width=3in]{Images/Loss Functions Figure.png}
 	\caption{Plots of the four distance-based loss metrics as configured in CSG-CRN.}
@@ -110,7 +110,7 @@ One approach is to optimize the network weights for each cascade separately. A c
 
 This training approach has many downsides. The model size and training time increase linearly with the number of cascades. Network weights are carried over between cascades, but the learning rate is reset and progress is lost. The only advantages are the injection of reconstruction information between cascades and the ability to train the model in sections.
 
-\begin{figure}
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.6]{Images/separate_training_figure.pdf}
 	\caption{Separate Parameter Training. Each cascade is trained and run separately, forming an end-to-end network that is trained in sections.}
@@ -127,7 +127,7 @@ Training begins with only one cascade. We want the model to learn an approximate
 We train for multiple cascades by accumulating the gradient. The forward pass for each cascade is run first before optimizing. The computational graph is detached between each cascade to separate the gradients. Then the backward step is run to optimize on all gradients simultaneously.
 
 
-\begin{figure}
+\begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.94]{Images/shared_training_figure.pdf}
 	\caption{Shared Parameter Training. The same network parameters are trained and used for each cascade.}
