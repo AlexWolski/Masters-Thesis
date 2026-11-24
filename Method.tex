@@ -15,7 +15,7 @@ The same process is used to generate an SDF point cloud for the CSG model output
 
 The query points in the target shape dataset can also be used as the query points for the CSG model output of CSG-CRN. The naive approach for encoding the target and reconstruction shapes separately results in two four-dimensional vectors. By using the same query points for both shapes, a single five-dimensional vector can represent both the input and initial reconstruction. The combined format is $[p_x, p_y, p_z, d_{target}, d_{recon}]$, where $p$ is the query point, $d_{target}$ is the signed distance to the target volume, and $d_{recon}$ is the signed distance to the initial reconstruction.
 
-Early versions of the CSG-CRN network used only the combined five-dimensional vector as the input shape representation. However, we found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction distances to compute the missing, filled, and excess volumes.
+Early versions of the CSG-CRN network used only the combined five-dimensional vector as the input shape representation. However, we found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction distances to compute the missing, filled, and excess volumes, visualized in figure~\ref{fig:input_preprocessing}.
 \begin{gather*}
 	d_{missing}=\max(d_{target}, -d_{recon}),\\
 	d_{filled}=\max(d_{target}, d_{recon}),\\
@@ -55,7 +55,7 @@ Later iterations of CSG-CRN concatenate the target and initial reconstruction sh
 \subsection{Decoder~Network}
 \label{subsec:decoder_network_method}
 
-The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command. The six parameters are primitive shape, scale, translation, quaternion rotation, blending factor, and roundness.
+The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command. The six parameters are primitive shape, scale, translation, quaternion rotation, blending factor, and roundness. Figure~\ref{fig:network_architecture} depicts the network architecture.
 
 Similar to prior primitive fitting architectures~\cite{Tulsiani2017,Paschalidou2019}, the regressor network is duplicated for each output primitive. Producing multiple primitive shapes before computing the loss prevents the model from fitting greedily. Optimizing on too few primitives results in a broad output shape that tries to represent the entire target volume. Although further cascades can subtract from the broad initial reconstruction to refine it, this approach requires more output primitives and produces a worse final result.
 
@@ -82,7 +82,7 @@ Several reconstruction loss functions were explored for CSG-CRN. The results of 
 \end{gather*}
 where $\epsilon$ is the difference in distance from a query sample point to both the target and reconstruction shapes.
 
-The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier loss for large errors, training the model to prioritize accuracy across the entirety of the target shape over detailed surface accuracy. With the cascaded refinement architecture, the MSE loss led to greedy fitting in the first cascade that harmed the performance of later cascades. Both the LOG and SIG losses apply a heavier loss for small errors. The LOG loss gradually plateaus where the SIG loss settles into a linear trajectory. By penalizing small errors more than large errors, the model is trained to prioritize surface accuracy and may leave portions of the target shape for later cascades to reconstruct.
+The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier loss for large errors, training the model to prioritize accuracy across the entirety of the target shape over detailed surface accuracy. With the cascaded refinement architecture, the MSE loss led to greedy fitting in the first cascade that harmed the performance of later cascades. Both the LOG and SIG losses apply a heavier loss for small errors. The LOG loss gradually plateaus where the SIG loss settles into a linear trajectory. By penalizing small errors more than large errors, the model is trained to prioritize surface accuracy and may leave portions of the target shape for later cascades to reconstruct. A comparison of these loss functions is depicted in figure~\ref{fig:loss_functions}.
 
 \begin{figure}[!htb]
 	\centering
@@ -106,7 +106,7 @@ This paper explores two training modes for cascaded refinement. Both use the sam
 \subsection{Separate~Parameter~Training}
 \label{subsec:separate_parameters}
 
-One approach is to optimize the network weights for each cascade separately. A copy of the CSG-CRN network is appended to the model for each new cascade. The cascades are disjointed since the network layers of one cascade are not connected to the next. We are in essence training the same network multiple times with different input datasets. The first cascade is fully trained on the input dataset. Once complete, the network weights are cloned to form the second cascade which is then trained on the outputs of the first cascade. This process is repeated until the desired number of cascades have been trained.
+One approach is to optimize the network weights for each cascade separately. A copy of the CSG-CRN network is appended to the model for each new cascade. The cascades are disjointed since the network layers of one cascade are not connected to the next. We are in essence training the same network multiple times with different input datasets. The first cascade is fully trained on the input dataset. Once complete, the network weights are cloned to form the second cascade which is then trained on the outputs of the first cascade. This process is repeated until the desired number of cascades have been trained. This training method is depicted in figure~\ref{fig:separate_training}.
 
 This training approach has many downsides. The model size and training time increase linearly with the number of cascades. Network weights are carried over between cascades, but the learning rate is reset and progress is lost. The only advantages are the injection of reconstruction information between cascades and the ability to train the model in sections.
 
@@ -124,7 +124,7 @@ The alternative approach is to use the same network parameters for all cascades.
 
 Training begins with only one cascade. We want the model to learn an approximate reconstruction of the input first to avoid training on random noise. A scheduler adds another cascade every 10 epochs until the configured number of cascades is reached.
 
-We train for multiple cascades by accumulating the gradient. The forward pass for each cascade is run first before optimizing. The computational graph is detached between each cascade to separate the gradients. Then the backward step is run to optimize on all gradients simultaneously.
+We train for multiple cascades by accumulating the gradient. The forward pass for each cascade is run first before optimizing. The computational graph is detached between each cascade to separate the gradients. Then the backward step is run to optimize on all gradients simultaneously. This training method is depicted in figure~\ref{fig:shared_training}.
 
 
 \begin{figure}[!htb]
