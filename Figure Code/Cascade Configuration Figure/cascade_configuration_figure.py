@@ -53,7 +53,7 @@ BAR_GAP = 0.02
 BAND_HALF_WIDTH = 0.5
 HATCH_LINE_WIDTH = 0.8
 AXIS_LINE_WIDTH = 0.6
-EMD_AXIS_OFFSET = 34
+OUTER_AXIS_GAP = 8
 GROUP_LABEL_OFFSET = -16
 TICK_FONT_SIZE = 7
 AXIS_FONT_SIZE = 8
@@ -81,6 +81,14 @@ def style_axis(ax, side, color, label, limit, step):
     ax.tick_params(axis="y", colors=color, labelsize=TICK_FONT_SIZE, width=AXIS_LINE_WIDTH)
 
 
+def place_outer_axis(fig, inner_ax, outer_ax):
+    renderer = fig.canvas.get_renderer()
+    label_left = inner_ax.yaxis.label.get_window_extent(renderer).x0
+    axes_left = inner_ax.get_window_extent(renderer).x0
+    offset = (axes_left - label_left) * 72 / fig.dpi + OUTER_AXIS_GAP
+    outer_ax.spines["left"].set_position(("outward", offset))
+
+
 def draw_group_labels(ax, positions):
     transform = blended_transform_factory(ax.transData, ax.transAxes)
     groups = []
@@ -101,41 +109,43 @@ def main():
     emd_values = [result[4] for result in RESULTS]
     iou_values = [result[5] for result in RESULTS]
 
-    fig, cd_ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT), dpi=DPI, layout="constrained")
-    emd_ax = cd_ax.twinx()
-    iou_ax = cd_ax.twinx()
+    fig, emd_ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT), dpi=DPI, layout="constrained")
+    cd_ax = emd_ax.twinx()
+    iou_ax = emd_ax.twinx()
     fig.set_facecolor(BACKGROUND_COLOR)
-    cd_ax.set_facecolor(BACKGROUND_COLOR)
+    emd_ax.set_facecolor(BACKGROUND_COLOR)
 
-    for ax in (cd_ax, emd_ax, iou_ax):
+    for ax in (emd_ax, cd_ax, iou_ax):
         for side in ("left", "right", "top"):
             ax.spines[side].set_visible(False)
 
-    emd_ax.spines["left"].set_position(("outward", EMD_AXIS_OFFSET))
-    emd_ax.yaxis.set_label_position("left")
-    emd_ax.yaxis.set_ticks_position("left")
+    cd_ax.yaxis.set_label_position("left")
+    cd_ax.yaxis.set_ticks_position("left")
 
     cd_bars = cd_ax.bar(positions - BAR_WIDTH, cd_values, BAR_WIDTH - BAR_GAP, color=CD_COLOR, hatch=CD_HATCH, linewidth=0, label="CD")
     emd_bars = emd_ax.bar(positions, emd_values, BAR_WIDTH - BAR_GAP, color=EMD_COLOR, hatch=EMD_HATCH, edgecolor=EMD_HATCH_COLOR, linewidth=0, label="EMD")
     iou_bars = iou_ax.bar(positions + BAR_WIDTH, iou_values, BAR_WIDTH - BAR_GAP, color=IOU_COLOR, hatch=IOU_HATCH, edgecolor=IOU_HATCH_COLOR, linewidth=0, label="IoU")
 
     best_index = np.argmax(iou_values)
-    cd_ax.axvspan(positions[best_index] - BAND_HALF_WIDTH, positions[best_index] + BAND_HALF_WIDTH, color=BAND_COLOR, linewidth=0, zorder=0)
+    emd_ax.axvspan(positions[best_index] - BAND_HALF_WIDTH, positions[best_index] + BAND_HALF_WIDTH, color=BAND_COLOR, linewidth=0, zorder=0)
 
     style_axis(cd_ax, "left", CD_COLOR, "CD", CD_LIMIT, CD_STEP)
     style_axis(emd_ax, "left", EMD_COLOR, "EMD", EMD_LIMIT, EMD_STEP)
     style_axis(iou_ax, "right", IOU_COLOR, "IoU", IOU_LIMIT, IOU_STEP)
 
-    cd_ax.set_xlim(positions[0] - 0.6, positions[-1] + 0.6)
-    cd_ax.set_xticks(positions)
-    cd_ax.set_xticklabels(["{} × {}".format(prims, cascades) for _, prims, cascades, *_ in RESULTS])
-    cd_ax.get_xticklabels()[best_index].set_fontweight("bold")
-    cd_ax.tick_params(axis="x", colors=INK_COLOR, labelsize=TICK_FONT_SIZE, width=AXIS_LINE_WIDTH)
-    cd_ax.spines["bottom"].set_color(INK_COLOR)
-    cd_ax.spines["bottom"].set_linewidth(AXIS_LINE_WIDTH)
-    draw_group_labels(cd_ax, positions)
+    emd_ax.set_xlim(positions[0] - 0.6, positions[-1] + 0.6)
+    emd_ax.set_xticks(positions)
+    emd_ax.set_xticklabels(["{} × {}".format(prims, cascades) for _, prims, cascades, *_ in RESULTS])
+    emd_ax.get_xticklabels()[best_index].set_fontweight("bold")
+    emd_ax.tick_params(axis="x", colors=INK_COLOR, labelsize=TICK_FONT_SIZE, width=AXIS_LINE_WIDTH)
+    emd_ax.spines["bottom"].set_color(INK_COLOR)
+    emd_ax.spines["bottom"].set_linewidth(AXIS_LINE_WIDTH)
+    draw_group_labels(emd_ax, positions)
 
     fig.legend(handles=[cd_bars, emd_bars, iou_bars], loc="outside upper center", ncol=3, frameon=False, fontsize=LEGEND_FONT_SIZE, labelcolor=INK_COLOR, handlelength=2.2, handleheight=1.1, columnspacing=1.6)
+
+    fig.canvas.draw()
+    place_outer_axis(fig, emd_ax, cd_ax)
 
     out_path = os.path.join(_THIS_DIR, OUTPUT_NAME)
     fig.canvas.draw()

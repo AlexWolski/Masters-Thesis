@@ -52,7 +52,7 @@ BAR_GAP = 0.02
 BAND_PADDING = 0.05
 HATCH_LINE_WIDTH = 0.8
 AXIS_LINE_WIDTH = 0.6
-EMD_AXIS_OFFSET = 34
+OUTER_AXIS_GAP = 8
 TICK_FONT_SIZE = 7
 AXIS_FONT_SIZE = 8
 LEGEND_FONT_SIZE = 8
@@ -68,6 +68,14 @@ def style_axis(ax, side, color, label, limit, step):
     ax.tick_params(axis="y", colors=color, labelsize=TICK_FONT_SIZE, width=AXIS_LINE_WIDTH)
 
 
+def place_outer_axis(fig, inner_ax, outer_ax):
+    renderer = fig.canvas.get_renderer()
+    label_left = inner_ax.yaxis.label.get_window_extent(renderer).x0
+    axes_left = inner_ax.get_window_extent(renderer).x0
+    offset = (axes_left - label_left) * 72 / fig.dpi + OUTER_AXIS_GAP
+    outer_ax.spines["left"].set_position(("outward", offset))
+
+
 def highlight_span(ax, left, right):
     ax.axvspan(left, right, color=BAND_COLOR, linewidth=0, zorder=0)
 
@@ -78,19 +86,18 @@ def plot_comparison(results, output_name, cd_range, emd_range, iou_range):
     emd_values = [result[2] for result in results]
     iou_values = [result[3] for result in results]
 
-    fig, cd_ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT), dpi=DPI, layout="constrained")
-    emd_ax = cd_ax.twinx()
-    iou_ax = cd_ax.twinx()
+    fig, emd_ax = plt.subplots(figsize=(FIG_WIDTH, FIG_HEIGHT), dpi=DPI, layout="constrained")
+    cd_ax = emd_ax.twinx()
+    iou_ax = emd_ax.twinx()
     fig.set_facecolor(BACKGROUND_COLOR)
-    cd_ax.set_facecolor(BACKGROUND_COLOR)
+    emd_ax.set_facecolor(BACKGROUND_COLOR)
 
-    for ax in (cd_ax, emd_ax, iou_ax):
+    for ax in (emd_ax, cd_ax, iou_ax):
         for side in ("left", "right", "top"):
             ax.spines[side].set_visible(False)
 
-    emd_ax.spines["left"].set_position(("outward", EMD_AXIS_OFFSET))
-    emd_ax.yaxis.set_label_position("left")
-    emd_ax.yaxis.set_ticks_position("left")
+    cd_ax.yaxis.set_label_position("left")
+    cd_ax.yaxis.set_ticks_position("left")
 
     cd_bars = cd_ax.bar(positions - BAR_WIDTH, cd_values, BAR_WIDTH - BAR_GAP, color=CD_COLOR, hatch=CD_HATCH, linewidth=0, label="CD")
     emd_bars = emd_ax.bar(positions, emd_values, BAR_WIDTH - BAR_GAP, color=EMD_COLOR, hatch=EMD_HATCH, edgecolor=EMD_HATCH_COLOR, linewidth=0, label="EMD")
@@ -100,23 +107,26 @@ def plot_comparison(results, output_name, cd_range, emd_range, iou_range):
     style_axis(emd_ax, "left", EMD_COLOR, "EMD", *emd_range)
     style_axis(iou_ax, "right", IOU_COLOR, "IoU", *iou_range)
 
-    cd_ax.set_xlim(positions[0] - 0.6, positions[-1] + 0.6)
-    cd_ax.set_xticks(positions)
-    cd_ax.set_xticklabels([result[0] for result in results])
-    cd_ax.tick_params(axis="x", colors=INK_COLOR, labelsize=TICK_FONT_SIZE, width=AXIS_LINE_WIDTH)
-    cd_ax.spines["bottom"].set_color(INK_COLOR)
-    cd_ax.spines["bottom"].set_linewidth(AXIS_LINE_WIDTH)
+    emd_ax.set_xlim(positions[0] - 0.6, positions[-1] + 0.6)
+    emd_ax.set_xticks(positions)
+    emd_ax.set_xticklabels([result[0] for result in results])
+    emd_ax.tick_params(axis="x", colors=INK_COLOR, labelsize=TICK_FONT_SIZE, width=AXIS_LINE_WIDTH)
+    emd_ax.spines["bottom"].set_color(INK_COLOR)
+    emd_ax.spines["bottom"].set_linewidth(AXIS_LINE_WIDTH)
 
     best_cd = np.argmin(cd_values)
     best_emd = np.argmin(emd_values)
     best_iou = np.argmax(iou_values)
-    highlight_span(cd_ax, positions[best_cd] - 1.5 * BAR_WIDTH - BAND_PADDING, positions[best_cd] - 0.5 * BAR_WIDTH)
-    highlight_span(cd_ax, positions[best_emd] - 0.5 * BAR_WIDTH, positions[best_emd] + 0.5 * BAR_WIDTH)
-    highlight_span(cd_ax, positions[best_iou] + 0.5 * BAR_WIDTH, positions[best_iou] + 1.5 * BAR_WIDTH + BAND_PADDING)
+    highlight_span(emd_ax, positions[best_cd] - 1.5 * BAR_WIDTH - BAND_PADDING, positions[best_cd] - 0.5 * BAR_WIDTH)
+    highlight_span(emd_ax, positions[best_emd] - 0.5 * BAR_WIDTH, positions[best_emd] + 0.5 * BAR_WIDTH)
+    highlight_span(emd_ax, positions[best_iou] + 0.5 * BAR_WIDTH, positions[best_iou] + 1.5 * BAR_WIDTH + BAND_PADDING)
     for best in {best_cd, best_emd, best_iou}:
-        cd_ax.get_xticklabels()[best].set_fontweight("bold")
+        emd_ax.get_xticklabels()[best].set_fontweight("bold")
 
     fig.legend(handles=[cd_bars, emd_bars, iou_bars], loc="outside upper center", ncol=3, frameon=False, fontsize=LEGEND_FONT_SIZE, labelcolor=INK_COLOR, handlelength=2.2, handleheight=1.1, columnspacing=1.6)
+
+    fig.canvas.draw()
+    place_outer_axis(fig, emd_ax, cd_ax)
 
     out_path = os.path.join(_THIS_DIR, output_name)
     fig.canvas.draw()
