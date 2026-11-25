@@ -12,7 +12,7 @@ All datasets and trained model weights used in this section are available at:
 
 The CSG-CRN architecture implements a unique combination of SDF volumes, constructive solid geometry, and cascaded refinement. A fine-tuned loss function is required to compensate for the complications presented by the architecture and stabilize training. Auxiliary loss metrics are used to help control the results, but the reconstruction loss metric ultimately determines the quality of the model.
 
-We experiment with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters, 9 primitives (3 per cascade x 3 cascades), and 2048 input and loss samples. The model was trained on the Airplane category of the ShapeNet dataset with 3237 training, 404 validation, and 404 testing samples. All training was performed on an RTX 3080 graphics card. The scheduler was configured to lower the learning rate after 20 epochs without improvement and stop training a cascade after 40 epochs without improvement. All testing was performed with 10000 samples and a Marching Cubes resolution of 512.
+We experiment with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters, 9 primitives (3~per cascade~$\times$~3~cascades), and 2048 input and loss samples. The model was trained on the Airplane category of the ShapeNet dataset with 3237 training, 404 validation, and 404 testing samples. All training was performed on an RTX 3080 graphics card. The scheduler was configured to lower the learning rate after 20 epochs without improvement and stop training a cascade after 40 epochs without improvement. All testing was performed with~10,000 samples and a Marching Cubes resolution of 512.
 
 The results in table~\ref{tab:loss_function_comparison} show the sigmoid loss performed best in the CD and EMD testing metrics while LOG loss performed best in IoU. Although the sigmoid model wins in two metrics, a visual inspection depicted in figure~\ref{fig:loss_function_renders} reveals that the reconstruction is missing tail fins, the nose, and has warped wings. In contrast, the LOG loss airplane output is smoother and has more complete wings. All subsequent experiments are conducted with LOG loss and an emphasis on the IoU metric.
 
@@ -87,7 +87,7 @@ The results in table~\ref{tab:loss_function_comparison} show the sigmoid loss pe
 \section{Surface-Uniform~Ratio}
 \label{sec:surface_uniform_ratio_experiment}
 
-We experiment with different ratios of near-surface samples to uniformly distributed samples used for the model input and loss computation. Models were trained on Surface-Uniform ratios ranging from 0.0 (only near surface) to 1.0 (only uniform). We test the two loss functions with the best visual accuracy from the previous experiment: L1 and LOG. A new model was trained for each combination of loss function and Surface-Uniform ratio value. Each configuration was trained three times on separate seeds to get an average result, totaling 66 trained models. The same configuration as the \nameref{sec:reconstruction_loss_comparison} experiment was used, except for the input samples being reduced to 1024.
+We experiment with different ratios of near-surface samples to uniformly distributed samples used for the model input and loss computation. Models were trained on Surface-Uniform ratios ranging from 0.0 (only near surface) to 1.0 (only uniform). We test the two loss functions with the best visual accuracy from the previous experiment: L1 and LOG. A new model was trained for each combination of loss function and Surface-Uniform ratio value. Each configuration was trained three times on separate seeds to get an average result, totaling~66 trained models. The same configuration as the \nameref{sec:reconstruction_loss_comparison} experiment was used, except for the input samples being reduced to 1024.
 
 The trend lines in figure~\ref{fig:surface_uniform_ratio} for the CD and EMD metrics are inconclusive due to high variance. But the IoU metric shows a statistically significant result with $p < 0.001$ for both loss functions. The results indicate that a Surface-Uniform ratio of 0.0 produces marginally better results, so we used this configuration for all subsequent experiments.
 
@@ -118,7 +118,7 @@ The trend lines in figure~\ref{fig:surface_uniform_ratio} for the CD and EMD met
 
 The encoder network size is correlated with performance and training time. A benchmark test is conducted to determine the configuration that produces the best reconstructions. The number of SDF point sample inputs is increased together with the number of sample points used for loss computation. The same model configuration was used as the \nameref{sec:reconstruction_loss_comparison} experiment except we use the LOG metric for all runs. We double the model size for each test starting with 128 and ending at 16384. Each training run was limited to 3.5 GiB of GPU memory with the batch size maximized for the available memory. Holding GPU memory constant for all runs allows for comparing training times and measuring the performance degradation from oversize models.
 
-The accuracy metric and training time results are shown in table~\ref{tab:input_size_comparison}. Predictably, the training time trends upward as we increase the encoder size. The variance in training time is caused by the early-stop mechanism ending some runs short. The 512 input size model was only 54\% slower than the 128 input size run despite having a 4x larger encoder and training for the same number of epochs. This is because the decoder network comprises the majority of the model at these small input sizes. In contrast, the 16384 input size model is 76\% slower than the 8192 input size model.
+The accuracy metric and training time results are shown in table~\ref{tab:input_size_comparison}. Predictably, the training time trends upward as we increase the encoder size. The variance in training time is caused by the early-stop mechanism ending some runs short. The 512 input size model was only 54\% slower than the 128 input size run despite having a~4$\times$ larger encoder and training for the same number of epochs. This is because the decoder network comprises the majority of the model at these small input sizes. In contrast, the 16384 input size model is~76\% slower than the 8192 input size model.
 
 The 512 input size model has the best results in CD and EMD while the 8192 input size model had the best result in IoU. The 512 input size model has qualitatively worse reconstructions than the larger models, as seen in figure~\ref{fig:input_size_renders}. The 16384 input size model produces warped outputs and ranks only fourth best in IoU score despite being the largest. This is due to the low batch size.
 
@@ -204,9 +204,9 @@ The 512 input size model has the best results in CD and EMD while the 8192 input
 
 This section compares the different configurations of cascaded refinement for CSG-CRN against the standard end-to-end training. All experiments are normalized to use a maximum of 10 GiB of video RAM and output 16 primitives. One CSG-CRN model is trained to predict 16 primitives in one pass to serve as the baseline. Then an additional eight models are trained on various configurations of cascaded refinement. We choose output sizes of eight, four, two, and one primitives per pass with two, four, eight, and sixteen passes respectively. We train models with both separate and shared parameters for a total of 8 trained cascading models.
 
-The results in table~\ref{tab:prims_per_cascade_comparison} show that the shared parameter models overall outperform the separate parameters across the board. All shared models have a higher IoU than the corresponding separate model except for the 2 primitive $\times$ 8 passes configuration outlier. The 8 primitive $\times$ 2 pass shared parameter model ranks best in all metrics by a large margin, including the single-pass baseline. The 4 primitive $\times$ 4 passes shared model also outperforms the baseline, but none of the separate parameter models do. For both shared and separate parameter models, the performance trends downward as the number of cascades increases. The primary cause is an increase in greedy primitive fitting behavior where the initial cascade struggles to represent the entire target with a limited number of primitives. Then each subsequent cascade works off of a bad foundation. A visual comparison of each model is shown in figure~\ref{fig:prims_per_cascade_renders}.
+The results in table~\ref{tab:prims_per_cascade_comparison} show that the shared parameter models overall outperform the separate parameters across the board. All shared models have a higher IoU than the corresponding separate model except for the 2~primitive~$\times$~8~passes configuration outlier. The 8~primitive~$\times$~2~pass shared parameter model ranks best in all metrics by a large margin, including the single-pass baseline. The 4~primitive~$\times$~4~passes shared model also outperforms the baseline, but none of the separate parameter models do. For both shared and separate parameter models, the performance trends downward as the number of cascades increases. The primary cause is an increase in greedy primitive fitting behavior where the initial cascade struggles to represent the entire target with a limited number of primitives. Then each subsequent cascade works off of a bad foundation. A visual comparison of each model is shown in figure~\ref{fig:prims_per_cascade_renders}.
 
-An additional result of interest is the total network size. All separate parameter models are larger than the baseline single-pass model since the network weights are duplicated for each cascade. In contrast, all shared parameter models are smaller than the baseline since the same network weights are running inference multiple times. The 4 primitive $\times$ 4 pass shared model performed better than baseline at less than 30\% of the network size. Despite the smaller size, the shared model took 20\% longer to train since it trains on both the initial pass and the refinement pass.
+An additional result of interest is the total network size. All separate parameter models are larger than the baseline single-pass model since the network weights are duplicated for each cascade. In contrast, all shared parameter models are smaller than the baseline since the same network weights are running inference multiple times. The 4~primitive~$\times$~4~pass shared model performed better than baseline at less than 30\% of the network size. Despite the smaller size, the shared model took 20\% longer to train since it trains on both the initial pass and the refinement pass.
 
 
 \begin{figure}[!htb]
@@ -221,57 +221,57 @@ An additional result of interest is the total network size. All separate paramet
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Single Pass 16x1.png}
-		\caption{Single Pass 16x1}
+		\caption{Single Pass $16 \times 1$}
 	\end{subfigure}
 
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 8x2.png}
-		\caption{Separate 8x2}
+		\caption{Separate $8 \times 2$}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 4x4.png}
-		\caption{Separate 4x4}
+		\caption{Separate $4 \times 4$}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 2x8.png}
-		\caption{Separate 2x8}
+		\caption{Separate $2 \times 8$}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Separate 1x16.png}
-		\caption{Separate 1x16}
+		\caption{Separate $1 \times 16$}
 	\end{subfigure}
 
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 8x2.png}
-		\caption{Shared 8x2}
+		\caption{Shared $8 \times 2$}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 4x4.png}
-		\caption{Shared 4x4}
+		\caption{Shared $4 \times 4$}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 2x8.png}
-		\caption{Shared 2x8}
+		\caption{Shared $2 \times 8$}
 	\end{subfigure}
 	\hspace{0.01\textwidth}
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Shared 1x16.png}
-		\caption{Shared 1x16}
+		\caption{Shared $1 \times 16$}
 	\end{subfigure}
-	\caption{Comparison of output shapes across models trained on different cascaded refinement configurations. A single pass model (top right) serves as a baseline. The configuration format is $primitives\;per\;cascade \times number\;of\;cascades$.}
+	\caption{Comparison of output shapes across models trained on different cascaded refinement configurations. A single pass model (top right) serves as a baseline. The configuration format is $\text{primitives per cascade} \times \text{number of cascades}$.}
 	\label{fig:prims_per_cascade_renders}
 \end{figure}
 
@@ -285,19 +285,19 @@ An additional result of interest is the total network size. All separate paramet
 	\renewcommand{\bfdefault}{b}
 	\begin{tabular}{|l|r|r|r|r|r|r|r|r|r|r|}
 		\hline
-		\makecell{Training\\Mode} & \makecell{Prims x\\Cascades} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Params\\(M)} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
+		\makecell{Training\\Mode} & \makecell{Prims $\times$\\Cascades} & \makecell{Best\\Loss} & \makecell{Best\\CD} & \makecell{Best\\EMD} & \makecell{Best\\IoU} & \makecell{Batch\\Size} & \makecell{Params\\(M)} & \makecell{Train Time\\(min)} & \makecell{Best\\Epoch} & \makecell{Total\\Epochs} \\
 		\Xhline{1pt}
-		\makecell[l]{Single\\Pass} & 16x1 & 0.2714 & 73.68          & 574.8          & 0.5315          & 122 & 69.9  & 35.1  & 110  & 150  \\
+		\makecell[l]{Single\\Pass} & $16 \times 1$ & 0.2714 & 73.68          & 574.8          & 0.5315          & 122 & 69.9  & 35.1  & 110  & 150  \\
 		\hline
-		\multirow{4}{*}{Separate} & 8x2  & 0.2844 & 43.36          & 641.6          & 0.5103          & 170 & 72.7  & 39.1  & 245  & 256  \\
-		                          & 4x4  & 0.2791 & 62.80          & 632.9          & 0.5282          & 207 & 78.4  & 39.1  & 327  & 332  \\
-		                          & 2x8  & 0.2902 & 109.83         & 880.3          & 0.5055          & 230 & 89.6  & 66.6  & 541  & 581  \\
-		                          & 1x16 & 0.3252 & 140.88         & 875.6          & 0.4277          & 234 & 112.1 & 122.6 & 1115 & 1147 \\
+		\multirow{4}{*}{Separate} & $8 \times 2$  & 0.2844 & 43.36          & 641.6          & 0.5103          & 170 & 72.7  & 39.1  & 245  & 256  \\
+		                          & $4 \times 4$  & 0.2791 & 62.80          & 632.9          & 0.5282          & 207 & 78.4  & 39.1  & 327  & 332  \\
+		                          & $2 \times 8$  & 0.2902 & 109.83         & 880.3          & 0.5055          & 230 & 89.6  & 66.6  & 541  & 581  \\
+		                          & $1 \times 16$ & 0.3252 & 140.88         & 875.6          & 0.4277          & 234 & 112.1 & 122.6 & 1115 & 1147 \\
 		\hline
-		\multirow{4}{*}{Shared}   & 8x2  & 0.2301 & \textbf{14.36} & \textbf{489.3} & \textbf{0.6054} & 181 & 36.3  & 43.5  & 147  & 187  \\
-		                          & 4x4  & 0.2627 & 34.91          & 522.1          & 0.5586          & 375 & 19.6  & 42.3  & 133  & 173  \\
-		                          & 2x8  & 0.3344 & 184.61         & 1225.9         & 0.3963          & 404 & 11.2  & 64.1  & 144  & 160  \\
-		                          & 1x16 & 0.3407 & 222.42         & 924.2          & 0.4334          & 404 & 7.0   & 183.5 & 254  & 269  \\
+		\multirow{4}{*}{Shared}   & $8 \times 2$  & 0.2301 & \textbf{14.36} & \textbf{489.3} & \textbf{0.6054} & 181 & 36.3  & 43.5  & 147  & 187  \\
+		                          & $4 \times 4$  & 0.2627 & 34.91          & 522.1          & 0.5586          & 375 & 19.6  & 42.3  & 133  & 173  \\
+		                          & $2 \times 8$  & 0.3344 & 184.61         & 1225.9         & 0.3963          & 404 & 11.2  & 64.1  & 144  & 160  \\
+		                          & $1 \times 16$ & 0.3407 & 222.42         & 924.2          & 0.4334          & 404 & 7.0   & 183.5 & 254  & 269  \\
 		\hline
 	\end{tabular}
 	\caption{Performance, network size, and training time comparison of eight cascaded refinement configurations. Lower is better for CD and EMD. Higher is better for IoU.}
@@ -460,7 +460,7 @@ The results are shown in table~\ref{tab:unseen_class_comparison} and a visual co
 \section{Partial~Reconstruction~Refinement}
 \label{sec:partial_recon_experiment}
 
-A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. 10 mesh samples were randomly selected from each of the Airplane, Bench, Car, Chair, and Sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a 50 sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes.
+A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. 10 mesh samples were randomly selected from each of the Airplane, Bench, Car, Chair, and Sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a~50-sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes.
 
 The accuracy metrics in table~\ref{tab:partial_recon_comparison} and the visual comparison in~\ref{fig:partial_recon_renders} show that both the single-category models and the whole-dataset model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the missing region and not over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the whole-dataset model. However, the accuracy metrics show that the whole-dataset model performs better on average.
 
@@ -604,7 +604,7 @@ The models are tested on a dataset of seen shape categories (ShapeNet) and unsee
 
 Special care is required when reproducing results for SuperDec. The model was trained with a different canonical frame that was rotated about the vertical axis by 90$^\circ$ compared to the ShapeNet dataset. We found the results for SuperDec improved when corrected for rotation, and we present the improved results in this section.
 
-The CD metrics presented in this section are not comparable to the earlier experiments. All other testing on CSG-CRN used the ChamferDistance library~\cite{Jatavallabhula2024, Ravi2020} with 10,000 samples, Marching Cubes resolution of 512, unit sphere bounds, sum reduction and no scaling. To align with the testing methods of the previous work, the CD metrics are computed with 4,096 samples, Marching Cubes resolution of 128, box bounds, mean reduction and a final scaling of 1,000.
+The CD metrics presented in this section are not comparable to the earlier experiments. All other testing on CSG-CRN used the ChamferDistance library~\cite{Jatavallabhula2024, Ravi2020} with 10,000 samples, Marching Cubes resolution of 512, unit sphere bounds, sum reduction and no scaling. To align with the testing methods of the previous work, the CD metrics are computed with~4,096 samples, Marching Cubes resolution of 128, box bounds, mean reduction and a final scaling of 1,000.
 
 For the 13 seen ShapeNet categories, the results in table~\ref{tab:prior_work_seen_comparison} show that CSG-CRN has the highest average accuracy metrics by a healthy margin. CSG-CRN ranked best on all three accuracy metrics for 11 out of the 13 shape categories. For the Lamp and Table categories, SuperDec ranked first in CD while CSG-CRN ranked first in EMD and IoU. The visual comparison in figure~\ref{fig:prior_work_seen_renders} shows CSG-CRN outputs smoother and more details reconstructions than competitors, especially evident in the boat category.
 
