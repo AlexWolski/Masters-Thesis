@@ -460,7 +460,7 @@ The results are shown in table~\ref{tab:unseen_class_comparison} and a visual co
 
 A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. Ten mesh samples were randomly selected from each of the airplane, bench, car, chair, and sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a~50-sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes. Results are presented with and without the pruning postprocessing applied.
 
-The accuracy metrics in table~\ref{tab:partial_recon_comparison} and the visual comparison in figure~\ref{fig:partial_recon_renders} show that both the single-category models and the all-category model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the missing region and not over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the all-category model. However, the accuracy metrics show that the all-category model performs better on average.
+The accuracy metrics in table~\ref{tab:partial_recon_comparison} and the visual comparison in figure~\ref{fig:partial_recon_renders} show that both the single-category models and the all-category model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the missing region and not over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the all-category model. However, the accuracy metrics show that the all-category model performs better on average. Pruning had a positive effect on all accuracy metrics across the board.
 
 This experiment demonstrates that the cascades are not structured. If each cascade were designated a specific portion of a shape template to predict, the model would fail to consistently restore randomized parts of the target shape. The ability to do so indicates that the encoder can compare the target input against the initial reconstruction input to determine what volume is missing.
 
@@ -563,29 +563,29 @@ This experiment demonstrates that the cascades are not structured. If each casca
 	\setcellgapes{4pt}
 	\makegapedcells
 	\renewcommand{\bfdefault}{b}
-	\begin{tabular}{|l|l|r|r|r|r|r|r|}
+	\begin{tabular}{|l|l!{\vrule width 1pt}r|r!{\vrule width 1pt}r|r!{\vrule width 1pt}r|r!{\vrule width 1pt}}
 		\hline
-		\multicolumn{1}{|c|}{\multirowcell{2}{Shape Category}} & \multicolumn{1}{c|}{\multirowcell{2}{Training Set}} & \multicolumn{3}{c|}{Unpruned} & \multicolumn{3}{c|}{Pruned} \\
+		\multicolumn{1}{|c|}{\multirowcell{2}{Shape Category}} & \multicolumn{1}{c!{\vrule width 1pt}}{\multirowcell{2}{Training Set}} & \multicolumn{2}{c!{\vrule width 1pt}}{CD} & \multicolumn{2}{c!{\vrule width 1pt}}{EMD} & \multicolumn{2}{c!{\vrule width 1pt}}{IoU} \\
 		\cline{3-8}
-		 & & \makecell{CD} & \makecell{EMD} & \makecell{IoU} & \makecell{CD} & \makecell{EMD} & \makecell{IoU} \\
+		 & & \makecell{Unpruned} & \makecell{Pruned} & \makecell{Unpruned} & \makecell{Pruned} & \makecell{Unpruned} & \makecell{Pruned} \\
 		\Xhline{1pt}
-		\multirow{2}{*}{Airplane} & \smash[b]{Single Category} & 24.75          & 567.2          & 0.7497         & 11.20          & \textbf{285.7} & \textbf{0.9146} \\
-		                          & Whole Dataset              & \textbf{14.06} & \textbf{414.5} & \textbf{0.8189} & \textbf{7.17}  & 286.3          & 0.9101         \\
+		\multirow{2}{*}{Airplane} & \smash[b]{Single Category} & 24.75          & 11.20          & 567.2          & \textbf{285.7} & 0.7497          & \textbf{0.9146} \\
+		                          & Whole Dataset              & \textbf{14.06} & \textbf{7.17}  & \textbf{414.5} & 286.3          & \textbf{0.8189} & 0.9101          \\
 		\hline
-		\multirow{2}{*}{Bench}    & \smash[b]{Single Category} & 19.72          & \textbf{484.7} & \textbf{0.7007} & 17.26          & \textbf{315.7} & 0.7553         \\
-		                          & Whole Dataset              & \textbf{12.07} & 500.2          & 0.6661         & \textbf{6.40}  & 333.8          & \textbf{0.8256} \\
+		\multirow{2}{*}{Bench}    & \smash[b]{Single Category} & 19.72          & 17.26          & \textbf{484.7} & \textbf{315.7} & \textbf{0.7007} & 0.7553          \\
+		                          & Whole Dataset              & \textbf{12.07} & \textbf{6.40}  & 500.2          & 333.8          & 0.6661          & \textbf{0.8256} \\
 		\hline
-		\multirow{2}{*}{Car}      & \smash[b]{Single Category} & 31.49          & 532.1          & 0.7666         & 25.91          & 442.0          & 0.8420         \\
-		                          & Whole Dataset              & \textbf{16.79} & \textbf{491.2} & \textbf{0.7958} & \textbf{12.55} & \textbf{367.3} & \textbf{0.8690} \\
+		\multirow{2}{*}{Car}      & \smash[b]{Single Category} & 31.49          & 25.91          & 532.1          & 442.0          & 0.7666          & 0.8420          \\
+		                          & Whole Dataset              & \textbf{16.79} & \textbf{12.55} & \textbf{491.2} & \textbf{367.3} & \textbf{0.7958} & \textbf{0.8690} \\
 		\hline
-		\multirow{2}{*}{Chair}    & \smash[b]{Single Category} & \textbf{45.30} & \textbf{307.5} & \textbf{0.8599} & 46.71          & \textbf{293.2} & \textbf{0.8751} \\
-		                          & Whole Dataset              & 53.60          & 705.5          & 0.7109         & \textbf{12.56} & 379.1          & 0.8580         \\
+		\multirow{2}{*}{Chair}    & \smash[b]{Single Category} & \textbf{45.30} & 46.71          & \textbf{307.5} & \textbf{293.2} & \textbf{0.8599} & \textbf{0.8751} \\
+		                          & Whole Dataset              & 53.60          & \textbf{12.56} & 705.5          & 379.1          & 0.7109          & 0.8580          \\
 		\hline
-		\multirow{2}{*}{Sofa}     & \smash[b]{Single Category} & 49.20          & 833.2          & 0.7265         & 38.54          & 695.3          & 0.7870         \\
-		                          & Whole Dataset              & \textbf{20.81} & \textbf{572.7} & \textbf{0.7809} & \textbf{12.07} & \textbf{412.4} & \textbf{0.8629} \\
+		\multirow{2}{*}{Sofa}     & \smash[b]{Single Category} & 49.20          & 38.54          & 833.2          & 695.3          & 0.7265          & 0.7870          \\
+		                          & Whole Dataset              & \textbf{20.81} & \textbf{12.07} & \textbf{572.7} & \textbf{412.4} & \textbf{0.7809} & \textbf{0.8629} \\
 		\hline
-		\multirow{2}{*}{All}      & \smash[b]{Single Category} & 34.09          & 545.0          & \textbf{0.7607} & 27.92          & 406.4          & 0.8348         \\
-		                          & Whole Dataset              & \textbf{23.47} & \textbf{536.8} & 0.7545         & \textbf{10.15} & \textbf{355.8} & \textbf{0.8651} \\
+		\multirow{2}{*}{All}      & \smash[b]{Single Category} & 34.09          & 27.92          & 545.0          & 406.4          & \textbf{0.7607} & 0.8348          \\
+		                          & Whole Dataset              & \textbf{23.47} & \textbf{10.15} & \textbf{536.8} & \textbf{355.8} & 0.7545          & \textbf{0.8651} \\
 		\hline
 	\end{tabular}
 	\caption{Partial shape refinement metrics for single-category and all-category trained models both with and without pruning.}
