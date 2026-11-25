@@ -187,6 +187,10 @@ def to_preamble():
     return r"""
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
+\usepackage{amsmath}
+\DeclareMathOperator{\missing}{missing}
+\DeclareMathOperator{\filled}{filled}
+\DeclareMathOperator{\excess}{excess}
 """
 
 
@@ -195,9 +199,9 @@ def main():
     query = project(QUERY_POINT[None], eye)[0]
 
     bottom_panels = [
-        ("missing.png", missing_sdf, BLUE, "Missing", "d_{missing}"),
-        ("filled.png", filled_sdf, GREEN, "Filled", "d_{filled}"),
-        ("excess.png", excess_sdf, RED, "Excess", "d_{excess}"),
+        ("missing.png", missing_sdf, BLUE, "Missing", r"d_{\missing}"),
+        ("filled.png", filled_sdf, GREEN, "Filled", r"d_{\filled}"),
+        ("excess.png", excess_sdf, RED, "Excess", r"d_{\excess}"),
     ]
     images = [render(volume_mesh(sdf), colour, eye) for _, sdf, colour, _, _ in bottom_panels]
     contents = [content_box(image) for image in images]
