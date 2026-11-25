@@ -86,9 +86,9 @@ The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier lo
 	\label{fig:loss_functions}
 \end{figure}
 
-In addition to a reconstruction loss, we apply the auxiliary loss from CSG-Stump~\cite{Ren2021} to draw primitives to the reconstruction surface. We define this primitive loss as
-\[\Loss_{\primitive} = \frac{1}{K} \sum_{k}^{K} \min ( \SDF_k^2(x_n) ).\]
-The combined loss function is defined as
+In addition to a reconstruction loss, we apply the auxiliary loss from CSG-Stump~\cite{Ren2021} to draw primitives to the target surface. We define this primitive loss as
+\[\Loss_{\primitive} = \frac{1}{K} \sum_{k=1}^{K} \min_{p \in X} ( \SDF_k^2(p) ),\]
+where $K$ is the number of primitives and $X$ is a point cloud. The combined loss function is defined as
 \[\Loss_{\total} = \Loss_{\reconstruction} + \Loss_{\primitive}.\]
 
 

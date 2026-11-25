@@ -75,7 +75,7 @@ The reconstructions and accuracy metrics are presented in figure~\ref{fig:photog
 
 The reconstruction results for the unseen shape categories rabbit and bear were significantly worse than for the seen shape category car. The accuracy for these shapes can be increased using Test Time Optimization (TTO)~\cite{Sun2020}. Before producing a reconstruction, the pre-trained model is further trained on the target shape. We create a dataset of one shape and optimize for~300 iterations before producing the reconstruction.
 
-The improved results are presented in figure~\ref{fig:photogrammetry_test_time_optimization}. The reconstructions are much cleaner for the rabbit and bear shapes which now have correct heads and ears. The car model did not improve much since the reconstruction without TTO was already highly accurate. The tradeoff for using this technique is the time to reconstruct a shape grows from several milliseconds to several minutes.
+The improved results are presented in figure~\ref{fig:photogrammetry_test_time_optimization}. The reconstructions are much cleaner for the rabbit and bear shapes which now have correct heads and ears. The car model did not improve much since the reconstruction without TTO was already highly accurate. The tradeoff for using this technique is the time to reconstruct a shape grows from approximately~100~milliseconds to several minutes.
 
 \begin{figure}[!htb]
 	\centering
