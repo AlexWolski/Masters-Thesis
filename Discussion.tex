@@ -3,12 +3,12 @@
 \chapter{Discussion}
 \label{chap:discussion}
 
-This section summarizes the main insights gained from the \nameref{chap:experiments_and_results}.
+This section summarizes the main insights gained from the \nameref{chap:experiments_and_results} chapter. Our results from the \nameref{sec:prims_per_cascade_experiment} experiment are summarized in figure~\ref{fig:prims_per_cascade_comparison}. This result proves our hypothesis that cascaded refinement networks are an effective strategy for structured 3D reconstruction tasks. The same network architecture performs significantly better in a cascaded refinement configuration as opposed to the traditional end-to-end feedforward configuration.
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{Images/Cascade Configuration Figure.png}
-	\caption{Bar graph of the data in table~\ref{tab:input_size_comparison}.}
+	\caption{Bar graph of the data in table~\ref{tab:input_size_comparison}. Lower is better for CD and EMD. Higher is better for IoU. The configuration format is~$\text{primitives per cascade} \times \text{number of cascades}$.}
 	\label{fig:prims_per_cascade_comparison}
 \end{figure}
 
