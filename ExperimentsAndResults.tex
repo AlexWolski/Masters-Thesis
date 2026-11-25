@@ -3,9 +3,7 @@
 \chapter{Experiments~and~Results}
 \label{chap:experiments_and_results}
 
-All datasets and trained model weights used in this section are available at:
-
-\href{https://huggingface.co/datasets/AlexWolski/CSGCRN-SDF-Dataset}{\nolinkurl{huggingface.co/datasets/AlexWolski/CSGCRN-SDF-Dataset}}
+This sections outlines our experiment designs and our results. We perform experiments on different configurations of CSG-CRN to gain a better understanding of the novel architecture. Another experiment measures the abilities of CSG-CRN against prior work. And the last experiment demonstrates CSG-CRN applied to a real use case.
 
 \section{Reconstruction~Loss~Metric~Comparison}
 \label{sec:reconstruction_loss_comparison}
@@ -841,6 +839,8 @@ Tests were also run for unseen shape categories using the three ModelNet40 categ
 
 \section{Real~World~Use}
 \label{sec:real_world_use}
+
+We demonstrate an example of a real use case for CSG-CRN. Namely, we extract a point cloud from a video using photogrammetry and reconstruct a CSG model.
 
 \subsection{Photogrammetry~Reconstruction}
 \label{sec:photogrammetry_reconstruction}

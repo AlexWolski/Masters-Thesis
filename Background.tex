@@ -3,10 +3,9 @@
 \chapter{Background}
 \label{chap:background}
 
-\section{Signed~Distance~Functions}
-\label{sec:signed_distance_functions}
+This section details the existing tools used in constructing CSG models and gauging their accuracy. We describe the functions used for creating SDF primitives, combining SDF primitives, and measuring reconstruction accuracy.
 
-\subsection{SDF~Primitives}
+\section{SDF~Primitives}
 \label{subsec:sdf_primitives}
 
 CSG-CRN uses three shape primitives with SDF functions derived from~\cite{Quilez2011}. Given a query point~$p$, each function returns a signed distance value. The SDF functions themselves do not apply transformations. Instead, translation and rotation must be applied to the query point to represent a transformation of the SDF primitive.
@@ -43,7 +42,7 @@ Cylinder SDF with rounding:
 
 where~$s_x$ and~$s_y$ are the radii of the elliptical cross section and~$s_z$ is the half-extent of the cylinder height.
 
-\subsection{Boolean~Operations}
+\section{Boolean~Operations}
 \label{subsec:boolean_operations}
 
 CSG-CRN can predict a union operation~$\min(a,b)$ or a subtraction operation~$\max(a,-b)$. In addition, the command includes a blending factor~$\alpha > 0$ to smooth out the result of the operation. We achieve this by implementing the smooth minimum~$smin$ and smooth maximum~$smax$ from~\cite{Quilez2013}.
@@ -61,6 +60,8 @@ The SDF CSG output of CSG-CRN can be exported and directly used by programs such
 
 \section{Accuracy~Metrics}
 \label{sec:accuracy_metrics}
+
+There are several standard accuracy metrics used to measure the quality of a reconstruction. This section describes the formulas for the Chamfer Distance, Earth Mover's Distance, and Intersection Over Union metrics.
 
 \subsection{Chamfer~Distance}
 \label{subsec:chamfer_distance}

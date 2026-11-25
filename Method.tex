@@ -1,8 +1,9 @@
 % !TeX root = Thesis.tex
 
-\chapter{Method}
-\label{chap:method}
+\chapter{CSG-CRN}
+\label{chap:csg_crn}
 
+This section presents the CSG-CRN design at an abstract level. We discuss the dataset generation, input pre-processing, network architecture, and training methodology.
 
 \section{Input~Shape~Representation}
 \label{sec:input_shape_representation}
@@ -41,18 +42,14 @@ Previous work~\cite{Genova2019} demonstrates that the method used to collect poi
 
 We apply a similar approach when sampling query points for both our model input and loss function. The dataset contains a large number of uniformly sampled query points and distance values for each input shape sample. Using a heuristic algorithm, a subset of the uniform samples are filtered based on their distance to either the target or reconstruction surfaces to produce a near-surface point cloud. The near-surface and uniform samples are then combined and shuffled at a configured ratio to form a mixed point cloud that focuses on surface quality while penalizing large volumetric inaccuracies. We call this the Surface-Uniform ratio, where~0 is near-surface samples only and~1 is uniform samples only.
 
-
-\section{Network~Architecture}
-\label{sec:network_architecture}
-
-\subsection{Encoder~Network}
+\section{Encoder~Network}
 \label{subsec:encoder_network_method}
 
 Early designs for the CSG-CRN architecture included a self-supervised Siamese network to encode the difference in features between the target input and initial reconstruction input. The shape samples are encoded separately by identical networks that share weights. The resultant latent vectors are processed by an intermediary fully-connected layer to find differences in the two inputs and encode for the next shape prediction. This architecture has been successfully employed by previous work~\cite{Cui2020, Sarode2019} to track objects using point-cloud inputs. However, our testing showed that the architecture was a poor fit for our application. Siamese networks work best when the two input samples are largely identical with minor variations. Large differences in the two inputs make it difficult for a Siamese network to converge. This is seen in prior work where Siamese object tracking encoder networks fail to track fast-deforming objects~\cite{Cui2020}. The shape inputs to CSG-CRN can change drastically between cascades and results in the Siamese encoder failing to converge.
 
-Later iterations of CSG-CRN concatenate the target and initial reconstruction shapes and process them using a single encoder network. Each input sample is a six-dimensional vector comprising a query point and distances representing missing, filled, and excess volumes (see \nameref{sec:input_shape_representation}). The six-dimensional input vector is encoded by a modified version of PointNet that is capable of ingesting multiple distance values in addition to the standard~$\mathbb{R}^3$ point inputs.
+Later iterations of CSG-CRN concatenate the target and initial reconstruction shapes to be processed by a single encoder network. Each input sample is a six-dimensional vector comprising a query point and distances to the missing, filled, and excess volumes (see \nameref{sec:input_shape_representation}). The input vector is encoded by a modified version of PointNet that accepts multiple distance values in addition to the standard~$\mathbb{R}^3$ point inputs.
 
-\subsection{Decoder~Network}
+\section{Decoder~Network}
 \label{subsec:decoder_network_method}
 
 The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command. The six parameters are primitive shape, scale, translation, quaternion rotation, blending factor, and roundness. Figure~\ref{fig:network_architecture} depicts the network architecture.
