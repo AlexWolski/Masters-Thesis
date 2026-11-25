@@ -28,6 +28,13 @@ The decoder network implementation is inspired by~\cite{Paschalidou2019}. A full
 
 The Shape and Operation heads use a Gumbel-Softmax~\cite{Jang2017} activation function to produce a one-hot vector since our output does not support fractional amounts of a shape or operation. We set~$\tau = 0.5$ to force a one-hot output without killing the gradient. The Translation head uses a Tanh activation to allow for values in the range~$[-1, 1]$. The Rotation head does not need an activation function because the linear output is normalized to produce a valid quaternion. Lastly, the Scale, Blending, and Roundness heads use the Sigmoid activation function to produce values in the range~$[0, 1]$. The minimum scale along each axis is clamped to~0.005 so the model does not produce no-op primitives. And the minimum blending value is clamped to~0.001 since the SDF blending formula breaks at~0. The Operation head may be disabled for some primitives depending on the maximum number of subtract operations configured.
 
+\section{Postprocessing}
+\label{sec:postprocessing}
+
+Additional processing can be applied to the output CSG model to refine it. Related work~\cite{Yu2022, Yu2023} applies a pruning step to remove primitives that do not contribute to the reconstruction accuracy. We implement the same strategy to simplify and refine the output reconstructions of CSG-CRN. For a CSG model output containing $n$ primitives, we perform a batched computation to find the loss of the complete model and all $n$ variations that omit a single primitive. If the removal of any primitives maintains or improves the loss, we remove one with priority for primitives added latest to the model. This process repeats until all remaining primitives contribute to the loss.
+
+Another postprocessing step implemented for CSG-CRN is a dynamic minimum primitive size. The decoder network sets a minimum scale of~0.005 for all primitive dimensions to avoid noop predictions. This is a small enough scale that the Marching Cubes algorithm may miss small primitives at lower resolutions such as~$128^3$. To account for the remeshing resolution, we clamp the minimum dimension to $\sqrt{3} \cdot \frac{v}{2}$ where $v$ is the length of a grid cell at a given remeshing resolution. This equates to half of the diagonal length of a grid cell, which is the minimum dimension required for a primitive to occupy at least one grid point.
+
 
 \section{CSG~and~SDF~Processing}
 \label{sec:csg_and_sdf_processing}
