@@ -19,9 +19,9 @@ The simplest SDF function is the ellipsoid:
 	k_1 = \left\lVert \frac{p}{s^2} \right\rVert_2,
 \end{align*}
 
-where $s$ is the radius of the ellipsoid along each axis. $\frac{p}{s}$ is an element-wise division.
+where $s$ is the radius of the ellipsoid along each axis and $\frac{p}{s}$ is an element-wise division.
 
-The cuboid and cylinder SDF functions include a roundness variable $\rho$. $\rho$ is subtracted from the final SDF value since a level set gets rounder the farther it is from the object surface. This has a side effect of growing the primitive, so we multiply $\rho$ by the scale of the object to maintain the size of the primitive. We scale by the smallest half-extent for cuboids and scale by the height for cylinders.
+The cuboid and cylinder SDF functions include a roundness variable $\rho$, which is subtracted from the final SDF value since a level set gets rounder the farther it is from the object surface. This has a side effect of growing the primitive, so we multiply $\rho$ by the scale of the object to maintain the size of the primitive. We scale by the smallest half-extent for cuboids and scale by the height for cylinders.
 
 Cuboid SDF with rounding:
 
