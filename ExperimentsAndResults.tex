@@ -10,7 +10,7 @@ This sections outlines our experiment designs and our results. We perform experi
 
 The CSG-CRN architecture implements a unique combination of SDF volumes, constructive solid geometry, and cascaded refinement. A fine-tuned loss function is required to compensate for the complications presented by the architecture and stabilize training. Auxiliary loss metrics are used to help control the results, but the reconstruction loss metric ultimately determines the quality of the model.
 
-We experiment with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters,~9 primitives (3~per cascade~$\times$~3~cascades), and~2048 input and loss samples. The model was trained on the Airplane category of the ShapeNet dataset with~3237 training,~404 validation, and~404 testing samples. All training was performed on an RTX~3080 graphics card. The scheduler was configured to lower the learning rate after~20 epochs without improvement and stop training a cascade after~40 epochs without improvement. All testing was performed with~10,000 samples and a Marching Cubes resolution of~512.
+We experiment with six reconstruction loss metrics: Chamfer Distance (CD), L1, Logarithmic (LOG), Mean Squared Error (MSE), Occupancy (OCC), and Sigmoid (SIG).  All training runs were performed with Separate model parameters,~9 primitives (3~per cascade~$\times$~3~cascades), and~2048 input and loss samples. The model was trained on the airplane category of the ShapeNet dataset with~3237 training,~404 validation, and~404 testing samples. All training was performed on an RTX~3080 graphics card. The scheduler was configured to lower the learning rate after~20 epochs without improvement and stop training a cascade after~40 epochs without improvement. All testing was performed with~10,000 samples and a Marching Cubes resolution of~512.
 
 The results in table~\ref{tab:loss_function_comparison} show the sigmoid loss performed best in the CD and EMD testing metrics while LOG loss performed best in IoU. Although the sigmoid model wins in two metrics, a visual inspection depicted in figure~\ref{fig:loss_function_renders} reveals that the reconstruction is missing tail fins, the nose, and has warped wings. In contrast, the LOG loss airplane output is smoother and has more complete wings. All subsequent experiments are conducted with LOG loss and an emphasis on the IoU metric.
 
@@ -94,17 +94,17 @@ The trend lines in figure~\ref{fig:surface_uniform_ratio} for the CD and EMD met
 	\centering
 	\begin{subfigure}{0.32\textwidth}
 		\includegraphics[width=\linewidth]{Images/Surface Uniform Ratio Figures/Surface Uniform Ratio Chamfer.png}
-		\caption{CD vs Surface-Uniform Ratio. Lower is better.}
+		\caption{CD vs Surface-Uniform ratio. Lower is better.}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}{0.32\textwidth}
 		\includegraphics[width=\linewidth]{Images/Surface Uniform Ratio Figures/Surface Uniform Ratio EMD.png}
-		\caption{EMD vs Surface-Uniform Ratio. Lower is better.}
+		\caption{EMD vs Surface-Uniform ratio. Lower is better.}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}{0.32\textwidth}
 		\includegraphics[width=\linewidth]{Images/Surface Uniform Ratio Figures/Surface Uniform Ratio IoU.png}
-		\caption{IoU vs Surface-Uniform Ratio. Higher is better.}
+		\caption{IoU vs Surface-Uniform ratio. Higher is better.}
 	\end{subfigure}
 	\caption{Comparison of accuracy metrics across Surface-Uniform ratios for the L1 and LOG loss functions. Each point is the average of three training runs.}
 	\label{fig:surface_uniform_ratio}
@@ -219,7 +219,7 @@ An additional result of interest is the total network size. All separate paramet
 	\begin{subfigure}[t]{0.17\textwidth}
 		\centering
 		\includegraphics[width=0.765\linewidth]{Images/Cascade Output Size Renders/Single Pass 16x1.png}
-		\caption{Single Pass $16 \times 1$}
+		\caption{Single pass $16 \times 1$}
 	\end{subfigure}
 
 	\begin{subfigure}[t]{0.17\textwidth}
@@ -308,9 +308,9 @@ An additional result of interest is the total network size. All separate paramet
 
 We apply the most effective training configuration found in the previous experiment to train on the ShapeNet dataset. Five models are trained separately on curated shape categories airplane, bench, car, chair, and sofa. In addition, one model is trained on all~54 shape categories in ShapeNet. All models are trained with a data split of~80\% training,~10\% validation, and~10\% testing. For the model trained on all samples, this translates to~41342 training samples,~5162 validation samples, and~5137 testing samples. We choose~1024 input samples and~2048 loss samples to reduce model complexity and size. The chosen loss sample size is larger since it provides higher accuracy without affecting the size of the model. Each model outputs~16 primitives per pass for~3 passes totaling~48 primitives. Unlike previous experiments, we limit the model to~4 subtract operations per pass to encourage prediction of smaller details. Each model is trained with a batch size of~64. All other configurations are identical to previous experiments.
 
-Results of the experiment are shown in table~\ref{tab:shapenet_benchmark_comparison}. Both the models trained on one shape category and the model trained on the entire dataset show strong results. The Sofa category has the highest overall accuracy with an average IoU over~0.8. The Bench category has the lowest average IoU at around~0.52, since the point cloud input struggles to encode benches with thin slats and gaps at a~1024 input sample resolution. The models trained on a single shape category perform better on all categories except for Benches where the results are roughly even.
+Results of the experiment are shown in table~\ref{tab:shapenet_benchmark_comparison}. Both the models trained on one shape category and the model trained on the entire dataset show strong results. The sofa category has the highest overall accuracy with an average IoU over~0.8. The bench category has the lowest average IoU at around~0.52, since the point cloud input struggles to encode benches with thin slats and gaps at a~1024 input sample resolution. The models trained on a single shape category perform better on all categories except for benches where the results are roughly even.
 
-The visual comparison seen in figure~\ref{fig:shapenet_benchmark_renders} reveals that the models trained on single shape categories have better blending and continuity. This is especially apparent in the car reconstructions where the primitives are blended to the point they cannot be distinguished as separate shapes. The whole-dataset model has good volumetric accuracy but misses smaller details. The generalized model produces results with holes, gaps, and lumpy surfaces.
+The visual comparison seen in figure~\ref{fig:shapenet_benchmark_renders} reveals that the models trained on single shape categories have better blending and continuity. This is especially apparent in the car reconstructions where the primitives are blended to the point they cannot be distinguished as separate shapes. The all-category model has good volumetric accuracy but misses smaller details. The generalized model produces results with holes, gaps, and lumpy surfaces.
 
 
 \begin{figure}[!htb]
@@ -341,7 +341,7 @@ The visual comparison seen in figure~\ref{fig:shapenet_benchmark_renders} reveal
 		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Chair Single Category.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Sofa Single Category.png}
-		\caption{Single-Category Training}
+		\caption{Single-category training}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -355,7 +355,7 @@ The visual comparison seen in figure~\ref{fig:shapenet_benchmark_renders} reveal
 		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Chair Whole Dataset.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/ShapeNet Benchmark Renders/Sofa Whole Dataset.png}
-		\caption{All-Category Training}
+		\caption{All-category training}
 	\end{subfigure}
 	\caption{Comparison of output shapes for models trained on one shape category (second row) versus trained on the whole of the ShapeNet dataset (third row).}
 	\label{fig:shapenet_benchmark_renders}
@@ -399,9 +399,9 @@ The visual comparison seen in figure~\ref{fig:shapenet_benchmark_renders} reveal
 \section{Unseen~Shape~Class~Reconstruction}
 \label{sec:unseen_class_experiment}
 
-The model trained on the ShapeNet dataset can be used to reconstruct unseen shape categories. To demonstrate, we run inference on the Person, Sink, and Stairs categories from the ModelNet40 dataset~\cite{Wu2015}.
+The model trained on the ShapeNet dataset can be used to reconstruct unseen shape categories. To demonstrate, we run inference on the person, sink, and stairs categories from the ModelNet40 dataset~\cite{Wu2015}.
 
-The results are shown in table~\ref{tab:unseen_class_comparison} and a visual comparison is shown in figure~\ref{fig:unseen_class_renders}. The reconstruction quality of the unseen shape categories is much lower than on the ShapeNet dataset. The best category is Person at~0.41 IoU and the worst is Stairs at~0.24 IoU. This is compared to the average IoU metric of~0.64 on the ShapeNet dataset. However, the model succeeds in creating a rough block-out of the target shape and demonstrates a level of generalization. 
+The results are shown in table~\ref{tab:unseen_class_comparison} and a visual comparison is shown in figure~\ref{fig:unseen_class_renders}. The reconstruction quality of the unseen shape categories is much lower than on the ShapeNet dataset. The best category is person at~0.41 IoU and the worst is stairs at~0.24 IoU. This is compared to the average IoU metric of~0.64 on the ShapeNet dataset. However, the model succeeds in creating a rough block-out of the target shape and demonstrates a level of generalization. 
 
 \begin{figure}[!htb]
 	\centering
@@ -413,7 +413,7 @@ The results are shown in table~\ref{tab:unseen_class_comparison} and a visual co
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink TARGET.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs TARGET.png}
-		\caption{Target ModelNet40 Shapes}
+		\caption{Target ModelNet40 shapes}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -423,7 +423,7 @@ The results are shown in table~\ref{tab:unseen_class_comparison} and a visual co
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Sink ShapeNet.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Unseen Category Renders/Stairs ShapeNet.png}
-		\caption{ShapeNet Trained Model Reconstructions}
+		\caption{ShapeNet trained model reconstructions}
 	\end{subfigure}
 	\caption{Target shapes from the ModelNet40 dataset (top row) and reconstructions created by a model trained on the ShapeNet dataset (bottom row).}
 	\label{fig:unseen_class_renders}
@@ -458,9 +458,9 @@ The results are shown in table~\ref{tab:unseen_class_comparison} and a visual co
 \section{Partial~Reconstruction~Refinement}
 \label{sec:partial_recon_experiment}
 
-A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. Ten mesh samples were randomly selected from each of the Airplane, Bench, Car, Chair, and Sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a~50-sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes.
+A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. Ten mesh samples were randomly selected from each of the airplane, bench, car, chair, and sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a~50-sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes.
 
-The accuracy metrics in table~\ref{tab:partial_recon_comparison} and the visual comparison in~\ref{fig:partial_recon_renders} show that both the single-category models and the whole-dataset model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the missing region and not over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the whole-dataset model. However, the accuracy metrics show that the whole-dataset model performs better on average.
+The accuracy metrics in table~\ref{tab:partial_recon_comparison} and the visual comparison in~\ref{fig:partial_recon_renders} show that both the single-category models and the all-category model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the missing region and not over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the all-category model. However, the accuracy metrics show that the all-category model performs better on average.
 
 This experiment demonstrates that the cascades are not structured. If each cascade was designated a specific portion of a shape template to predict, the model would fail to consistently restore randomized parts of the target shape. The ability to do so indicates that the encoder can compare the target input against the initial reconstruction input to determine what volume is missing.
 
@@ -493,7 +493,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Occluded.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Occluded.png}
-		\caption{Partially Complete Input}
+		\caption{Partially complete input}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -507,7 +507,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Single Category.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Single Category.png}
-		\caption{Single-Category ShapeNet Model}
+		\caption{Single-category ShapeNet model}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -521,7 +521,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Single Category Pruned.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Single Category Pruned.png}
-		\caption{Single-Category ShapeNet Model, Pruned}
+		\caption{Single-category ShapeNet model, pruned}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -535,7 +535,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Whole Dataset.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Whole Dataset.png}
-		\caption{All-Category ShapeNet Model}
+		\caption{All-category ShapeNet model}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -549,9 +549,9 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Chair Whole Dataset Pruned.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Whole Dataset Pruned.png}
-		\caption{All-Category ShapeNet Model, Pruned}
+		\caption{All-category ShapeNet model, pruned}
 	\end{subfigure}
-	\caption{Refinement of partially complete shapes by single and all trained ShapeNet models.}
+	\caption{Refinement of partially complete shapes by single-category and all-category ShapeNet models.}
 	\label{fig:partial_recon_renders}
 \end{figure}
 
@@ -588,7 +588,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		                          & Whole Dataset              & \textbf{23.47} & \textbf{536.8} & 0.7545         & \textbf{10.15} & \textbf{355.8} & \textbf{0.8651} \\
 		\hline
 	\end{tabular}
-	\caption{Partial shape refinement metrics for single and all category trained models.}
+	\caption{Partial shape refinement metrics for single-category and all-category trained models.}
 	\label{tab:partial_recon_comparison}
 \end{table}
 
@@ -598,13 +598,13 @@ This experiment demonstrates that the cascades are not structured. If each casca
 
 We run performance tests to compare CSG-CRN to prior works in the same domain. We benchmark against the state-of-the-art models in unsupervised and generalized primitive prediction networks for 3D shape reconstruction. The selected works for comparison are SuperDec~\cite{Fedele2025}, the pretrained model of CAPRI-Net~\cite{Yu2022}, BSP-Net~\cite{Chen2020}, and UCSG-Net~\cite{Kania2020}. Although the authors only published per-category models, we also compare results against CSG-Stump~\cite{Ren2021}. Other strong works in primitive and CSG reconstruction have been published but were omitted from the study due to differences in problem scope. D\textsuperscript{2}CSG~\cite{Yu2023} is not generalizable and optimizes single shapes. PrimitiveAnything~\cite{Ye2025} requires a supervised dataset of primitive assemblies. And ANF-CSG~\cite{Liu2026} requires test-time optimization.
 
-The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same~13 shape categories and test set as the related works to be consistent. The model is trained with a batch size of~128. For the ShapeNet dataset, performance is measured on the~785 shape samples in the test set of all five models being compared. For the unseen dataset, we use the same~56 shape samples in the Person, Sink, and Stairs categories that were used in the \nameref{sec:unseen_class_experiment} experiment.
+The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same~13 shape categories and test set as the related works to be consistent. The model is trained with a batch size of~128. For the ShapeNet dataset, performance is measured on the~785 shape samples in the test set of all five models being compared. For the unseen dataset, we use the same~56 shape samples in the person, sink, and stairs categories that were used in the \nameref{sec:unseen_class_experiment} experiment.
 
 Special care is required when reproducing results for SuperDec. The model was trained with a different canonical frame that was rotated about the vertical axis by~90$^\circ$ compared to the ShapeNet dataset. We found the results for SuperDec improved when corrected for rotation, and we present the improved results in this section.
 
 The CD metrics presented in this section are not comparable to the earlier experiments. All other testing on CSG-CRN used the ChamferDistance library~\cite{Jatavallabhula2024, Ravi2020} with~10,000 samples, Marching Cubes resolution of~512, unit sphere bounds, sum reduction and no scaling. To align with the testing methods of the previous work, the CD metrics are computed with~4,096 samples, Marching Cubes resolution of~128, box bounds, mean reduction and a final scaling of~1,000.
 
-For the~13 seen ShapeNet categories, the results in table~\ref{tab:prior_work_seen_comparison} show that CSG-CRN has the highest average accuracy metrics by a healthy margin. CSG-CRN ranked best on all three accuracy metrics for~11 out of the~13 shape categories. For the Lamp and Table categories, SuperDec ranked first in CD while CSG-CRN ranked first in EMD and IoU. The visual comparison in figure~\ref{fig:prior_work_seen_renders} shows CSG-CRN outputs smoother and more details reconstructions than competitors, especially evident in the boat category.
+For the~13 seen ShapeNet categories, the results in table~\ref{tab:prior_work_seen_comparison} show that CSG-CRN has the highest average accuracy metrics by a healthy margin. CSG-CRN ranked best on all three accuracy metrics for~11 out of the~13 shape categories. For the lamp and table categories, SuperDec ranked first in CD while CSG-CRN ranked first in EMD and IoU. The visual comparison in figure~\ref{fig:prior_work_seen_renders} shows CSG-CRN outputs smoother and more details reconstructions than competitors, especially evident in the boat category.
 
 Unlike the other related works, CSG-Stump has no published weights for a model trained on multiple shape categories. We use the five CSG-CRN models trained in the \nameref{sec:shapenet_experiment} section and compare them against five of the twelve published models for CSG-Stump. Testing was performed on~187 samples that appear in the test sets for both methods being compared. The results in table~\ref{tab:prior_work_single_category_comparison} show that CSG-CRN outperforms CSG-Stump in all metrics across all five categories.
 
@@ -849,9 +849,9 @@ A unique benefit of the point cloud input format for CSG-CRN is the flexibility 
 
 To demonstrate, we took videos circling~360 degrees around three objects. An open-source tool, \texttt{COLMAP}~\cite{schoenberger2016sfm}, was used to extract frames, create depth maps, and output a point cloud scan. Some pre-processing is applied to the raw points to remove outliers, orient the shape into a canonical frame, and remove the floor plane. Similar to the ShapeNet dataset processing, near-surface sample points can be generated by applying Gaussian noise to the surface points. Distances for both near-surface and uniform points can be approximated using a K-d tree to find the closest surface sample.
 
-We apply this process to produce three SDF shape samples to run inference on. We experiment with the single-category model trained on the ShapeNet Car subset and the all-categories model. The car subject is a known shape category that both models trained on while the rabbit and teddy bear subjects are unknown categories. Since there is no ground-truth mesh to validate against, we compute accuracy as the IoU metric between the reconstruction and input SDF point clouds.
+We apply this process to produce three SDF shape samples to run inference on. We experiment with the single-category model trained on the ShapeNet car subset and the all-category model. The car subject is a known shape category that both models trained on while the rabbit and teddy bear subjects are unknown categories. Since there is no ground-truth mesh to validate against, we compute accuracy as the IoU metric between the reconstruction and input SDF point clouds.
 
-The reconstructions and accuracy metrics are presented in figure~\ref{fig:photogrammetry_renders}. As expected, the single-category model produced the best reconstruction of the four. It produces a smooth surface and a more defined windshield than the all-categories model does. Both models were able to reconstruct the windows missing from the photogrammetry scan due to glare. The all-category model produced a decent approximation of the rabbit. The general shape is correct and contains a head and ears, but it lacks much detail. The reconstruction of the teddy bear sample is the worst result with the model failing to reconstruct the arms and legs.
+The reconstructions and accuracy metrics are presented in figure~\ref{fig:photogrammetry_renders}. As expected, the single-category model produced the best reconstruction of the four. It produces a smooth surface and a more defined windshield than the all-category model does. Both models were able to reconstruct the windows missing from the photogrammetry scan due to glare. The all-category model produced a decent approximation of the rabbit. The general shape is correct and contains a head and ears, but it lacks much detail. The reconstruction of the teddy bear sample is the worst result with the model failing to reconstruct the arms and legs.
 
 
 \begin{figure}[!htb]
@@ -864,7 +864,7 @@ The reconstructions and accuracy metrics are presented in figure~\ref{fig:photog
 		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Rabbit Bell Video Frame.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Teddy Bear Video Frame.png}
-		\caption{Video Scan}
+		\caption{Video scan}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -874,7 +874,7 @@ The reconstructions and accuracy metrics are presented in figure~\ref{fig:photog
 		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Rabbit Bell Point Cloud.png}
 		\hspace{0.03\textwidth}
 		\includegraphics[width=0.13\textwidth]{Images/Photogrammetry Renders/Teddy Bear Point Cloud.png}
-		\caption{Extracted Point Cloud}
+		\caption{Extracted point cloud}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -891,7 +891,7 @@ The reconstructions and accuracy metrics are presented in figure~\ref{fig:photog
 		\makebox[0.13\textwidth]{IoU 0.7252}
 		\hspace{0.03\textwidth}
 		\makebox[0.13\textwidth]{IoU 0.6242}
-		\caption{All-Category ShapeNet Model Reconstruction}
+		\caption{All-category ShapeNet model reconstruction}
 	\end{subfigure}
 
 	\begin{subfigure}{\textwidth}
@@ -900,9 +900,9 @@ The reconstructions and accuracy metrics are presented in figure~\ref{fig:photog
 
 		\footnotesize
 		\makebox[0.13\textwidth]{IoU 0.8986}
-		\caption{Single-Category Car Model Reconstruction}
+		\caption{Single-category car model reconstruction}
 	\end{subfigure}
-	\caption{Reconstructing CSG Models from video. The first row depicts frames from the video scan. The second row shows the surface point clouds extracted through photogrammetry. And the last two rows show CSG-CRN reconstructions.}
+	\caption{Reconstructing CSG models from video. The first row depicts frames from the video scan. The second row shows the surface point clouds extracted through photogrammetry. And the last two rows show CSG-CRN reconstructions.}
 	\label{fig:photogrammetry_renders}
 \end{figure}
 
@@ -910,9 +910,9 @@ The reconstructions and accuracy metrics are presented in figure~\ref{fig:photog
 \subsection{Test~Time~Optimization}
 \label{sec:test_time_optimization}
 
-The reconstruction results for the unseen shape categories Rabbit and Bear were significantly worse than for the seen shape category Car. The accuracy for these shapes can be increased using Test Time Optimization (TTO)~\cite{Sun2020}. Before producing a reconstruction, the pre-trained model is further trained on the target shape. We create a dataset of one shape and optimize for~300 iterations before producing the reconstruction.
+The reconstruction results for the unseen shape categories rabbit and bear were significantly worse than for the seen shape category car. The accuracy for these shapes can be increased using Test Time Optimization (TTO)~\cite{Sun2020}. Before producing a reconstruction, the pre-trained model is further trained on the target shape. We create a dataset of one shape and optimize for~300 iterations before producing the reconstruction.
 
-The improved results are presented in figure~\ref{fig:photogrammetry_test_time_optimization}. The reconstructions are much cleaner for the Rabbit and Bear shapes which now have correct heads and ears. The car model did not improve much since the reconstruction without TTO was already highly accurate. The tradeoff for using this technique is the time to reconstruct a shape grows from several milliseconds to several minutes.
+The improved results are presented in figure~\ref{fig:photogrammetry_test_time_optimization}. The reconstructions are much cleaner for the rabbit and bear shapes which now have correct heads and ears. The car model did not improve much since the reconstruction without TTO was already highly accurate. The tradeoff for using this technique is the time to reconstruct a shape grows from several milliseconds to several minutes.
 
 \begin{figure}[!htb]
 	\centering
@@ -930,7 +930,7 @@ The improved results are presented in figure~\ref{fig:photogrammetry_test_time_o
 	\makebox[0.13\textwidth]{IoU 0.8985}
 
 	}
-	\caption{All-Category ShapeNet Model with TTO Reconstruction.}
+	\caption{All-category ShapeNet model with TTO reconstruction.}
 	\label{fig:photogrammetry_test_time_optimization}
 \end{figure}
 

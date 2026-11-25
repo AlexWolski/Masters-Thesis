@@ -63,7 +63,7 @@ Experiments revealed that CSG-CRN would exploit the subtract operation later in 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.67]{Images/csg_crn_figure.pdf}
-	\caption{CSG-CRN Network Architecture. The encoder is derived from PointNet and the decoder is a multi-headed regressor.}
+	\caption{CSG-CRN network architecture. The encoder is derived from PointNet and the decoder is a multi-headed regressor.}
 	\label{fig:network_architecture}
 \end{figure}
 
@@ -110,7 +110,7 @@ This training approach has many downsides. The model size and training time incr
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.6]{Images/separate_training_figure.pdf}
-	\caption{Separate Parameter Training. Each cascade is trained and run separately, forming an end-to-end network that is trained in sections.}
+	\caption{Separate parameter training. Each cascade is trained and run separately, forming an end-to-end network that is trained in sections.}
 	\label{fig:separate_training}
 \end{figure}
 
@@ -127,7 +127,7 @@ We train for multiple cascades by accumulating the gradient. The forward pass fo
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[scale=0.94]{Images/shared_training_figure.pdf}
-	\caption{Shared Parameter Training. The same network parameters are trained and used for each cascade.}
+	\caption{Shared parameter training. The same network parameters are trained and used for each cascade.}
 	\label{fig:shared_training}
 \end{figure}
 
