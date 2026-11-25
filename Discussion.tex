@@ -8,7 +8,7 @@ This section summarizes the main insights gained from the \nameref{chap:experime
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{Images/Cascade Configuration Figure.png}
-	\caption{Bar graph of the data in table~\ref{tab:input_size_comparison}. Lower is better for CD and EMD. Higher is better for IoU. The cascaded refinement configuration format is~$\text{primitives per cascade} \times \text{number of cascades}$.}
+	\caption{Bar graph of the data in table~\ref{tab:prims_per_cascade_comparison}. Lower is better for CD and EMD. Higher is better for IoU. The cascaded refinement configuration format is~$\text{primitives per cascade} \times \text{number of cascades}$.}
 	\label{fig:prims_per_cascade_comparison}
 \end{figure}
 
@@ -21,11 +21,11 @@ The \nameref{sec:prior_work_comparison} experiment further demonstrates the viab
 	\label{fig:prior_work_seen_comparison}
 \end{figure}
 
-Figure \ref{fig:prior_work_unseen_comparison} shows the performance of CSG-CRN on unseen shape categories. CSG-CRN and SuperDec perform very similarly to each other, with both outperforming the remaining works by a large margin. This result demonstrates that the cascaded refinement strategy enables strongly generalizability that rivals the current state of the art.
+Figure~\ref{fig:prior_work_unseen_comparison} shows the performance of CSG-CRN on unseen shape categories. CSG-CRN and SuperDec perform very similarly to each other, with both outperforming the remaining works by a large margin. This result demonstrates that the cascaded refinement strategy enables strongly generalizability that rivals the current state of the art.
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{Images/Prior Work Unseen Comparison.png}
-	\caption{Bar graph of the data in table~\ref{tab:prior_work_seen_comparison}. Lower is better for CD and EMD. Higher is better for IoU.}
+	\caption{Bar graph of the data in table~\ref{tab:prior_work_unseen_comparison}. Lower is better for CD and EMD. Higher is better for IoU.}
 	\label{fig:prior_work_unseen_comparison}
 \end{figure}
