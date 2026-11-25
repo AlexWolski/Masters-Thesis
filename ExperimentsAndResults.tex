@@ -458,7 +458,7 @@ The results are shown in table~\ref{tab:unseen_class_comparison} and a visual co
 \section{Partial~Reconstruction~Refinement}
 \label{sec:partial_recon_experiment}
 
-A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. Ten mesh samples were randomly selected from each of the airplane, bench, car, chair, and sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a~50-sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes.
+A unique benefit of the cascaded refinement architecture is the ability to complete a partial reconstruction. We demonstrate this ability by creating a small subset of the ShapeNet dataset with occluded geometry. Ten mesh samples were randomly selected from each of the airplane, bench, car, chair, and sofa categories. Since ShapeNet includes part segmentation data for each sample, we leverage this information to cleanly remove a part of each target mesh. Lastly we apply our standard SDF processing pipeline to create a~50-sample occluded shape dataset. During inference, we skip the initial prediction pass by inputting the occluded dataset sample as though it were the output from the previous cascade and running only two passes. Results are presented with and without the pruning postprocessing applied.
 
 The accuracy metrics in table~\ref{tab:partial_recon_comparison} and the visual comparison in figure~\ref{fig:partial_recon_renders} show that both the single-category models and the all-category model succeed in completing the partial reconstruction. The accuracy metrics are misleading since the intact portion of the target shape skews the result positively. The reconstruction quality of the predicted missing volumes is comparable to the unseen shape category results. Volume is generally added in the missing region and not over the existing shape, but surface detail is lacking. The single-category trained model shows signs of a learned shape template, such as the horizontal slats on the bench reconstruction that are absent from the all-category model. However, the accuracy metrics show that the all-category model performs better on average.
 
@@ -551,7 +551,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		\includegraphics[width=0.1296\textwidth]{Images/Partial Reconstruction Renders/Sofa Whole Dataset Pruned.png}
 		\caption{All-category ShapeNet model, pruned}
 	\end{subfigure}
-	\caption{Refinement of partially complete shapes by single-category and all-category ShapeNet models.}
+	\caption{Refinement of partially complete shapes by single-category and all-category ShapeNet models. Results are shown with and without pruning.}
 	\label{fig:partial_recon_renders}
 \end{figure}
 
@@ -588,7 +588,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 		                          & Whole Dataset              & \textbf{23.47} & \textbf{536.8} & 0.7545         & \textbf{10.15} & \textbf{355.8} & \textbf{0.8651} \\
 		\hline
 	\end{tabular}
-	\caption{Partial shape refinement metrics for single-category and all-category trained models.}
+	\caption{Partial shape refinement metrics for single-category and all-category trained models both with and without pruning.}
 	\label{tab:partial_recon_comparison}
 \end{table}
 
@@ -598,7 +598,7 @@ This experiment demonstrates that the cascades are not structured. If each casca
 
 We run performance tests to compare CSG-CRN to prior works in the same domain. We benchmark against the state-of-the-art models in unsupervised and generalized primitive prediction networks for 3D shape reconstruction. The selected works for comparison are SuperDec~\cite{Fedele2025}, the pretrained model of CAPRI-Net~\cite{Yu2022}, BSP-Net~\cite{Chen2020}, and UCSG-Net~\cite{Kania2020}. Although the authors only published per-category models, we also compare results against CSG-Stump~\cite{Ren2021}. Other strong works in primitive and CSG reconstruction have been published but were omitted from the study due to differences in problem scope. D\textsuperscript{2}CSG~\cite{Yu2023} is not generalizable and optimizes single shapes. PrimitiveAnything~\cite{Ye2025} requires a supervised dataset of primitive assemblies. And ANF-CSG~\cite{Liu2026} requires test-time optimization.
 
-The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same~13 shape categories and test set as the related works to be consistent. The model is trained with a batch size of~128. For the ShapeNet dataset, performance is measured on the~785 shape samples in the test set of all five models being compared. For the unseen dataset, we use the same~56 shape samples in the person, sink, and stairs categories that were used in the \nameref{sec:unseen_class_experiment} experiment.
+The models are tested on a dataset of seen shape categories (ShapeNet) and unseen shape categories (ModelNet40). CSG-CRN is retrained on the same~13 shape categories and test set as the related works to be consistent. The model is trained with a batch size of~128 and the output has pruning applied. For the ShapeNet dataset, performance is measured on the~785 shape samples in the test set of all five models being compared. For the unseen dataset, we use the same~56 shape samples in the person, sink, and stairs categories that were used in the \nameref{sec:unseen_class_experiment} experiment.
 
 Special care is required when reproducing results for SuperDec. The model was trained with a different canonical frame that was rotated about the vertical axis by~90$^\circ$ compared to the ShapeNet dataset. We found the results for SuperDec improved when corrected for rotation, and we present the improved results in this section.
 
