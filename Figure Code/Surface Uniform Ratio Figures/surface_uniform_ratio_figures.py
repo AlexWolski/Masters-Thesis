@@ -3,6 +3,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import StrMethodFormatter
 from matplotlib.transforms import ScaledTranslation
 from PIL import Image
 
@@ -74,6 +75,8 @@ def plot_metric(column, output_name, y_label):
     ax.set_xticks([i / 5 for i in range(6)])
     ax.set_xlabel("Surface-Uniform Ratio", color=INK_COLOR, fontsize=AXIS_FONT_SIZE)
     ax.set_ylabel(y_label, color=INK_COLOR, fontsize=AXIS_FONT_SIZE)
+    if column == "test_emd":
+        ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
 
     ax.tick_params(color=INK_COLOR, labelcolor=INK_COLOR, labelsize=TICK_FONT_SIZE, width=AXIS_LINE_WIDTH)
     for side in ("top", "right"):

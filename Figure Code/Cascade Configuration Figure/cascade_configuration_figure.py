@@ -2,6 +2,7 @@ import os
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.ticker import StrMethodFormatter
 from matplotlib.transforms import blended_transform_factory
 from PIL import Image
 
@@ -131,6 +132,7 @@ def main():
 
     style_axis(cd_ax, "left", CD_COLOR, "CD", CD_LIMIT, CD_STEP)
     style_axis(emd_ax, "left", EMD_COLOR, "EMD", EMD_LIMIT, EMD_STEP)
+    emd_ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
     style_axis(iou_ax, "right", IOU_COLOR, "IoU", IOU_LIMIT, IOU_STEP)
 
     emd_ax.set_xlim(positions[0] - 0.6, positions[-1] + 0.6)

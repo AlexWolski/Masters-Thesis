@@ -3,7 +3,7 @@
 \chapter{CSG-CRN}
 \label{chap:csg_crn}
 
-This chapter presents the CSG-CRN design at an abstract level. We discuss the dataset generation, input pre-processing, network architecture, and training methodology.
+This chapter presents the CSG-CRN design at an abstract level. We discuss the dataset generation, input preprocessing, network architecture, and training methodology.
 
 \section{Input~Shape~Representation}
 \label{sec:input_shape_representation}
@@ -43,14 +43,14 @@ We apply a similar approach when sampling query points for both our model input 
 \section{Encoder~Network}
 \label{subsec:encoder_network_method}
 
-Early designs for the CSG-CRN architecture included a self-supervised Siamese network to encode the difference in features between the target input and initial reconstruction input. The shape samples are encoded separately by identical networks that share weights. The resultant latent vectors are processed by an intermediary fully-connected layer to find differences in the two inputs and encode for the next shape prediction. This architecture has been successfully employed by previous work~\cite{Cui2020, Sarode2019} to track objects using point-cloud inputs. However, our testing showed that the architecture was a poor fit for our application. Siamese networks work best when the two input samples are largely identical with minor variations. Large differences in the two inputs make it difficult for a Siamese network to converge. This is seen in prior work where Siamese object tracking encoder networks fail to track fast-deforming objects~\cite{Cui2020}. The shape inputs to CSG-CRN can change drastically between cascades and results in the Siamese encoder failing to converge.
+Early designs for the CSG-CRN architecture included a self-supervised Siamese network to encode the difference in features between the target input and initial reconstruction input. The shape samples are encoded separately by identical networks that share weights. The resultant latent vectors are processed by an intermediary fully-connected layer to find differences in the two inputs and encode for the next shape prediction. This architecture has been successfully employed by previous work~\cite{Cui2020, Sarode2019} to track objects using point-cloud inputs. However, our testing showed that the architecture was a poor fit for our application. Siamese networks work best when the two input samples are largely identical with minor variations. Large differences in the two inputs make it difficult for a Siamese network to converge. This is seen in prior work where Siamese object tracking encoder networks fail to track fast-deforming objects~\cite{Cui2020}. The shape inputs to CSG-CRN can change drastically between cascades, which results in the Siamese encoder failing to converge.
 
 Later iterations of CSG-CRN concatenate the target and initial reconstruction shapes to be processed by a single encoder network. Each input sample is a six-dimensional vector comprising a query point and distances to the missing, filled, and excess volumes (see \nameref{sec:input_shape_representation}). The input vector is encoded by a modified version of PointNet that accepts multiple distance values in addition to the standard~$\mathbb{R}^3$ point inputs.
 
 \section{Decoder~Network}
 \label{subsec:decoder_network_method}
 
-The primitive decoder network is inspired by \cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command. The six parameters are primitive shape, scale, translation, quaternion rotation, blending factor, and roundness. Figure~\ref{fig:network_architecture} depicts the network architecture.
+The primitive decoder network is inspired by~\cite{Paschalidou2019}. A fully-connected subnet distills the global feature vector from the encoder network to a primitive feature vector. Then a seven-headed regressor network decodes each of the six primitive parameters plus the boolean operation to form a CSG command. The six parameters are primitive shape, scale, translation, quaternion rotation, blending factor, and roundness. Figure~\ref{fig:network_architecture} depicts the network architecture.
 
 Similar to prior primitive fitting architectures~\cite{Tulsiani2017,Paschalidou2019}, the regressor network is duplicated for each output primitive. Producing multiple primitive shapes before computing the loss prevents the model from fitting greedily. Optimizing on too few primitives results in a broad output shape that tries to represent the entire target volume. Although further cascades can subtract from the broad initial reconstruction to refine it, this approach requires more output primitives and produces a worse final result.
 
@@ -101,7 +101,7 @@ This paper explores two training modes for cascaded refinement. Both use the sam
 \subsection{Separate~Parameter~Training}
 \label{subsec:separate_parameters}
 
-One approach is to optimize the network weights for each cascade separately. A copy of the CSG-CRN network is appended to the model for each new cascade. The cascades are disjointed since the network layers of one cascade are not connected to the next. We are in essence training the same network multiple times with different input datasets. The first cascade is fully trained on the input dataset. Once complete, the network weights are cloned to form the second cascade which is then trained on the outputs of the first cascade. This process is repeated until the desired number of cascades have been trained. This training method is depicted in figure~\ref{fig:separate_training}.
+One approach is to optimize the network weights for each cascade separately. A copy of the CSG-CRN network is appended to the model for each new cascade. The cascades are disjoint since the network layers of one cascade are not connected to the next. We are in essence training the same network multiple times with different input datasets. The first cascade is fully trained on the input dataset. Once complete, the network weights are cloned to form the second cascade which is then trained on the outputs of the first cascade. This process is repeated until the desired number of cascades have been trained. This training method is depicted in figure~\ref{fig:separate_training}.
 
 This training approach has many downsides. The model size and training time increase linearly with the number of cascades. Network weights are carried over between cascades, but the learning rate is reset and progress is lost. The only advantages are the injection of reconstruction information between cascades and the ability to train the model in sections.
 
