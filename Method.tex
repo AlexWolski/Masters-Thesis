@@ -16,15 +16,13 @@ The same process is used to generate an SDF point cloud for the CSG model output
 
 The query points in the target shape dataset can also be used as the query points for the CSG model output of CSG-CRN. The naive approach for encoding the target and reconstruction shapes separately results in two four-dimensional vectors. By using the same query points for both shapes, a single five-dimensional vector can represent both the input and initial reconstruction. The combined format is~$[p_x, p_y, p_z, d_{\target}, d_{\recon}]$, where~$p$ is the query point,~$d_{\target}$ is the signed distance to the target volume, and~$d_{\recon}$ is the signed distance to the initial reconstruction.
 
-Early versions of the CSG-CRN network used only the combined five-dimensional vector as the input shape representation. However, we found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction distances to compute the missing, filled, and excess volumes, visualized in figure~\ref{fig:input_preprocessing}.
+Early versions of the CSG-CRN network used only the combined five-dimensional vector as the input shape representation. However, we found that the model performs better when given more context on which parts of the reconstruction need to be improved. This is accomplished by applying boolean operations to the target and reconstruction distances to compute the missing, filled, and excess volumes using the equations
 \begin{gather*}
 	d_{\missing}=\max(d_{\target}, -d_{\recon}),\\
 	d_{\filled}=\max(d_{\target}, d_{\recon}),\\
 	d_{\excess}=\max(-d_{\target}, d_{\recon}).
 \end{gather*}
-
-The query point and three distance values comprise the six-dimensional input vector:
-
+A visualization of the three volumes is provided in figure~\ref{fig:input_preprocessing}. The query point and three distance values comprise the six-dimensional input vector written as
 \[\Input = [p, d_{\missing}, d_{\filled}, d_{\excess}].\]
 
 \begin{figure}[!htb]
@@ -70,7 +68,7 @@ Experiments revealed that CSG-CRN would exploit the subtract operation later in 
 \section{Loss~Functions}
 \label{sec:loss_functions}
 
-Several reconstruction loss functions were explored for CSG-CRN. The results of our experiments are found in the \nameref{sec:reconstruction_loss_comparison} section. The functions tested are CD, L1, Mean Squared Error (MSE), Logarithmic (LOG), Occupancy (OCC), and Sigmoid (SIG). The CD and OCC losses directly measure the reconstruction accuracy at the cost of additional compute. L1, LOG, MSE, and SIG are much faster approximations because they can be applied to signed distance error. The formulas for these losses are:
+Several reconstruction loss functions were explored for CSG-CRN. The results of our experiments are found in the \nameref{sec:reconstruction_loss_comparison} section. The functions tested are CD, L1, Mean Squared Error (MSE), Logarithmic (LOG), Occupancy (OCC), and Sigmoid (SIG). The CD and OCC losses directly measure the reconstruction accuracy at the cost of additional compute. L1, LOG, MSE, and SIG are much faster approximations because they can be applied to signed distance error. The formulas for these losses are
 \begin{gather*}
 \Loss_{1} = \epsilon,\\
 \Loss_{\MSE} = \epsilon^2,\\
@@ -88,9 +86,9 @@ The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier lo
 	\label{fig:loss_functions}
 \end{figure}
 
-In addition to a reconstruction loss, we apply the auxiliary loss from CSG-Stump~\cite{Ren2021} to draw primitives to the reconstruction surface
+In addition to a reconstruction loss, we apply the auxiliary loss from CSG-Stump~\cite{Ren2021} to draw primitives to the reconstruction surface. We define this primitive loss as
 \[\Loss_{\primitive} = \frac{1}{K} \sum_{k}^{K} \min ( \SDF_k^2(x_n) ).\]
-The combined loss function is
+The combined loss function is defined as
 \[\Loss_{\total} = \Loss_{\reconstruction} + \Loss_{\primitive}.\]
 
 
