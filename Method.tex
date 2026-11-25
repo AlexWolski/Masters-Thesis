@@ -3,7 +3,7 @@
 \chapter{CSG-CRN}
 \label{chap:csg_crn}
 
-This section presents the CSG-CRN design at an abstract level. We discuss the dataset generation, input pre-processing, network architecture, and training methodology.
+This chapter presents the CSG-CRN design at an abstract level. We discuss the dataset generation, input pre-processing, network architecture, and training methodology.
 
 \section{Input~Shape~Representation}
 \label{sec:input_shape_representation}
@@ -36,7 +36,7 @@ A visualization of the three volumes is provided in figure~\ref{fig:input_prepro
 \section{Point~Sampling}
 \label{sec:point_sampling}
 
-Previous work~\cite{Genova2019} demonstrates that the method used to collect point samples for a loss function impacts the reconstruction accuracy of the model. A uniformly sampled point cloud evenly encompassing the operational bounds leads the model to omit thin structures and fine details. A point cloud containing only samples near to the target surface will result in better surface detail but worse volumetric accuracy further away from the surface. \cite{Genova2019} takes a hybrid approach by computing the loss function twice: once using uniformly sampled points and once using points sampled near the surface of the target volume. The two loss values are weighted and summed to create a loss function that achieves both good volumetric and surface accuracy.
+Previous work~\cite{Genova2019} demonstrates that the method used to collect point samples for a loss function impacts the reconstruction accuracy of the model. A uniformly sampled point cloud evenly encompassing the operational bounds leads the model to omit thin structures and fine details. A point cloud containing only samples near to the target surface will result in better surface detail but worse volumetric accuracy further away from the surface. The problem was addressed in~\cite{Genova2019} using a hybrid approach that computes two losses: once for uniformly sampled points and once for points sampled near the surface of the target volume. The two loss values are weighted and summed to create a loss function that achieves both good volumetric and surface accuracy.
 
 We apply a similar approach when sampling query points for both our model input and loss function. The dataset contains a large number of uniformly sampled query points and distance values for each input shape sample. Using a heuristic algorithm, a subset of the uniform samples are filtered based on their distance to either the target or reconstruction surfaces to produce a near-surface point cloud. The near-surface and uniform samples are then combined and shuffled at a configured ratio to form a mixed point cloud that focuses on surface quality while penalizing large volumetric inaccuracies. We call this the Surface-Uniform ratio, where~0 is near-surface samples only and~1 is uniform samples only.
 

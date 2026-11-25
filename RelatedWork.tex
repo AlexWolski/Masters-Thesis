@@ -24,8 +24,6 @@ Follow-up work~\cite{Xu2018, Li2018, Wu2019} implements Convolutional Neural Net
 
 Further work~\cite{Fan2017, Achlioptas2018} demonstrates that deep learning models can be trained to generate a point cloud reconstruction as an output. The model presented in~\cite{Fan2017} analyzes a 2D image of an object and generates a cloud of~1024 points to represent its surface. The model is also capable of inferring occluded parts of an input. CNN networks are used for both the image encoder and point cloud decoder. The model in~\cite{Achlioptas2018} uses the PointNet encoder as a base and adds a fully connected MLP decoder network to generate a point cloud. The work experiments with two architectures. The first is an autoencoder network trained using a loss function. The second is a Generative Adversarial Network (GAN) that uses the autoencoder network as a generator alongside an MLP discriminator. Both architectures demonstrate strong results, with the autoencoder slightly outperforming the GAN.
 
-Although point clouds only offer a sparse approximation of a surface, the low-dimensionality proves useful for efficiently learning 3D features.
-
 
 \section{Polygon~Mesh}
 \label{sec:polygon_mesh}
