@@ -75,7 +75,7 @@ Several reconstruction loss functions were explored for CSG-CRN. The results of 
 \Loss_{\LOG} = \frac{\ln(\epsilon + 0.01)}{5} + 1,\\
 \Loss_{\SIG} = \frac{1}{2} \left( \tanh(25\epsilon) + \epsilon \right),
 \end{gather*}
-where~$\epsilon$ is the difference in distance from a query sample point to both the target and reconstruction shapes.
+where~$\epsilon$ is the absolute difference in distance from a query sample point to both the target and reconstruction shapes.
 
 The L1 loss can be viewed as the baseline, linear loss. MSE applies a heavier loss for large errors, training the model to prioritize accuracy across the entirety of the target shape over detailed surface accuracy. With the cascaded refinement architecture, the MSE loss led to greedy fitting in the first cascade that harmed the performance of later cascades. Both the LOG and SIG losses apply a heavier loss for small errors. The LOG loss gradually plateaus where the SIG loss settles into a linear trajectory. By penalizing small errors more than large errors, the model is trained to prioritize surface accuracy and may leave portions of the target shape for later cascades to reconstruct. A comparison of these loss functions is depicted in Figure~\ref{fig:loss_functions}.
 

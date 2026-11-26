@@ -35,11 +35,10 @@ where~$s_x$ and~$s_y$ are the semi-axes of the cylinder base and~$s_z$ is the ha
 \section{Boolean~Operations}
 \label{subsec:boolean_operations}
 
-CSG-CRN can predict a union operation~$\min(a,b)$ or a subtraction operation~$\max(a,-b)$. In addition, the command includes a blending factor~$\alpha > 0$ to smooth out the result of the operation. We achieve this by implementing the smooth minimum~$\smin$ and smooth maximum~$\smax$ from~\cite{Quilez2013}. The functions for~$\smin$ and~$\smax$ are
+CSG-CRN can predict a union operation~$\min(a,b)$ or a subtraction operation~$\max(a,-b)$. In addition, the command includes a blending factor~$\alpha > 0$ to smooth out the result of union operations. We achieve this by implementing the smooth minimum~$\smin$ from~\cite{Quilez2013}. The function for~$\smin$ is
 \begin{align*}
 	\smin_\alpha(a, b) &= \min(a, b) - \frac{\alpha}{4} h^2, \qquad
-	h = \frac{\max(\alpha - |a - b|, 0)}{\alpha}, \\
-	\smax_\alpha(a, b) &= -\smin_\alpha(-a, -b).
+	h = \frac{\max(\alpha - |a - b|, 0)}{\alpha}.
 \end{align*}
 
 \section{Marching~Cubes}
