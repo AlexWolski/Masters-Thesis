@@ -3,12 +3,12 @@
 \chapter{Discussion}
 \label{chap:discussion}
 
-This chapter summarizes the main insights gained from the \nameref{chap:experiments_and_results} chapter. Our results from the \nameref{sec:prims_per_cascade_experiment} experiment are summarized in figure~\ref{fig:prims_per_cascade_comparison}. This result proves our hypothesis that cascaded refinement networks are an effective strategy for structured 3D reconstruction tasks. The same network architecture performs significantly better in a cascaded refinement configuration as opposed to the traditional end-to-end feedforward configuration.
+This chapter summarizes the main insights gained from the \nameref{chap:experiments_and_results} chapter. Our results from the \nameref{sec:prims_per_cascade_experiment} experiment are summarized in Figure~\ref{fig:prims_per_cascade_comparison}. This result proves our hypothesis that cascaded refinement networks are an effective strategy for structured 3D reconstruction tasks. The same network architecture performs significantly better in a cascaded refinement configuration as opposed to the traditional end-to-end feedforward configuration.
 
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{Images/Cascade Configuration Figure.png}
-	\caption{Bar graph of the data in table~\ref{tab:prims_per_cascade_comparison}. Lower is better for CD and EMD. Higher is better for IoU. The cascaded refinement configuration format is~$\text{primitives per cascade} \times \text{number of cascades}$.}
+	\caption{Bar graph of the data in Table~\ref{tab:prims_per_cascade_comparison}. Lower is better for CD and EMD. Higher is better for IoU. The cascaded refinement configuration format is~$\text{primitives per cascade} \times \text{number of cascades}$.}
 	\label{fig:prims_per_cascade_comparison}
 \end{figure}
 
@@ -17,7 +17,7 @@ The \nameref{sec:prior_work_comparison} experiment further demonstrates the viab
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{Images/Prior Work Seen Comparison.png}
-	\caption{Bar graph of the data in table~\ref{tab:prior_work_seen_comparison}. Lower is better for CD and EMD. Higher is better for IoU.}
+	\caption{Bar graph of the data in Table~\ref{tab:prior_work_seen_comparison}. Lower is better for CD and EMD. Higher is better for IoU.}
 	\label{fig:prior_work_seen_comparison}
 \end{figure}
 
@@ -26,6 +26,6 @@ Figure~\ref{fig:prior_work_unseen_comparison} shows the performance of CSG-CRN o
 \begin{figure}[!htb]
 	\centering
 	\includegraphics[width=\textwidth]{Images/Prior Work Unseen Comparison.png}
-	\caption{Bar graph of the data in table~\ref{tab:prior_work_unseen_comparison}. Lower is better for CD and EMD. Higher is better for IoU.}
+	\caption{Bar graph of the data in Table~\ref{tab:prior_work_unseen_comparison}. Lower is better for CD and EMD. Higher is better for IoU.}
 	\label{fig:prior_work_unseen_comparison}
 \end{figure}
