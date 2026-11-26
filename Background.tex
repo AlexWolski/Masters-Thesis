@@ -18,7 +18,7 @@ The simplest SDF function is the ellipsoid
 \end{align*}
 where~$s$ is the radius of the ellipsoid along each axis and~$\frac{p}{s}$ is an element-wise division.
 
-The cuboid and cylinder SDF functions include a roundness variable~$\rho$, which is subtracted from the final SDF value because level sets farther from the object surface are rounder. This has a side effect of growing the primitive, so we multiply~$\rho$ by the scale of the object to maintain the size of the primitive. We scale by the smallest half-extent for cuboids and scale by the height for cylinders. The function for a cuboid SDF with rounding is
+The cuboid and cylinder SDF functions include a roundness variable~$\rho$, which is subtracted from the final SDF value because level sets farther from the object surface are rounder. This has the side effect of growing the primitive, so we multiply~$\rho$ by the scale of the object to maintain the size of the primitive. We scale by the smallest half-extent for cuboids and scale by the height for cylinders. The function for a cuboid SDF with rounding is
 \begin{align*}
 	\SDF_{\cuboid}(p) &= \lVert \max(u, 0) \rVert_2 + \min(\max(u_x, u_y, u_z), 0) - r \\
 	u &= |p| - (s - r), \qquad r = \rho \min(s_x, s_y, s_z),
@@ -55,7 +55,7 @@ There are several standard accuracy metrics used to measure the quality of a rec
 \subsection{Chamfer~Distance}
 \label{subsec:chamfer_distance}
 
-Chamfer Distance (CD) is a measure of the average distance error between two surfaces. A uniformly distributed set of surface samples~$S_1$ and~$S_2$ are gathered for the two surfaces. The metric becomes more accurate the more surface samples are used. The one-direction CD is computed by finding the closest sample in~$S_2$ for each sample in~$S_1$ and measuring the distance. This paper uses the bi-directional CD, which doubles the process by also finding the closest sample in~$S_1$ for each sample in~$S_2$~\cite{Fan2017}. The bi-directional CD is defined as
+Chamfer Distance (CD) is a measure of the average distance error between two surfaces. Uniformly distributed sets of surface samples~$S_1$ and~$S_2$ are gathered for the two surfaces. The metric becomes more accurate the more surface samples are used. The one-directional CD is computed by finding the closest sample in~$S_2$ for each sample in~$S_1$ and measuring the distance. This paper uses the bi-directional CD, which doubles the process by also finding the closest sample in~$S_1$ for each sample in~$S_2$~\cite{Fan2017}. The bi-directional CD is defined as
 \begin{equation*}
 	d_{\CD}(S_1, S_2) = \sum_{p \in S_1} \min_{q \in S_2} \lVert p - q \rVert_2^2 + \sum_{q \in S_2} \min_{p \in S_1} \lVert p - q \rVert_2^2, \qquad S_1, S_2 \subset \mathbb{R}^3.
 \end{equation*}
@@ -63,7 +63,7 @@ Chamfer Distance (CD) is a measure of the average distance error between two sur
 \subsection{Earth~Mover's~Distance}
 \label{subsec:earth_movers_distance}
 
-Earth Mover's Distance (EMD) approximates the total distance samples on one surface need to be moved to reach the second surface. Similar to CD, a uniform set of surface samples~$S_1$ and~$S_2$ are needed for the surfaces being compared. Where CD allows multiple samples in~$S_1$ to be mapped to the same sample in~$S_2$, EMD requires a one-to-one bijection~$\phi$~\cite{Fan2017, Achlioptas2018}. The equation for EMD is
+Earth Mover's Distance (EMD) approximates the total distance samples on one surface need to be moved to reach the second surface. Similar to CD, uniform sets of surface samples~$S_1$ and~$S_2$ are needed for the surfaces being compared. Where CD allows multiple samples in~$S_1$ to be mapped to the same sample in~$S_2$, EMD requires a bijection~$\phi$~\cite{Fan2017, Achlioptas2018}. The equation for EMD is
 \begin{equation*}
 	d_{\EMD}(S_1, S_2) = \min_{\phi : S_1 \to S_2} \sum_{p \in S_1} \lVert p - \phi(p) \rVert_2, \qquad S_1, S_2 \subset \mathbb{R}^3.
 \end{equation*}
